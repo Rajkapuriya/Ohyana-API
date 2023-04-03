@@ -13,7 +13,7 @@ const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-// app.use(morgan('combined'))
+app.use(morgan('combined'))
 app.use(cors())
 app.use('/uploads/', express.static('uploads'))
 

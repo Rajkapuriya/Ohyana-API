@@ -369,7 +369,12 @@ exports.getBusinessCardDetail = async (req, res) => {
 exports.deleteBusinessCard = async (req, res) => {
   await Client.destroy({ where: { id: req.params.id } })
 
-  // if (!client || req.user.role.permission.clientStageAccess === null || client.stage > req.user.role.permission.clientStageAccess) return res.status(403).json({ error: 'Invalid Stage Access' })
+  // if (
+  //   !client ||
+  //   req.user.role.permission.clientStageAccess === null ||
+  //   client.stage > req.user.role.permission.clientStageAccess
+  // )
+  //   return forbiddenRequestError(res, 'Invalid Stage Access')
 
   return successResponse(res, 'Card Deleted Successfully')
 }

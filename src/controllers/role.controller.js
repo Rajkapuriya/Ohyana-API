@@ -159,7 +159,7 @@ exports.getPermissions = async (req, res) => {
     }),
   ])
 
-  return res.json({
+  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, {
     permissions: permission,
     roleExpense: roleExpenseRule,
     expensePolicies,
@@ -167,15 +167,15 @@ exports.getPermissions = async (req, res) => {
 }
 
 exports.updateRolePermissions = async (req, res) => {
+  const { roleId } = req.body
+
+  await Permission.update({ roleId, ...req.body }, { where: { roleId } })
+
+  return successResponse(res, 'Permission Updated Successfully')
+}
+
+exports.updateExpensePermissions = async (req, res) => {
   const { roleId, expensePolicies } = req.body
-  const permissions = await Permission.update(
-    { roleId, ...req.body },
-    { where: { roleId } },
-  )
-  // if (permissions) {
-  //     const team = await Team.findOne({ where: { id: teamId }, attributes: ['email'] })
-  //     io.getIO().to(team.email).emit('permissionChanged', `Permission Changes For ${team.email}`);
-  // }
 
   if (expensePolicies.length > 0) {
     const policies = expensePolicies.map(e => {
@@ -191,26 +191,5 @@ exports.updateRolePermissions = async (req, res) => {
     })
   }
 
-  return res.json({ message: 'Permission Updated Successfully' })
-}
-
-exports.updateExpensePermissions = async (req, res) => {
-  // const { roleId, expenseId, amount } = req.body
-
-  await Role_Expense_Permissions.upsert(req.body)
-  // if (expensePolicies.length > 0) {
-  //   const policies = expensePolicies.map(e => {
-  //     return { expenseId: e.id, roleId, amount: e.amount, status: 'active' }
-  //   })
-
-  //   await Role_Expense_Permissions.update(
-  //     { status: 'inactive' },
-  //     { where: { roleId } },
-  //   )
-  //   await Role_Expense_Permissions.bulkCreate(policies, {
-  //     updateOnDuplicate: ['amount', 'status'],
-  //   })
-  // }
-
-  return res.json({ message: 'Permission Updated Successfully' })
+  return successResponse(res, 'Expense Permission Updated Successfully')
 }
