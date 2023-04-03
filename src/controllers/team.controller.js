@@ -1,0 +1,609 @@
+const {
+  Team,
+  Role,
+  Department,
+  Team_Expense,
+  Attendance,
+  Client,
+  Client_Status,
+  Target,
+  Team_Location_History,
+} = require('../models')
+const sequelize = require('../database/mysql')
+const encrp = require('../utils/encrp-function.util')
+const crypto = require('crypto')
+const { uploadFileToS3, deleteFileFromS3 } = require('../helpers/s3.helper')
+const fs = require('fs')
+const { ENCRYP_CONFIG } = require('../config/encryp.config')
+const { Op, QueryTypes, where } = require('sequelize')
+const {
+  successResponse,
+  forbiddenRequestError,
+  notFoundError,
+  badRequestError,
+} = require('../utils/response.util')
+const { MESSAGE } = require('../constants/message.contant')
+const moment = require('moment')
+
+exports.addTeamMember = async (req, res) => {
+  const { email } = req.body
+  let imgUrl
+  const existedMember = await Team.findOne({
+    where: { email, companyId: req.user.companyId },
+  })
+  if (existedMember) {
+    if (req.file) {
+      unlinkFile(req.file.path)
+    }
+    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+  }
+
+  if (req.file) {
+    const result = await uploadFileToS3(req.file)
+    unlinkFile(req.file.path)
+    imgUrl = result.Key
+  }
+
+  const secret_key = crypto.randomBytes(16)
+  const pass =
+    encrp.encrpPass(secret_key, encrp.encrpPwdKey, encrp.encrpPwdIv) +
+    ENCRYP_CONFIG.SPLIT_SYMBOL +
+    encrp.encrpPass(req.body.password, encrp.encrpPwdKey, encrp.encrpPwdIv)
+  req.body.password = encrp.encrpPass(
+    pass,
+    encrp.encrpMergedPwdKey,
+    encrp.encrpMergedPwdIv,
+  )
+
+  await Team.create({
+    ...req.body,
+    imgUrl: imgUrl,
+    password: req.body.password,
+    companyId: req.user.companyId,
+  })
+
+  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+}
+
+exports.getAllTeamMembers = async (req, res) => {
+  const { roleId, departmentId, admin } = req.query
+
+  const getAdminRoleId = await Role.findOne({
+    attributes: ['id'],
+    where: { parentId: null },
+  })
+
+  let teamWhereCondtion = {
+    attributes: ['id', 'name', 'email', 'location', 'contact_number'],
+    where: {
+      roleId: {
+        [Op.ne]: getAdminRoleId.id,
+      },
+      id: {
+        [Op.ne]: req.user.id,
+      },
+      companyId: req.user.companyId,
+    },
+    include: [
+      { model: Role, attributes: ['name'] },
+      {
+        model: Attendance,
+        required: false,
+        attributes: ['attendanceType'],
+        where: { date: moment() },
+      },
+    ],
+  }
+
+  if (roleId && roleId !== 1 && roleId !== 'null') {
+    teamWhereCondtion.where = { roleId }
+  }
+
+  if (departmentId && departmentId !== 'null') {
+    teamWhereCondtion.where = { departmentId }
+  }
+
+  if (
+    departmentId &&
+    roleId &&
+    departmentId !== 'null' &&
+    roleId !== 'null' &&
+    roleId !== 1
+  ) {
+    teamWhereCondtion.where = { roleId, departmentId }
+  }
+
+  if (admin === 'true') {
+    teamWhereCondtion = {
+      attributes: ['id', 'name'],
+      where: {
+        roleId: { [Op.ne]: getAdminRoleId.id },
+        companyId: req.user.companyId,
+      },
+    }
+  }
+
+  const team = await Team.findAll(teamWhereCondtion)
+
+  if (team.length === 0) return notFoundError(res)
+
+  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, team)
+}
+
+exports.getSingleMember = async (req, res) => {
+  const member = await Team.findOne({
+    attributes: [
+      'id',
+      'name',
+      'imgUrl',
+      'email',
+      'contact_number',
+      'gender',
+      'password',
+      'birthDay',
+      'rating',
+    ],
+    where: {
+      id: req.params.id,
+    },
+    include: [
+      {
+        model: Role,
+        attributes: ['id', 'name'],
+      },
+      {
+        model: Department,
+        attributes: ['id', 'name'],
+      },
+    ],
+  })
+  if (member) member.password = gtPass(member.password)
+
+  if (!member) return notFoundError(res)
+
+  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, member)
+}
+
+exports.getProfile = async (req, res) => {
+  const member = await Team.findOne({
+    attributes: [
+      'id',
+      'imgUrl',
+      'name',
+      'email',
+      'contact_number',
+      'city',
+      'state',
+      'pincode',
+      'password',
+      'gender',
+      'birthDay',
+    ],
+    where: {
+      id: req.user.id,
+    },
+    include: [
+      {
+        model: Role,
+        attributes: ['name'],
+      },
+    ],
+  })
+
+  if (member) member.password = gtPass(member.password)
+
+  if (!member) return notFoundError(res)
+
+  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, member)
+}
+
+exports.updateTeamMemberDetails = async (req, res) => {
+  const member = await Team.findOne({ where: { id: req.params.id } })
+  let imgUrl
+  const secret_key = crypto.randomBytes(16)
+  const pass =
+    encrp.encrpPass(secret_key, encrp.encrpPwdKey, encrp.encrpPwdIv) +
+    ENCRYP_CONFIG.SPLIT_SYMBOL +
+    encrp.encrpPass(req.body.password, encrp.encrpPwdKey, encrp.encrpPwdIv)
+  req.body.password = encrp.encrpPass(
+    pass,
+    encrp.encrpMergedPwdKey,
+    encrp.encrpMergedPwdIv,
+  )
+  if (req.file) {
+    const result = await uploadFileToS3(req.file)
+    imgUrl = result.Key
+    await deleteFileFromS3(member.imgUrl)
+    unlinkFile(req.file.path)
+  }
+
+  const updatedMember = await member.update({
+    ...req.body,
+    imgUrl,
+    password: req.body.password,
+  })
+  return successResponse(
+    res,
+    MESSAGE.RECORD_UPDATED_SUCCESSFULLY,
+    updatedMember,
+  )
+}
+
+exports.updateAdminProfile = async (req, res) => {
+  const member = await Team.findOne({ where: { id: req.user.id } })
+  let imgUrl
+  const secret_key = crypto.randomBytes(16)
+  const pass =
+    encrp.encrpPass(secret_key, encrp.encrpPwdKey, encrp.encrpPwdIv) +
+    ENCRYP_CONFIG.SPLIT_SYMBOL +
+    encrp.encrpPass(req.body.password, encrp.encrpPwdKey, encrp.encrpPwdIv)
+  req.body.password = encrp.encrpPass(
+    pass,
+    encrp.encrpMergedPwdKey,
+    encrp.encrpMergedPwdIv,
+  )
+
+  if (req.file === undefined) {
+    if (member.imgUrl) {
+      await deleteFileFromS3(member.imgUrl)
+    }
+    imgUrl = null
+  } else {
+    const result = await uploadFileToS3(req.file)
+    imgUrl = result.Key
+    await deleteFileFromS3(member.imgUrl)
+    unlinkFile(req.file.path)
+  }
+
+  const updatedMember = await member.update({
+    imgUrl,
+    password: req.body.password,
+  })
+  return successResponse(
+    res,
+    MESSAGE.RECORD_UPDATED_SUCCESSFULLY,
+    updatedMember,
+  )
+}
+
+exports.verfifyAndUpdateFirebaseToken = async (req, res) => {
+  const { deviceToken } = req.body
+
+  const teamMember = await Team.findOne({
+    attributes: ['id', 'deviceToken'],
+    where: { id: req.user.id },
+  })
+
+  if (teamMember.deviceToken !== deviceToken) {
+    await teamMember.update({ deviceToken })
+  }
+  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+}
+
+exports.saveLocation = async (req, res) => {
+  const { latitude, longitude } = req.body
+
+  console.log(`location: ${latitude},${longitude}`)
+  // await Team.update(
+  //   { location: `${latitude},${longitude}` },
+  //   { where: { id: req.user.id } },
+  // )
+
+  // await Team_Location_History.create({
+  //   teamId: req.user.id,
+  //   latitude,
+  //   longitude,
+  //   date: moment(),
+  // })
+
+  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+}
+
+exports.addExpense = async (req, res) => {
+  let fileName
+
+  if (req.file) {
+    fileName = req.file.filename
+  }
+
+  await Team_Expense.create({
+    ...req.body,
+    payment_status: 'PENDING',
+    status: 'PENDING',
+    teamId: req.user.id,
+    file: fileName,
+  })
+
+  return successResponse(res, 'Expense Added Successfully')
+}
+
+exports.getExpense = async (req, res) => {
+  const { month, year, teamId } = req.query
+
+  let whereCondition = 'te.teamId = :teamId'
+
+  if (month && month != 0 && year && year != 0) {
+    whereCondition += ' AND MONTH(te.date) = :month AND YEAR(te.date) = :year'
+  }
+
+  const [expenses, expenseCount] = await Promise.all([
+    sequelize.query(
+      `
+        SELECT 
+            *,
+            te.id as id
+        FROM
+            team_expenses AS te
+        INNER JOIN 
+            expenses AS e
+        ON
+            te.expenseId = e.id
+        WHERE
+            ${whereCondition}
+        `,
+      {
+        replacements: {
+          teamId: teamId ?? req.user.id,
+          month: month,
+          year: year,
+        },
+        type: QueryTypes.SELECT,
+      },
+    ),
+    sequelize.query(
+      `
+        SELECT 
+            *
+        FROM
+            team_expenses AS te
+        INNER JOIN 
+            expenses AS e
+        ON
+            te.expenseId = e.id
+        WHERE
+            te.teamId = :teamId
+        `,
+      {
+        replacements: {
+          teamId: teamId ?? req.user.id,
+        },
+        type: QueryTypes.SELECT,
+      },
+    ),
+  ])
+
+  if (expenses.length == 0) return notFoundError(res)
+
+  const response = {
+    approved: 0,
+    rejected: 0,
+    pending: 0,
+    paymentDone: 0,
+    expenses,
+  }
+  expenseCount.map(e => {
+    if (e.payment_status == 'DONE') {
+      response.paymentDone += e.amount
+    }
+    if (e.status == 'APPROVED') {
+      response.approved += e.amount
+    }
+    if (e.status == 'REJECTED') {
+      response.rejected += e.amount
+    }
+    if (e.status == 'PENDING') {
+      response.pending += e.amount
+    }
+  })
+
+  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, response)
+}
+
+exports.approveExpense = async (req, res) => {
+  const { description, amount, teamExpenseid } = req.body
+
+  const updateBody = {
+    approvalAmount: amount,
+    aprroval_description: description,
+    status: 'APPROVED',
+    aprrovalBy: req.user.name,
+  }
+
+  const existedExpense = await Team_Expense.findOne({
+    where: { id: teamExpenseid },
+  })
+  if (!existedExpense) return notFoundError(res)
+
+  if (amount === 0) {
+    updateBody.status = 'REJECTED'
+  }
+
+  const expenses = await existedExpense.update(updateBody)
+  return successResponse(res, 'Expense Updated', expenses)
+}
+
+exports.approveExpensePayment = async (req, res) => {
+  const updateBody = { payment_status: req.body.status }
+
+  const existedExpense = await Team_Expense.findOne({
+    where: { id: req.body.teamExpenseid },
+  })
+  if (!existedExpense) return notFoundError(res)
+
+  if (existedExpense.status === 'REJECTED')
+    return badRequestError(res, 'This Expense is Rejected')
+
+  const expenses = await existedExpense.update(updateBody)
+
+  return successResponse(res, 'Expense Updated', expenses)
+}
+
+exports.getTeamLeaderBoardDetails = async (req, res) => {
+  const { id } = req.params
+
+  const response = {
+    currentMonthAttendance: {
+      totalPresent: 0,
+      totalLate: 0,
+      totalAbsent: 0,
+    },
+    currentMonthExpense: {
+      approvedExpense: 0,
+      pendingExpense: 0,
+      rejectedExpense: 0,
+    },
+    currentMonthClients: {
+      total: 0,
+      attend: 0,
+      avgResponseTime: 0,
+    },
+    currentMonthTarget: {
+      totalDays: 0,
+      targetOrder: 0,
+      achieved: 0,
+    },
+  }
+
+  response.memberDetail = await Team.findOne({
+    attributes: ['id', 'name', 'imgUrl', 'contact_number', 'email', 'location'],
+    where: { id },
+    include: {
+      model: Role,
+      attributes: ['name'],
+      where: {
+        parentId: {
+          [Op.ne]: null,
+        },
+      },
+    },
+  })
+  if (!response.memberDetail) return notFoundError(res)
+
+  const currentMonth = moment().format('M')
+  const teamMemberAttendance = await Attendance.findAll({
+    attributes: ['id', 'date', 'attendanceType'],
+    where: {
+      teamId: id,
+      attendanceType: {
+        [Op.ne]: 'L',
+      },
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('date')),
+          currentMonth,
+        ),
+      ],
+    },
+  })
+
+  const teamMemberExpense = await Team_Expense.findAll({
+    attributes: ['id', 'approvalAmount', 'amount', 'status'],
+    where: {
+      teamId: id,
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('date')),
+          currentMonth,
+        ),
+      ],
+    },
+  })
+
+  const allClients = await Client.findAll({
+    attributes: ['id', 'arrivalDate', 'teamId'],
+    where: {
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('arrivalDate')),
+          currentMonth,
+        ),
+      ],
+    },
+  })
+
+  const targets = await Target.findOne({
+    attributes: ['id', 'period', 'target', 'achieve'],
+    where: {
+      type: 1, // 1 = take order
+      teamId: id,
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('endDate')),
+          currentMonth,
+        ),
+      ],
+    },
+    order: [['endDate', 'DESC']],
+  })
+
+  response.currentMonthTarget.totalDays = (targets && targets.period) || 0
+  response.currentMonthTarget.targetOrder =
+    (targets && targets.targetOrder) || 0
+  response.currentMonthTarget.achieved = (targets && targets.achieved) || 0
+
+  response.currentMonthClients.total = allClients.length
+  const handledClients = allClients.filter(e => e.teamId === id)
+  response.currentMonthClients.attend = handledClients.length
+
+  const clientsAllStatuses = await Client_Status.findAll({
+    attributes: ['createdAt', 'clientId', 'teamId'],
+    where: {
+      clientId: handledClients.map(e => e.id),
+      teamId: id,
+    },
+    group: ['clientId'],
+  })
+
+  let clientsResponseTime = 0
+
+  handledClients.forEach(client => {
+    const clientStatuses = clientsAllStatuses.find(
+      e => e.clientId === client.id,
+    )
+    if (clientStatuses) {
+      const timeDiff =
+        moment(clientsAllStatuses.time, 'HH:mm:ss').diff(
+          moment(client.arrivalTime, 'HH:mm:ss'),
+        ) || 0
+      clientsResponseTime += timeDiff
+    }
+  })
+
+  response.currentMonthClients.avgResponseTime =
+    clientsResponseTime / response.currentMonthClients.attend / 1000 / 60 || 0
+
+  teamMemberAttendance.forEach(e => {
+    if (e.attendanceType === 'LT') {
+      response.currentMonthAttendance.totalLate++
+    } else if (e.attendanceType === 'A') {
+      response.currentMonthAttendance.totalAbsent++
+    } else if (e.attendanceType === 'P') {
+      response.currentMonthAttendance.totalPresent++
+    }
+  })
+
+  teamMemberExpense.forEach(e => {
+    if (e.status === 'REJECTED') {
+      response.currentMonthExpense.rejectedExpense += e.amount
+    } else if (e.status === 'APPROVED') {
+      response.currentMonthExpense.approvedExpense += e.approvalAmount
+    } else if (e.status === 'PENDING') {
+      response.currentMonthExpense.pendingExpense += e.amount
+    }
+  })
+
+  return successResponse(res, 'Expense Updated', response)
+}
+
+function unlinkFile(path) {
+  fs.unlink(path, err => {
+    console.log(err)
+  })
+}
+
+function gtPass(password) {
+  const encrpMergedPass = encrp
+    .dcrpPass(password, encrp.encrpMergedPwdKey, encrp.encrpMergedPwdIv)
+    .split(ENCRYP_CONFIG.SPLIT_SYMBOL)
+  return encrp.dcrpPass(encrpMergedPass[1], encrp.encrpPwdKey, encrp.encrpPwdIv)
+}

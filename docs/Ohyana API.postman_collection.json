@@ -1,0 +1,5102 @@
+{
+	"info": {
+		"_postman_id": "c3fc31e0-94cb-4e09-a89a-d7b23e86e7af",
+		"name": "Ohyana API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13975886"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"ericlefkofsky@gmail.com\",\r\n    \"password\" : \"eric@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login for Admin and Team Member With given Body"
+					},
+					"response": []
+				},
+				{
+					"name": "Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Jayesh Vagadiya\",\r\n    \"email\": \"jaysds@tmail.com\",\r\n    \"password\" : \"jay@123\",\r\n    \"companyName\" : \"Jay Enterprize\",\r\n    \"contact_number\" : \"935251514\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"register"
+							]
+						},
+						"description": "Dealer Registration In Our System"
+					},
+					"response": []
+				},
+				{
+					"name": "Dealer Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"jaysds@tmail.com\",\r\n    \"password\" : \"jay@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dealer/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer",
+								"login"
+							]
+						},
+						"description": "Login For Dealer"
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"ericlefkofsky@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"forgot-password"
+							]
+						},
+						"description": "Forgot Password For Admin And Team Members of Company"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\" : \"eric@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJlcmljbGVma29mc2t5QGdtYWlsLmNvbSIsImlhdCI6MTY2MTE0OTY1MCwiZXhwIjoxNjYxMTUwMjUwfQ.sfXl9u_XmmeULSbtHgk_ZFvu9yiHg5mRM_v0L8aHWJY",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reset-password",
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJlcmljbGVma29mc2t5QGdtYWlsLmNvbSIsImlhdCI6MTY2MTE0OTY1MCwiZXhwIjoxNjYxMTUwMjUwfQ.sfXl9u_XmmeULSbtHgk_ZFvu9yiHg5mRM_v0L8aHWJY"
+							]
+						},
+						"description": "Change Password For Admin and Company Team Members"
+					},
+					"response": []
+				},
+				{
+					"name": "Dealer Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Jayesh Vagadiya\",\r\n    \"email\": \"jaysds@tmail.com\",\r\n    \"password\" : \"jay@123\",\r\n    \"companyName\" : \"Jay Enterprize\",\r\n    \"contact_number\" : \"935251514\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dealer/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer",
+								"register"
+							]
+						},
+						"description": "Dealer Registration In Our System"
+					},
+					"response": []
+				},
+				{
+					"name": "Sent OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"jenishshekhaliya@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/otp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"otp"
+							]
+						},
+						"description": "Sent Otp to given Email For Verifcation"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"jenishshekhaliya@gmail.com\",\r\n    \"otp\" : \"784749\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"verify"
+							]
+						},
+						"description": "Verify Otp with email address to verify otp"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Department",
+			"item": [
+				{
+					"name": "Create Department",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/department/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"department",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Departments",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/department/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"department",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Department Name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/department/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"department",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Department",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/department/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"department",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Roles",
+			"item": [
+				{
+					"name": "Create Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Product Manager\",\r\n    \"description\" : \"lorem ipsum\",\r\n    \"departmentId\" : 1,\r\n    \"clockIn\" : \"8:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Here PresentedAt is time stamp of office time as per that role"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Role Per Department",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/role?departmentId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role"
+							],
+							"query": [
+								{
+									"key": "departmentId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "If department Id is given in query than response has all role per department otherwise it give all roles of the system"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/role/detail?roleId=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role",
+								"detail"
+							],
+							"query": [
+								{
+									"key": "roleId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "If department Id is given in query than response has all role per department otherwise it give all roles of the system"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Prod Manager\",\r\n    \"description\": \"lorem ipsum\",\r\n    \"departmentId\": 1,\r\n    \"clockIn\": \"8:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/role/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/role/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"role",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Here PresentedAt is time stamp of office time as per that role"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Bagasse Plates Making Machine\",\r\n    \"price\": 50,\r\n    \"quantity\": 50,\r\n    \"weight\": \"25Kg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product"
+							]
+						},
+						"description": "StartFragment\n\n Extra Fields in body   \n\n\"materialType\": \"\",    \"skuId\": \"\",    \"description\":\"\"\n\nEndFragment"
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Products",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Product Detail",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Bagasse Plates Making Machine\",\r\n    \"price\": 50,\r\n    \"quantity\": 50,\r\n    \"weight\": \"25Kg\",\r\n    \"materialType\": null,\r\n    \"skuId\": \"null\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Quantity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Bagasse Tableware Making Machine\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Team Member",
+			"item": [
+				{
+					"name": "Attendance",
+					"item": [
+						{
+							"name": "Attendance",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/attendance?checkOut=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"attendance"
+									],
+									"query": [
+										{
+											"key": "breakIn",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "breakOut",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "checkIn",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "checkOut",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Attendance Per User",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/attendance",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"attendance"
+									],
+									"query": [
+										{
+											"key": "clientId",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "teamId",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "year",
+											"value": "2022",
+											"disabled": true
+										},
+										{
+											"key": "attendanceType",
+											"value": "All",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								},
+								"description": "if profile is true than attendance is for login user otherwise for others"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Attendance of All Users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/attendance-all?month=10&year=2022",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"attendance-all"
+									],
+									"query": [
+										{
+											"key": "month",
+											"value": "10"
+										},
+										{
+											"key": "year",
+											"value": "2022"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Leave",
+					"item": [
+						{
+							"name": "Leave Per User",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"teamId\" : 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/leave?teamId=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"leave"
+									],
+									"query": [
+										{
+											"key": "month",
+											"value": "9",
+											"disabled": true
+										},
+										{
+											"key": "year",
+											"value": "2022",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "REJECTED",
+											"disabled": true
+										},
+										{
+											"key": "profile",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "teamId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grant Leave",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/grant/leave/22?isApproved=false",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"grant",
+										"leave",
+										"22"
+									],
+									"query": [
+										{
+											"key": "isApproved",
+											"value": "false"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Apply For Leave",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"duration\" : \"2023-09-29\",\r\n    \"leavetypeId\" : 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/apply/leave",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"apply",
+										"leave"
+									]
+								},
+								"description": "Here leaveId is for id of leaveType like SICK,EMERGANCY"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Expense",
+					"item": [
+						{
+							"name": "Add Expense",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"date\": \"2023-10-05\",\r\n    \"expenseId\": 1,\r\n    \"amount\": 100\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/team/expense",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"team",
+										"expense"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get ALL Expense",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/team/expense",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"team",
+										"expense"
+									],
+									"query": [
+										{
+											"key": "profile",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "teamId",
+											"value": "2",
+											"disabled": true
+										},
+										{
+											"key": "month",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Here in query params me=true for my expense and teamId={Id} for another team member"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Role Expense Rule",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/expense/role?roleId=1&expenseId=1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"expense",
+										"role"
+									],
+									"query": [
+										{
+											"key": "roleId",
+											"value": "1"
+										},
+										{
+											"key": "expenseId",
+											"value": "1"
+										}
+									]
+								},
+								"description": "Here in query params me=true for my expense and teamId={Id} for another team member"
+							},
+							"response": []
+						},
+						{
+							"name": "Approve Expense",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 500,\r\n    \"description\": \"sdfasdfafaf\",\r\n    \"teamExpenseid\" : 3\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/team/approve/expense",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"team",
+										"approve",
+										"expense"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Approve Expense Payment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"teamExpenseid\": 3,\r\n    \"status\": \"DONE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/team/approve/expense/payment",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"team",
+										"approve",
+										"expense",
+										"payment"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add Member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Marco Polo",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "marcopolo@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "marco@123",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/jenis/Downloads/Screenshot 2023-01-12 122458.png"
+								},
+								{
+									"key": "roleId",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "departmentId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "contact_number",
+									"value": " ",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Male",
+									"type": "text"
+								},
+								{
+									"key": "birthDay",
+									"value": "1999-02-20",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Rajkot",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "Gujarat",
+									"type": "text"
+								},
+								{
+									"key": "pincode",
+									"value": "123321",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/member",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"member"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": \"22.308155\",\r\n    \"longitude\": \"70.800705\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/member/location",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"member",
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Marco Polo",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "marcopolo@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "marco@123",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/DELL/Downloads/main slider.png"
+								},
+								{
+									"key": "roleId",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "departmentId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "contact_number",
+									"value": " ",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Male",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Rajkot",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "Gujarat",
+									"type": "text"
+								},
+								{
+									"key": "pincode",
+									"value": "123654",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/member/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"member",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Team Members",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/member",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"member"
+							],
+							"query": [
+								{
+									"key": "departmentId",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "roleId",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "admin",
+									"value": "true",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Team Member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/member/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"member",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Marco Polo",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "marcopolo@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "marco@123",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/DELL/Downloads/main slider.png"
+								},
+								{
+									"key": "roleId",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "departmentId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "contact_number",
+									"value": " ",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "Male",
+									"type": "text"
+								},
+								{
+									"key": "birthday",
+									"value": "1999-02-20",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/image/member/20220529T132650417Zbenedict-cumberbatch-2022-baftas-getty.jpg",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"image",
+								"member",
+								"20220529T132650417Zbenedict-cumberbatch-2022-baftas-getty.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Permissions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/permissions/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleId\": 1,\r\n    \"clientMenu\": true,\r\n    \"viewClient\": true,\r\n    \"editClient\": true,\r\n    \"deleteClient\": true,\r\n    \"staffMenu\": true,\r\n    \"viewStaff\": true,\r\n    \"editStaff\": true,\r\n    \"deleteStaff\": true,\r\n    \"settingMenu\": true,\r\n    \"viewDepartment\": true,\r\n    \"editDepartment\": true,\r\n    \"editRole\": true,\r\n    \"deleteRole\": true,\r\n    \"deleteDepartment\": true,\r\n    \"viewProduct\": true,\r\n    \"editProduct\": true,\r\n    \"deleteProduct\": true,\r\n    \"accessClient\": true,\r\n    \"accessStaff\": true,\r\n    \"accessSetting\": true,\r\n    \"clientStageAccess\": 5,\r\n    \"expensePolicies\": [\r\n        {\r\n            \"id\": 1,\r\n            \"amount\": 500\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"amount\": 350\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dealer",
+			"item": [
+				{
+					"name": "Dealer Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dealer/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Order Summary Of Dealer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dealer/order/:dealerId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer",
+								"order",
+								":dealerId"
+							],
+							"variable": [
+								{
+									"key": "dealerId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Item of Particular Order  of Dealer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dealer/order-items/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer",
+								"order-items",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products of Company For Dealer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dealer/products/:companyId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer",
+								"products",
+								":companyId"
+							],
+							"variable": [
+								{
+									"key": "companyId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Dealer Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"jayesh\",\r\n    \"email\" : \"email@gmail.com\",\r\n    \"contact_number\" : \"968532174\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dealer/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "Status",
+					"item": [
+						{
+							"name": "Add Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "description",
+											"value": "loremu ipsum",
+											"type": "text"
+										},
+										{
+											"key": "clientId",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "audio",
+											"type": "file",
+											"src": "/C:/Users/DELL/Downloads/edb956a7-9fe7-4458-83cc-95b9788be0f0.mp3"
+										},
+										{
+											"key": "callNotReceived",
+											"value": "true",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/status/client/",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"status",
+										"client",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Client's All Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/status/client/109",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"status",
+										"client",
+										"109"
+									],
+									"query": [
+										{
+											"key": "profile",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "clientId",
+											"value": "109",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"statusId\" : 2,\r\n    \"description\" : \"lorem ipsum\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/status/client",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"status",
+										"client"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Appointment",
+					"item": [
+						{
+							"name": "Create Appointment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\" : \"appointment emerge\",\r\n    \"appointment_unit\" : \"plant\",\r\n    \"date\" : \"2022-05-11\",\r\n    \"time\" : \"16:04:17\",\r\n    \"appointed_member\" : [1],\r\n    \"clientId\" : 519\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointment/client",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointment",
+										"client"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Client's All Appointments",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/appointment/client/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointment",
+										"client",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Appointment Settings",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\" : \"appointment emerge\",\r\n    \"appointment_unit\" : \"plant\",\r\n    \"date\" : \"2022-05-11\",\r\n    \"time\" : \"16:04:17\",\r\n    \"appointed_member\" : [1],\r\n    \"appointmentId\" : 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/appointment/client",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointment",
+										"client"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Reminder",
+					"item": [
+						{
+							"name": "Create Reminder",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\" : \"today call\",\r\n    \"date\" : \"2022-07-02\",\r\n    \"time\" : \"14:49:17\",\r\n    \"clientId\" : 388 \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/reminder/client",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reminder",
+										"client"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Client's All Reminders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/reminder/client/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reminder",
+										"client",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Reminder Settings",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\" : \"today call\",\r\n    \"date\" : \"2022-07-02\",\r\n    \"time\" : \"14:49:17\",\r\n    \"clientId\" : 388 \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/reminder/client",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reminder",
+										"client"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Business Card",
+					"item": [
+						{
+							"name": "Add Business Card",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/jenis/OneDrive/Documents/1.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/businesscard",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"businesscard"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Business Card Detail",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/businesscard/130",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"businesscard",
+										"130"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Business Card",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/businesscard/130",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"businesscard",
+										"130"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add Client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"RDJ19\",\r\n    \"reference\": \"OTHER\",\r\n    \"reference_name\": \"Other\",\r\n    \"business\": \"Avengers Association\",\r\n    \"contact_number\": \"+91-95117566026\",\r\n    \"client_type\": \"true\",\r\n    \"countryId\": 2,\r\n    \"city\": \"Rajkot\",\r\n    \"state\": \"Gujarat\",\r\n    \"address\": \"RK Empire 250,150 Feer Ring Road Rajkot\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/client",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"client"
+							]
+						},
+						"description": "Here Name, Contact Number, Products are compulsary\n\ncontact_number of email one of these compulsary"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Stage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"stage\" : 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stage/client/109",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stage",
+								"client",
+								"109"
+							]
+						},
+						"description": "Here Name, Contact Number, Products are compulsary"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Clients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clients"
+							],
+							"query": [
+								{
+									"key": "stage",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "MACHINE",
+									"disabled": true
+								},
+								{
+									"key": "pjp",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "businessCard",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "forMobile",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "teamId",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/client/109",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"client",
+								"109"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File From Server",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/file/:path",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"file",
+								":path"
+							],
+							"variable": [
+								{
+									"key": "path",
+									"value": "274b16e2-a802-4464-9fef-6ec8ba3783db.png"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"RDJ19\",\r\n    \"email\": \"robertdj19@gmail.com\",\r\n    \"reference\": \"INDIAMART\",\r\n    \"reference_name\": \"Other\",\r\n    \"business\": \"Avengers Association\",\r\n    \"contact_number\": \"+91-95119566026\",\r\n    \"client_type\": \"true\",\r\n    \"countryId\": 2,\r\n    \"city\": \"Rajkot\",\r\n    \"state\": \"Gujarat\",\r\n    \"address\": \"RK Empire 250,150 Feer Ring Road Rajkot\",\r\n    \"memberId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/client/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"client",
+								"1"
+							]
+						},
+						"description": "StartFragment\n\nHere Name, Contact Number, Products are compulsary\n\nEndFragment"
+					},
+					"response": []
+				},
+				{
+					"name": "Take Client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/take/client/:clientId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"take",
+								"client",
+								":clientId"
+							],
+							"variable": [
+								{
+									"key": "clientId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Client",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/client/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"client",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Appointment or Reminder",
+			"item": [
+				{
+					"name": "Create Appointment or Reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"heading\": \"heading\",\r\n    \"description\": \"description\",\r\n    \"date\": \"2023-01-26\",\r\n    \"time\": \"15:50:17\",\r\n    \"type\": \"APPOINTMENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/appointment-reminder",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"appointment-reminder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Appointment or Reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointment-reminder?type=APPOINTMENT",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"appointment-reminder"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "APPOINTMENT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Appointment or Reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"heading\": \"heading\",\r\n    \"description\": \"description\",\r\n    \"date\": \"2022-07-26\",\r\n    \"time\": \"15:50:17\",\r\n    \"type\": \"APPOINTMENT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/appointment-reminder/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"appointment-reminder",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Appointment or Reminder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointment-reminder/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"appointment-reminder",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Create Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"lorem ipsum\",\r\n    \"heading\": \"Heading\",\r\n    \"type\": \"NOTICE\",\r\n    \"roleId\": 1,\r\n    \"departmentId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/notification",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notification?sent=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification"
+							],
+							"query": [
+								{
+									"key": "sent",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Here if query params sent is true then response will be notifications sent by me otherwise by all."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Company",
+			"item": [
+				{
+					"name": "Update Company Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Groupon\",\r\n    \"crmKey\": \"dfadfsfaf\",\r\n    \"email\": \"info@groupon.com\",\r\n    \"city\": \"Rajkot\",\r\n    \"state\": \"Gujarat\",\r\n    \"GSTIN\": \"24ABCXESCEDSS\",\r\n    \"countryId\": 99,\r\n    \"businessType\": \"Food\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/company",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"company"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Dealer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\" : \"JAY935251\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/company/dealer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"company",
+								"dealer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Dealers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/dealer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dealer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Company Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/company",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"company"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Points",
+			"item": [
+				{
+					"name": "Get Point of Team Member",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/points?size=2&year=2022&month=12&page=1&teamId=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"points"
+							],
+							"query": [
+								{
+									"key": "profile",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "2"
+								},
+								{
+									"key": "year",
+									"value": "2022"
+								},
+								{
+									"key": "month",
+									"value": "12"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "teamId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Point Rules",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/points/rules",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"points",
+								"rules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Give Appreciation Point",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/appreciation/points/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"appreciation",
+								"points",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						},
+						"description": ":id is teamId"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leave",
+			"item": [
+				{
+					"name": "Create Leave Type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\" : \"Paid Leave\",\r\n    \"duration\" : 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/leave",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leave"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Leave Type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\" : \"Emergency\",\r\n    \"duration\" : 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/leave/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leave",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Leave Type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/leave",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leave"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Leave Type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/leave/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"leave",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PJP",
+			"item": [
+				{
+					"name": "Create PJP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\" : \"2023-10-05\",\r\n    \"latitude\":\"22.254062\",\r\n    \"longitude\" : \"70.789391\",\r\n    \"clientId\" : 10,\r\n    \"description\" : \"lorem ipsum\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pjp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pjp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ALL PJP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pjp?teamId=2&day=TODAY",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pjp"
+							],
+							"query": [
+								{
+									"key": "statusType",
+									"value": "UPCOMING",
+									"disabled": true
+								},
+								{
+									"key": "date",
+									"value": "2022-09-30",
+									"disabled": true
+								},
+								{
+									"key": "teamId",
+									"value": "2"
+								},
+								{
+									"key": "day",
+									"value": "TODAY"
+								},
+								{
+									"key": "clientId",
+									"value": "109",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get PJP Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pjp/16?teamId=2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pjp",
+								"16"
+							],
+							"query": [
+								{
+									"key": "statusType",
+									"value": "UPCOMING",
+									"disabled": true
+								},
+								{
+									"key": "date",
+									"value": "2022-09-30",
+									"disabled": true
+								},
+								{
+									"key": "teamId",
+									"value": "2"
+								},
+								{
+									"key": "day",
+									"value": "TODAY",
+									"disabled": true
+								},
+								{
+									"key": "clientId",
+									"value": "109",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete PJP Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Complete And Buy Some Product\",\r\n    \"status\": \"COMPLETED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/complete/pjp/13",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"complete",
+								"pjp",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add PJP Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Complete And Buy Some Product\",\r\n    \"followUpType\": \"FIELD\",\r\n    \"clientId\" : 109\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/status/pjp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"status",
+								"pjp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All PJP Status (DEPRECATED)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/status/pjp?clientId=109",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"status",
+								"pjp"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "109"
+								},
+								{
+									"key": "followUpType",
+									"value": "CALL",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders & Carts",
+			"item": [
+				{
+					"name": "Add To Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\" : 4,\r\n    \"quantity\" : 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/addtocart",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"addtocart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/placeorder/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"placeorder",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Payment Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"CONFIRMED\",\r\n    \"method\": \"UPI\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Cart Items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cart/items",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Order Summary",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders?clientId=109",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "all",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "clientId",
+									"value": "109"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Item of Particular Order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orderitems/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orderitems",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Create Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"title\" : \"Create Task\",\r\n   \"description\" : \"lorem ipsum\",\r\n   \"due_date\" : \"2022-12-1 15:30:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/task/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"task",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Task",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Jayesh Vagadiya\",\r\n    \"email\": \"jay@tmail.com\",\r\n    \"password\" : \"jay@123\",\r\n    \"companyName\" : \"Jay Enterprize\",\r\n    \"contact_number\" : \"93685251514\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tasks",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Member for Perticular Task (Done)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/task/1/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"task",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Title Of Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\" : \"title\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/title/task/:taskId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"title",
+								"task",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Description Of Task Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"desa9ip6ion\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/description/task/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"description",
+								"task",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/task/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"task",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Checklist to Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"task\": \"First Time Added\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/checklist/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"checklist",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Checklist of Perticular Task",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Jayesh Vagadiya\",\r\n    \"email\": \"jay@tmail.com\",\r\n    \"password\" : \"jay@123\",\r\n    \"companyName\" : \"Jay Enterprize\",\r\n    \"contact_number\" : \"93685251514\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/task/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"task",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Check list item status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/item/checklist/1/4",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"item",
+								"checklist",
+								"1",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Checklist Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Jayesh Vagadiya\",\r\n    \"email\": \"jay@tmail.com\",\r\n    \"password\" : \"jay@123\",\r\n    \"companyName\" : \"Jay Enterprize\",\r\n    \"contact_number\" : \"93685251514\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/item/checklist/:id/:taskId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"item",
+								"checklist",
+								":id",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								},
+								{
+									"key": "taskId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Target",
+			"item": [
+				{
+					"name": "Set Target",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\" : \"Generate Lead\",\r\n    \"period\": 7,\r\n    \"target\" : 100\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/target/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"target",
+								"1"
+							]
+						},
+						"description": "In body :\n\nperiod => in how much days this cycle should repeated\n\ntarget => target to achieve in this period"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Targets of Team Member",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/targets/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"targets",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Complaint",
+			"item": [
+				{
+					"name": "Dealer",
+					"item": [
+						{
+							"name": "Raise Complaint",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"complaintType\" : \"Payment\",\r\n    \"description\": \"dddgfsdgfsgfsgsg\",\r\n    \"companyId\" : 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/dealer/raise/complaint",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealer",
+										"raise",
+										"complaint"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Give Feedback of Complaint",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\": \"dddgfsdgfsgfsgsg\",\r\n    \"feedbackType\" : \"DISLIKED\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/dealer/feedback/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealer",
+										"feedback",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Dealer Compaint",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/dealer/complaint",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealer",
+										"complaint"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Single Complaint of Dealer for Company",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/dealer/complaint/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dealer",
+										"complaint",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Company",
+					"item": [
+						{
+							"name": "Add Status For A Complaint",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\" : \"ffsdfsfs\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/status/complaint/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"status",
+										"complaint",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Compaint for Company",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/complaint",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"complaint"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Single Complaint for Company",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/complaint/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"complaint",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Close Complaint",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\" : \"ffsdfsfs\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/close/complaint/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"close",
+										"complaint",
+										"2"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Holiday",
+			"item": [
+				{
+					"name": "Create Holiday for Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2022-10-6\",\r\n    \"occasion\": \"HOLY\",\r\n    \"duration\": 1,\r\n    \"regular\" : false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/holiday",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"holiday"
+							]
+						},
+						"description": "regular in query params is true if the holiday is LIKE weekly holiday like Sunday or Wednesday"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Holiday for Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/holiday?type=occasional",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"holiday"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "occasional"
+								}
+							]
+						},
+						"description": "Here\n\ntype = regular for regular holidays like Sunday ,Wednesday\n\ntype = occasional for occasional holiday like rakshabandhan"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Holiday Details For Company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2022-10-6\",\r\n    \"occasion\": \"rakshabandhan\",\r\n    \"duration\": 1,\r\n    \"regular\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/holiday/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"holiday",
+								"1"
+							]
+						},
+						"description": "regular in query params is true if the holiday is LIKE weekly holiday like Sunday or Wednesday"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Holiday",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/holiday/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"holiday",
+								"1"
+							]
+						},
+						"description": "regular in query params is true if the holiday is LIKE weekly holiday like Sunday or Wednesday"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Get Inquiry Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/inquiry",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"inquiry"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sales Inquiry Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/sales/inquiry",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboard",
+								"sales",
+								"inquiry"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "Get Product Report",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productIds\" : [1,2],\r\n    \"cities\" : \"Rajkot\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/report/product?period=year-2022&comparison=city",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"report",
+								"product"
+							],
+							"query": [
+								{
+									"key": "period",
+									"value": "year-2022",
+									"description": "For Days : days-7,days-30\nFor Month :  month-sepetember\nFor Year :  year-2023"
+								},
+								{
+									"key": "comparison",
+									"value": "city",
+									"description": "city or product"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Team Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/report/team?comparison=expense&period=days-140",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"report",
+								"team"
+							],
+							"query": [
+								{
+									"key": "comparison",
+									"value": "expense"
+								},
+								{
+									"key": "period",
+									"value": "days-140"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Expense",
+			"item": [
+				{
+					"name": "Create Expense Type",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Other\",\r\n    \"description\" : \"Food Expense\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expense",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"expense"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Expense",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expense",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"expense"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IndiaMartAPI",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://mapi.indiamart.com/wservce/crm/crmListing/v2/?glusr_crm_key=mR22ELtp7X/ETPev5HGD7lqGqlXEnzE=&start_time=21-May-2022&end_time=22-May-2022",
+					"protocol": "https",
+					"host": [
+						"mapi",
+						"indiamart",
+						"com"
+					],
+					"path": [
+						"wservce",
+						"crm",
+						"crmListing",
+						"v2",
+						""
+					],
+					"query": [
+						{
+							"key": "glusr_crm_key",
+							"value": "mR22ELtp7X/ETPev5HGD7lqGqlXEnzE="
+						},
+						{
+							"key": "start_time",
+							"value": "21-May-2022"
+						},
+						{
+							"key": "end_time",
+							"value": "22-May-2022"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Country",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{auth_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/country",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"country"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dummy IndiamartAPI",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/indiamart?crmKey=IkYRAOTk67AR5DBjHRXOf5aveGrOGAV5",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"indiamart"
+					],
+					"query": [
+						{
+							"key": "crmKey",
+							"value": "IkYRAOTk67AR5DBjHRXOf5aveGrOGAV5"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://192.168.1.65:9009",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6MSwiaWF0IjoxNjYxMTU5OTk0fQ._I5XpjvE2l08beDj76QG8_ni9XZkGY7PVFLr4sSg1_Q",
+			"type": "string"
+		}
+	]
+}
