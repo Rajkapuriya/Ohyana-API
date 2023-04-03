@@ -26,6 +26,10 @@ const Role_Expense_Permissions = sequelize.define('role_expense_permissions', {
   amount: {
     type: DataTypes.INTEGER,
   },
+  status: {
+    type: DataTypes.STRING(10),
+    comment: 'active,inactive',
+  },
 })
 
 module.exports = { Role_Expense_Permissions }

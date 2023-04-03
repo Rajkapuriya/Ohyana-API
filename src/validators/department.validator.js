@@ -48,7 +48,6 @@ exports.roleSchema = {
       accessStaff: Joi.boolean().required(),
       accessSetting: Joi.boolean().required(),
       clientStageAccess: Joi.number().required(),
-      expensePolicies: Joi.array().required(),
     }).required(),
   }).unknown(),
 
@@ -69,8 +68,7 @@ exports.roleSchema = {
   updateExpensePermissions: Joi.object({
     body: Joi.object({
       roleId: Joi.number().required(),
-      expenseId: Joi.number().required(),
-      amount: Joi.number().required(),
+      expensePolicies: Joi.array().required(),
     }).required(),
   }).unknown(),
 }
