@@ -33,7 +33,7 @@ const Team_Leave = sequelize.define('team_leave', {
     type: DataTypes.INTEGER,
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     validate: {
       isIn: [['REJECTED', 'APPROVED', 'PENDING']],
     },

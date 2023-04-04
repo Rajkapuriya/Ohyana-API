@@ -39,7 +39,7 @@ const Attendance = sequelize.define(
       type: DataTypes.BIGINT,
     },
     attendanceType: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(5),
       validate: {
         isIn: [['P', 'A', 'L', 'LT']],
       },

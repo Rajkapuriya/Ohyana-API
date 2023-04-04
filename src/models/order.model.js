@@ -17,7 +17,7 @@ const Order = sequelize.define('order', {
     type: DataTypes.INTEGER,
   },
   orderTrackingStatus: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     allowNull: false,
     required: true,
     validate: {
@@ -25,7 +25,7 @@ const Order = sequelize.define('order', {
     },
   },
   paymentStatus: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10),
     allowNull: false,
     required: true,
     validate: {
@@ -33,7 +33,7 @@ const Order = sequelize.define('order', {
     },
   },
   paymentMethod: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     // allowNull: false,
     // required: true,
     validate: {

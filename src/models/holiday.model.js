@@ -15,10 +15,10 @@ const Holiday = sequelize.define('holiday', {
     type: DataTypes.INTEGER,
   },
   occasion: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(25),
   },
   type: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     validate: {
       isIn: [['REGULAR', 'OCCASIONAL']],
     },

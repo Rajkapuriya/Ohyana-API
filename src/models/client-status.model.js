@@ -19,10 +19,10 @@ const Client_Status = sequelize.define('client_status', {
     required: true,
   },
   followUpType: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
   },
   audioUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(80),
   },
 })
 

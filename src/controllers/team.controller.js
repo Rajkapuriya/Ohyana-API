@@ -149,18 +149,26 @@ exports.getSingleMember = async (req, res) => {
     include: [
       {
         model: Role,
-        attributes: ['id', 'name'],
-      },
-      {
-        model: Department,
-        attributes: ['id', 'name'],
+        where: { parentId: { [Op.ne]: null } },
+        attributes: ['id', 'name', 'parentId'],
       },
     ],
   })
-  if (member) member.password = gtPass(member.password)
 
   if (!member) return notFoundError(res)
 
+  if (member && member.role.parentId) {
+    const parentRole = await Role.findOne({
+      attributes: ['id', 'name'],
+      where: { id: member.role.parentId },
+    })
+    member.setDataValue('senior', parentRole)
+  }
+  
+  delete member.dataValues.role.dataValues.parentId
+
+  if (member) member.password = gtPass(member.password)
+  
   return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, member)
 }
 
@@ -185,10 +193,20 @@ exports.getProfile = async (req, res) => {
     include: [
       {
         model: Role,
-        attributes: ['name'],
+        attributes: ['name', 'parentId'],
       },
     ],
   })
+
+  if (member.role.parentId) {
+    const parentRole = await Role.findOne({
+      attributes: ['name'],
+      where: { id: member.role.parentId },
+    })
+    member.setDataValue('senior', parentRole)
+  }
+
+  delete member.dataValues.role.dataValues.parentId
 
   if (member) member.password = gtPass(member.password)
 

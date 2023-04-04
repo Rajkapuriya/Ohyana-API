@@ -26,14 +26,14 @@ const Team_Expense = sequelize.define('team_expense', {
     defaultValue: 0,
   },
   payment_status: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10),
     comment: 'PENDING , DONE',
     validate: {
       isIn: [['PENDING', 'DONE']],
     },
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     comment: 'REJECTED, APPROVED, PENDING',
     validate: {
       isIn: [['REJECTED', 'APPROVED', 'PENDING']],
@@ -46,10 +46,10 @@ const Team_Expense = sequelize.define('team_expense', {
     type: DataTypes.STRING,
   },
   aprrovalBy: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(35),
   },
   file: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(80),
   },
 })
 

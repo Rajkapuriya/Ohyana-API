@@ -10,10 +10,10 @@ const Points = sequelize.define(
       autoIncrement: true,
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(35),
     },
     points: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(4),
       defaultValue: '0',
     },
   },

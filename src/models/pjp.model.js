@@ -16,25 +16,25 @@ const Pjp = sequelize.define(
       type: DataTypes.GEOMETRY('POINT'),
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(35),
     },
     business: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(25),
     },
     contact_number: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(15),
     },
     city: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(20),
     },
     state: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(20),
     },
     status: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(15),
     },
     followUpType: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(15),
     },
     description: {
       type: DataTypes.STRING,

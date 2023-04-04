@@ -292,7 +292,7 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
       where: { teamId: req.user.id },
       include: [{ model: Points, attributes: ['name', 'points'] }],
       order: [['id', 'DESC']],
-      limit: 10,
+      limit: 4,
     }),
     Task.findOne({
       attributes: ['id', 'title', 'due_date', 'description', 'createdBy'],

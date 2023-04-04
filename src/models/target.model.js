@@ -27,7 +27,7 @@ const Target = sequelize.define('target', {
     type: DataTypes.INTEGER,
   },
   state: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10),
     allowNull: false,
     required: true,
     validate: {

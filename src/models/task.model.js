@@ -8,7 +8,7 @@ const Task = sequelize.define('task', {
     autoIncrement: true,
   },
   title: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
     required: true,
   },
@@ -21,7 +21,7 @@ const Task = sequelize.define('task', {
     type: DataTypes.DATEONLY,
   },
   createdBy: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(35),
   },
 })
 

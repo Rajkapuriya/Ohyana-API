@@ -8,12 +8,12 @@ const Notification = sequelize.define('notification', {
     autoIncrement: true,
   },
   heading: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(25),
     allowNull: false,
     required: true,
   },
   attechment: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(80),
   },
   description: {
     type: DataTypes.STRING,
@@ -21,7 +21,7 @@ const Notification = sequelize.define('notification', {
     required: true,
   },
   type: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
     required: true,
     validate: {
@@ -35,7 +35,7 @@ const Notification = sequelize.define('notification', {
     type: DataTypes.INTEGER,
   },
   senderType: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     allowNull: false,
     required: true,
     validate: {

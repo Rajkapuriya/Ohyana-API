@@ -8,10 +8,10 @@ const Client = sequelize.define('client', {
     autoIncrement: true,
   },
   email: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(50),
   },
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(50),
   },
   arrivalDate: {
     type: DataTypes.DATE,
@@ -20,31 +20,31 @@ const Client = sequelize.define('client', {
     type: DataTypes.TIME,
   },
   business: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(100),
   },
   contact_number: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
   },
   imageUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(80),
   },
   address: {
     type: DataTypes.STRING,
   },
   city: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
   },
   state: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
   },
   reference: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
     validate: {
       // isIn: [['INDIAMART', 'WEBSITE', 'OFFICE', 'OTHER']],
     },
   },
   reference_name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
   },
   stage: {
     type: DataTypes.INTEGER,
@@ -65,10 +65,10 @@ const Client = sequelize.define('client', {
     type: DataTypes.BOOLEAN,
   },
   min_invesment_amount: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
   },
   max_invesment_amount: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
   },
 })
 

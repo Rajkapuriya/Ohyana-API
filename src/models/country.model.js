@@ -8,18 +8,18 @@ const Country = sequelize.define('country', {
     autoIncrement: true,
   },
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
     required: true,
   },
   iso: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(5),
   },
   nicename: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
   },
   iso3: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(5),
   },
   numcode: {
     type: DataTypes.INTEGER,

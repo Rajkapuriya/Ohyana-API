@@ -8,15 +8,15 @@ const Team = sequelize.define('team', {
     autoIncrement: true,
   },
   imgUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(80),
   },
   email: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(50),
     allowNull: false,
     required: true,
   },
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(35),
     allowNull: false,
     required: true,
   },
@@ -26,19 +26,19 @@ const Team = sequelize.define('team', {
     required: true,
   },
   contact_number: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
   },
   city: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(25),
   },
   state: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(25),
   },
   pincode: {
     type: DataTypes.INTEGER,
   },
   gender: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(6),
     validate: {
       isIn: [['Male', 'Female']],
     },
@@ -50,10 +50,10 @@ const Team = sequelize.define('team', {
     type: DataTypes.FLOAT,
   },
   location: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(65),
   },
   points: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10),
   },
   deviceToken: {
     type: DataTypes.STRING,

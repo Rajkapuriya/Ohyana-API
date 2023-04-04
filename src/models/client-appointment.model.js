@@ -19,7 +19,7 @@ const Client_Appointment = sequelize.define('client_appointment', {
     required: true,
   },
   appointment_unit: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
   },
   isScheduled: {
     type: DataTypes.BOOLEAN,
@@ -30,10 +30,10 @@ const Client_Appointment = sequelize.define('client_appointment', {
     type: DataTypes.INTEGER,
   },
   memberName: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(35),
   },
   memberRole: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
   },
 })
 

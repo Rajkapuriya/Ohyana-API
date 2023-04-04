@@ -8,12 +8,12 @@ const Product = sequelize.define('product', {
     autoIncrement: true,
   },
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(35),
     allowNull: false,
     required: true,
   },
   imageUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(80),
   },
   price: {
     type: DataTypes.INTEGER,
@@ -23,16 +23,16 @@ const Product = sequelize.define('product', {
     defaultValue: 0,
   },
   weight: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10),
   },
   materialType: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(15),
   },
   description: {
     type: DataTypes.STRING,
   },
   skuId: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
   },
 })
 

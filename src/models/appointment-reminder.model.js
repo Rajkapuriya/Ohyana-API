@@ -8,7 +8,7 @@ const Appointment_Reminder = sequelize.define('appointment_reminder', {
     autoIncrement: true,
   },
   heading: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(35),
     allowNull: false,
     required: true,
   },
@@ -29,7 +29,7 @@ const Appointment_Reminder = sequelize.define('appointment_reminder', {
     defaultValue: false,
   },
   type: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(18),
     allowNull: false,
     required: true,
     validate: {

@@ -8,7 +8,7 @@ const Leave = sequelize.define('leave', {
     autoIncrement: true,
   },
   type: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(30),
   },
   duration: {
     type: DataTypes.INTEGER,

@@ -8,7 +8,7 @@ const Department = sequelize.define('department', {
     autoIncrement: true,
   },
   name: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(20),
     allowNull: false,
     required: true,
   },
