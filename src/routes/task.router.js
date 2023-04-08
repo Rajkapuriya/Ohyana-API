@@ -17,7 +17,12 @@ taskRouter.post(
   taskController.createTask,
 )
 
-taskRouter.get('/tasks', authTokenMiddleware, taskController.getAllTask)
+taskRouter.get(
+  '/tasks',
+  joiValidationMiddleware(taskSchema.taskList),
+  authTokenMiddleware,
+  taskController.getAllTask,
+)
 
 taskRouter.get(
   '/task/:id',
@@ -43,6 +48,13 @@ taskRouter.patch(
   joiValidationMiddleware(taskSchema.updateDescription),
   authTokenMiddleware,
   taskController.updateDescription,
+)
+
+taskRouter.patch(
+  '/due-date/task/:taskId',
+  joiValidationMiddleware(taskSchema.updateDuedate),
+  authTokenMiddleware,
+  taskController.updateDuedate,
 )
 
 taskRouter.post(

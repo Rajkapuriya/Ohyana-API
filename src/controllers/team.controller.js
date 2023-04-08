@@ -10,8 +10,6 @@ const {
   Team_Location_History,
 } = require('../models')
 const sequelize = require('../database/mysql')
-const encrp = require('../utils/encrp-function.util')
-const crypto = require('crypto')
 const { uploadFileToS3, deleteFileFromS3 } = require('../helpers/s3.helper')
 const fs = require('fs')
 const { ENCRYP_CONFIG } = require('../config/encryp.config')
@@ -24,9 +22,10 @@ const {
 } = require('../utils/response.util')
 const { MESSAGE } = require('../constants/message.contant')
 const moment = require('moment')
+const bcrypt = require('bcrypt')
 
 exports.addTeamMember = async (req, res) => {
-  const { email } = req.body
+  const { email, password } = req.body
   let imgUrl
   const existedMember = await Team.findOne({
     where: { email, companyId: req.user.companyId },
@@ -35,7 +34,7 @@ exports.addTeamMember = async (req, res) => {
     if (req.file) {
       unlinkFile(req.file.path)
     }
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
   }
 
   if (req.file) {
@@ -44,29 +43,21 @@ exports.addTeamMember = async (req, res) => {
     imgUrl = result.Key
   }
 
-  const secret_key = crypto.randomBytes(16)
-  const pass =
-    encrp.encrpPass(secret_key, encrp.encrpPwdKey, encrp.encrpPwdIv) +
-    ENCRYP_CONFIG.SPLIT_SYMBOL +
-    encrp.encrpPass(req.body.password, encrp.encrpPwdKey, encrp.encrpPwdIv)
-  req.body.password = encrp.encrpPass(
-    pass,
-    encrp.encrpMergedPwdKey,
-    encrp.encrpMergedPwdIv,
-  )
+  const hashPassword = await bcrypt.hash(password, ENCRYP_CONFIG.HASH_SALT)
 
   await Team.create({
     ...req.body,
     imgUrl: imgUrl,
-    password: req.body.password,
+    password: hashPassword,
     companyId: req.user.companyId,
   })
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllTeamMembers = async (req, res) => {
-  const { roleId, departmentId, admin } = req.query
+  const { roleId, departmentId, admin, searchQuery, teamType, attendanceType } =
+    req.query
 
   const getAdminRoleId = await Role.findOne({
     attributes: ['id'],
@@ -99,20 +90,6 @@ exports.getAllTeamMembers = async (req, res) => {
     teamWhereCondtion.where = { roleId }
   }
 
-  if (departmentId && departmentId !== 'null') {
-    teamWhereCondtion.where = { departmentId }
-  }
-
-  if (
-    departmentId &&
-    roleId &&
-    departmentId !== 'null' &&
-    roleId !== 'null' &&
-    roleId !== 1
-  ) {
-    teamWhereCondtion.where = { roleId, departmentId }
-  }
-
   if (admin === 'true') {
     teamWhereCondtion = {
       attributes: ['id', 'name'],
@@ -123,11 +100,33 @@ exports.getAllTeamMembers = async (req, res) => {
     }
   }
 
+  if (searchQuery) {
+    teamWhereCondtion.where = {
+      ...teamWhereCondtion.where,
+      name: {
+        [Op.like]: `%${searchQuery}%`,
+      },
+    }
+  }
+
+  if (teamType) {
+    teamWhereCondtion.where = {
+      ...teamWhereCondtion.where,
+      location: {
+        [Op.like]: `%${teamType == 'FIELD' ? ',' : teamType}%`,
+      },
+    }
+  }
+
+  if (attendanceType) {
+    teamWhereCondtion.include[1].where.attendanceType = attendanceType
+  }
+
   const team = await Team.findAll(teamWhereCondtion)
 
   if (team.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, team)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, team)
 }
 
 exports.getSingleMember = async (req, res) => {
@@ -139,7 +138,6 @@ exports.getSingleMember = async (req, res) => {
       'email',
       'contact_number',
       'gender',
-      'password',
       'birthDay',
       'rating',
     ],
@@ -164,12 +162,10 @@ exports.getSingleMember = async (req, res) => {
     })
     member.setDataValue('senior', parentRole)
   }
-  
+
   delete member.dataValues.role.dataValues.parentId
 
-  if (member) member.password = gtPass(member.password)
-  
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, member)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, member)
 }
 
 exports.getProfile = async (req, res) => {
@@ -183,7 +179,6 @@ exports.getProfile = async (req, res) => {
       'city',
       'state',
       'pincode',
-      'password',
       'gender',
       'birthDay',
     ],
@@ -208,26 +203,15 @@ exports.getProfile = async (req, res) => {
 
   delete member.dataValues.role.dataValues.parentId
 
-  if (member) member.password = gtPass(member.password)
-
   if (!member) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, member)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, member)
 }
 
 exports.updateTeamMemberDetails = async (req, res) => {
   const member = await Team.findOne({ where: { id: req.params.id } })
   let imgUrl
-  const secret_key = crypto.randomBytes(16)
-  const pass =
-    encrp.encrpPass(secret_key, encrp.encrpPwdKey, encrp.encrpPwdIv) +
-    ENCRYP_CONFIG.SPLIT_SYMBOL +
-    encrp.encrpPass(req.body.password, encrp.encrpPwdKey, encrp.encrpPwdIv)
-  req.body.password = encrp.encrpPass(
-    pass,
-    encrp.encrpMergedPwdKey,
-    encrp.encrpMergedPwdIv,
-  )
+
   if (req.file) {
     const result = await uploadFileToS3(req.file)
     imgUrl = result.Key
@@ -238,11 +222,10 @@ exports.updateTeamMemberDetails = async (req, res) => {
   const updatedMember = await member.update({
     ...req.body,
     imgUrl,
-    password: req.body.password,
   })
   return successResponse(
     res,
-    MESSAGE.RECORD_UPDATED_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
     updatedMember,
   )
 }
@@ -250,16 +233,6 @@ exports.updateTeamMemberDetails = async (req, res) => {
 exports.updateAdminProfile = async (req, res) => {
   const member = await Team.findOne({ where: { id: req.user.id } })
   let imgUrl
-  const secret_key = crypto.randomBytes(16)
-  const pass =
-    encrp.encrpPass(secret_key, encrp.encrpPwdKey, encrp.encrpPwdIv) +
-    ENCRYP_CONFIG.SPLIT_SYMBOL +
-    encrp.encrpPass(req.body.password, encrp.encrpPwdKey, encrp.encrpPwdIv)
-  req.body.password = encrp.encrpPass(
-    pass,
-    encrp.encrpMergedPwdKey,
-    encrp.encrpMergedPwdIv,
-  )
 
   if (req.file === undefined) {
     if (member.imgUrl) {
@@ -275,11 +248,10 @@ exports.updateAdminProfile = async (req, res) => {
 
   const updatedMember = await member.update({
     imgUrl,
-    password: req.body.password,
   })
   return successResponse(
     res,
-    MESSAGE.RECORD_UPDATED_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
     updatedMember,
   )
 }
@@ -295,7 +267,7 @@ exports.verfifyAndUpdateFirebaseToken = async (req, res) => {
   if (teamMember.deviceToken !== deviceToken) {
     await teamMember.update({ deviceToken })
   }
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.saveLocation = async (req, res) => {
@@ -314,7 +286,7 @@ exports.saveLocation = async (req, res) => {
   //   date: moment(),
   // })
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.addExpense = async (req, res) => {
@@ -414,7 +386,11 @@ exports.getExpense = async (req, res) => {
     }
   })
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, response)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    response,
+  )
 }
 
 exports.approveExpense = async (req, res) => {
@@ -617,11 +593,4 @@ function unlinkFile(path) {
   fs.unlink(path, err => {
     console.log(err)
   })
-}
-
-function gtPass(password) {
-  const encrpMergedPass = encrp
-    .dcrpPass(password, encrp.encrpMergedPwdKey, encrp.encrpMergedPwdIv)
-    .split(ENCRYP_CONFIG.SPLIT_SYMBOL)
-  return encrp.dcrpPass(encrpMergedPass[1], encrp.encrpPwdKey, encrp.encrpPwdIv)
 }

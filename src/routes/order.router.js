@@ -58,12 +58,20 @@ orderRouter.patch(
   orderController.updatePaymentStatus,
 )
 
+orderRouter.patch(
+  '/delivery/:orderId',
+  joiValidationMiddleware(orderSchema.orderTrackingStatus),
+  authTokenMiddleware,
+  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  orderController.updateOrderTrackingStatus,
+)
+
 orderRouter.get(
   '/orders',
   joiValidationMiddleware(orderSchema.orderList),
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
-  orderController.getAllOrderSummary,
+  orderController.getAllOrderList,
 )
 
 orderRouter.get(

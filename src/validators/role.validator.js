@@ -1,19 +1,10 @@
 const Joi = require('joi')
 
-exports.departmentSchema = {
-  departmentForm: Joi.object({
-    body: Joi.object({
-      name: Joi.string().min(2).required(),
-    }).required(),
-  }).unknown(),
-}
-
 exports.roleSchema = {
   roleForm: Joi.object({
     body: Joi.object({
       name: Joi.string().min(2).required(),
       description: Joi.string().min(5).allow(null, ''),
-      departmentId: Joi.number().required(),
       clockIn: Joi.string().required(),
     }).required(),
   }).unknown(),
@@ -36,9 +27,7 @@ exports.roleSchema = {
       editStaff: Joi.boolean().required(),
       deleteStaff: Joi.boolean().required(),
       settingMenu: Joi.boolean().required(),
-      viewDepartment: Joi.boolean().required(),
-      editDepartment: Joi.boolean().required(),
-      deleteDepartment: Joi.boolean().required(),
+      viewRole: Joi.boolean().required(),
       editRole: Joi.boolean().required(),
       deleteRole: Joi.boolean().required(),
       viewProduct: Joi.boolean().required(),

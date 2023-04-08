@@ -5,7 +5,7 @@ const { authTokenMiddleware } = require('../middleware/auth-token.middleware')
 const {
   permissionHandleMiddleware,
 } = require('../middleware/permission-handler.middleware')
-const { roleSchema } = require('../validators/department.validator')
+const { roleSchema } = require('../validators/role.validator')
 const roleController = require('../controllers/role.controller')
 
 const express = require('express')
@@ -18,7 +18,7 @@ roleRouter.post(
   joiValidationMiddleware(roleSchema.roleForm),
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
   ),
   roleController.createRole,
 )
@@ -28,7 +28,7 @@ roleRouter.get(
   joiValidationMiddleware(roleSchema.roleList),
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.viewDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.viewRole',
   ),
   roleController.getAllRoles,
 )
@@ -38,7 +38,7 @@ roleRouter.put(
   joiValidationMiddleware(roleSchema.updateClockInClockOut),
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.viewDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.viewRole',
   ),
   roleController.updateClockInOutTime,
 )
@@ -48,7 +48,7 @@ roleRouter.get(
   joiValidationMiddleware(roleSchema.getSingleRoles),
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.viewDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.viewRole',
   ),
   roleController.getSingleRoles,
 )
@@ -58,7 +58,7 @@ roleRouter.put(
   joiValidationMiddleware(roleSchema.roleForm),
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
   ),
   roleController.updateRole,
 )
@@ -67,7 +67,7 @@ roleRouter.delete(
   '/role/:id',
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
   ),
   roleController.deleteRole,
 )
@@ -76,7 +76,7 @@ roleRouter.delete(
   '/role/:id',
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
   ),
   roleController.deleteRole,
 )
@@ -87,7 +87,7 @@ roleRouter.get(
   '/permissions/:id',
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
   ),
   roleController.getPermissions,
 )
@@ -97,7 +97,7 @@ roleRouter.put(
   joiValidationMiddleware(roleSchema.rolePermissions),
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
   ),
   roleController.updateRolePermissions,
 )
@@ -107,7 +107,7 @@ roleRouter.put(
   joiValidationMiddleware(roleSchema.updateExpensePermissions),
   authTokenMiddleware,
   permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editDepartment',
+    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
   ),
   roleController.updateExpensePermissions,
 )

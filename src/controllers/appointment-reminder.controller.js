@@ -11,7 +11,7 @@ const { YYYY_MM_DDHHMM, YYYY_MM_DD_HHMM } = require('../utils/moment.util')
 
 exports.createAppointmentReminder = async (req, res) => {
   if (YYYY_MM_DDHHMM(`${req.body.date} ${req.body.time}`) <= YYYY_MM_DDHHMM()) {
-    return unProcessableEntityRequestError(res, MESSAGE.INVALID_TIME)
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
   await Appointment_Reminder.create({
@@ -25,7 +25,7 @@ exports.createAppointmentReminder = async (req, res) => {
    *   // await setRedisData(`${now}_APPOINTMENT`, appointed_reminder.id)
    * }
    */
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllAppointmentReminder = async (req, res) => {
@@ -43,7 +43,7 @@ exports.getAllAppointmentReminder = async (req, res) => {
 
   return successResponse(
     res,
-    MESSAGE.RECORD_FOUND_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
     appointed_reminder,
   )
 }
@@ -52,7 +52,7 @@ exports.updateAppointmentReminder = async (req, res) => {
   const { description, heading, date, time, type } = req.body
 
   if (YYYY_MM_DDHHMM(`${date} ${time}`) <= YYYY_MM_DDHHMM()) {
-    return unProcessableEntityRequestError(res, MESSAGE.INVALID_TIME)
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
   const appointed_reminder = await Appointment_Reminder.findOne({
@@ -84,12 +84,12 @@ exports.updateAppointmentReminder = async (req, res) => {
 
   return successResponse(
     res,
-    MESSAGE.RECORD_UPDATED_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
     updatedAppointmentReminder,
   )
 }
 
 exports.deleteAppointmentReminder = async (req, res) => {
   await Appointment_Reminder.destroy({ where: { id: req.params.id } })
-  return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }

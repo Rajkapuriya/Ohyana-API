@@ -73,5 +73,9 @@ exports.getAllNotification = async (req, res) => {
 
   if (notifications.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, notifications)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    notifications,
+  )
 }

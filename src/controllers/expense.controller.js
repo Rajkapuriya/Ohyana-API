@@ -19,9 +19,10 @@ exports.createExpense = async (req, res) => {
     defaults: req.body,
   })
 
-  if (!created) return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+  if (!created)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllExpense = async (req, res) => {
@@ -29,12 +30,16 @@ exports.getAllExpense = async (req, res) => {
     attributes: ['id', 'name', 'description'],
   })
   if (expenses.length === 0) return notFoundError(res)
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY, expenses)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY,
+    expenses,
+  )
 }
 
 exports.updateExpense = async (req, res) => {
   await Expense.update(req.body, { where: { id: req.body.expenseId } })
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.deleteExpense = async (req, res) => {
@@ -44,7 +49,7 @@ exports.deleteExpense = async (req, res) => {
 
   if (!assignedExpense) {
     await Expense.destroy({ where: { id: req.params.id } })
-    return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+    return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
   } else {
     return forbiddenRequestError(res)
   }
@@ -59,5 +64,9 @@ exports.getExpenseByRole = async (req, res) => {
 
   if (!expenseRule) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY, expenseRule)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY,
+    expenseRule,
+  )
 }

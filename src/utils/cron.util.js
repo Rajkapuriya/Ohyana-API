@@ -13,9 +13,11 @@ const {
   Task,
   Team_Leave,
   Checklist,
+  Team_Point,
+  Points,
 } = require('../models')
 const moment = require('moment')
-const { Op } = require('sequelize')
+const { Op, QueryTypes } = require('sequelize')
 const {
   clientReminderHTML,
   forgottenClientHTML,
@@ -37,9 +39,9 @@ const sequelize = require('../database/mysql')
 const { mailHelper } = require('../helpers/mail.helper')
 
 new CronJob(
-  '1 * * * *',
+  '0 * * * *',
   async () => {
-    // 0 22 * * *
+    // 0 * * * * for every hour
     // for every 15 minutes */15 * * * *
     const currentTime = HH_MM_SS()
     const currentDate = YYYY_MM_DD()
@@ -230,7 +232,7 @@ async function sendNotification(now, type, Model, include) {
 }
 
 new CronJob(
-  '1 * * * *',
+  '0 20 * * *',
   async () => {
     // 0 20 * * *
     const currentTime = HH_MM_SS()
@@ -293,7 +295,7 @@ new CronJob(
 )
 
 new CronJob(
-  '1 * * * *',
+  '0 0 28-31 * *',
   async () => {
     // 0 0 28-31 * *
     const targets = await Target.findAll({
@@ -313,21 +315,87 @@ new CronJob(
       const achievedTarget = targets[i].achieve || 0
       if (achievedTarget < targets[i].target) {
         // 5 for target not achieved
-        updateTeamMemberPoint(targets[i].teamId, 5)
+        await updateTeamMemberPoint(targets[i].teamId, 5)
       } else if (achievedTarget > targets[i].target) {
         // 8 for extra target achieved
-        updateTeamMemberPoint(targets[i].teamId, 8)
+        await updateTeamMemberPoint(targets[i].teamId, 8)
       } else if (achievedTarget === targets[i].target) {
         // 9 for target achieved
-        updateTeamMemberPoint(targets[i].teamId, 9)
+        await updateTeamMemberPoint(targets[i].teamId, 9)
       }
     }
+
+    const teamWithPoint = await Team.findAll({
+      attributes: ['id', 'points', 'roleId'],
+      where: {
+        points: {
+          // [Op.notLike]: '-%',
+          [Op.gte]: 1,
+        },
+      },
+      include: {
+        model: Role,
+        attributes: ['id'],
+        where: { parentId: { [Op.ne]: null } },
+      },
+    })
+
+    const groupByRole = teamWithPoint.reduce((acc, el) => {
+      if (!acc[el.roleId]) {
+        acc[el.roleId] = []
+      }
+      acc[el.roleId].push(el)
+      return acc
+    }, {})
+
+    const maxPointsByGroup = Object.values(groupByRole).map(group => {
+      const maxPoints = Math.max(...group.map(el => el.points))
+      return { roleId: group[0].roleId, maxPoints }
+    })
+
+    const teamIds = []
+    maxPointsByGroup.map(group => {
+      const teamObject = groupByRole[group.roleId].find(
+        e => e.points == group.maxPoints,
+      )
+      if (teamObject) {
+        teamIds.push(teamObject.id)
+      }
+    })
+
+    await sequelize.query(
+      `
+    UPDATE
+      teams
+    SET
+      isCurrentMonthStarPerformer = (
+        CASE
+          WHEN id IN (:teamIds) 
+        THEN
+          1
+        ELSE
+          0
+        END
+      )
+    `,
+      { type: QueryTypes.UPDATE, replacements: { teamIds } },
+    )
   },
   null,
   true,
   'Asia/Kolkata',
 )
 
+new CronJob(
+  '0 0 1 * *',
+  async () => {
+    // 0 0 1 * *
+    Team.update({ points: '0' }, { where: {} })
+  },
+  null,
+  true,
+  'Asia/Kolkata',
+)
 // new CronJob('*/5 * * * *', async () => {
 //     console.log('backup taken')
 //     const now = moment().format('YYYY-MM-DD_HH_mm')

@@ -12,7 +12,7 @@ exports.updateCompanyProfile = async (req, res) => {
 
   await company.update(req.body)
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.getCompanyProfile = async (req, res) => {
@@ -24,5 +24,5 @@ exports.getCompanyProfile = async (req, res) => {
 
   if (!company) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, company)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, company)
 }

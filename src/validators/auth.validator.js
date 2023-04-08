@@ -1,6 +1,6 @@
 const Joi = require('joi')
 
-exports.loginSchema = {
+exports.authSchema = {
   login: Joi.object({
     body: Joi.object({
       email: Joi.string().email().required(),
@@ -24,13 +24,13 @@ exports.loginSchema = {
     }).required(),
   }).unknown(),
 
-  passwordVerify: Joi.object({
+  resetPassword: Joi.object({
     body: Joi.object({
       password: Joi.string().required(),
     }).required(),
   }).unknown(),
 
-  verifyOtp: Joi.object({
+  verifyEmailOtp: Joi.object({
     body: Joi.object({
       email: Joi.string().email().required(),
       otp: Joi.number().required(),

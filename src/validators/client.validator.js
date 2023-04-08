@@ -18,6 +18,7 @@ exports.clientSchema = {
       city: Joi.string().required(),
       address: Joi.string().allow(null, ''),
       countryId: Joi.number().allow(null, ''),
+      max_invesment_amount: Joi.number(),
     })
       .xor('email', 'contact_number')
       .required(),
@@ -45,6 +46,7 @@ exports.clientSchema = {
     body: Joi.object({
       description: Joi.string().min(5).required(),
       clientId: Joi.number().required(),
+      followUpType: Joi.string().valid('FIELD', 'CALL', 'WHATSAPP').required(),
       callNotReceived: Joi.boolean().allow(null),
     }).required(),
   }).unknown(),

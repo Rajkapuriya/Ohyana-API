@@ -3,11 +3,10 @@ const router = express.Router()
 
 // ------------------------------- Login Router -------------------------------
 
-router.use(require('./login.router'))
+router.use(require('./auth.router'))
 
 // ------------------------------- Logic Routes -------------------------------
 
-router.use(require('./department.router'))
 router.use(require('./role.router'))
 router.use(require('./product.router'))
 router.use(require('./team.router'))

@@ -15,10 +15,10 @@ exports.createLeaveType = async (req, res) => {
     where: { type, companyId: req.user.companyId },
   })
   if (existetLeaveType)
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
   await Leave.create({ type, duration, companyId: req.user.companyId })
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllLeaveTypes = async (req, res) => {
@@ -27,7 +27,7 @@ exports.getAllLeaveTypes = async (req, res) => {
     where: { companyId: req.user.companyId },
   })
   if (leaves.length === 0) return notFoundError(res)
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, leaves)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, leaves)
 }
 
 exports.updateLeaveType = async (req, res) => {
@@ -41,7 +41,7 @@ exports.updateLeaveType = async (req, res) => {
     },
   })
   if (existetLeaveType)
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
   const leave = await Leave.findOne({ where: { id: req.params.id } })
 
@@ -73,7 +73,7 @@ exports.updateLeaveType = async (req, res) => {
     return updatedLeaveData
   })
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.deleteLeaveType = async (req, res) => {
@@ -83,7 +83,7 @@ exports.deleteLeaveType = async (req, res) => {
 
   if (!teamLeaveRelatedToLeaveType) {
     await Leave.destroy({ where: { id: req.params.id } })
-    return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+    return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
   } else {
     return forbiddenRequestError(
       res,

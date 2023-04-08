@@ -31,6 +31,9 @@ function forgotPasswordHTML(element) {
             <div role="article" aria-roledescription="email" lang="en" style="text-size-adjust:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;background-color:#939297;">
             Click this <a href="${SERVER_CONFIG.FRONTED_URL}?rstPwd=${element}">URL</a> to reset your password 
             </div>
+            <div role="article" aria-roledescription="email" lang="en" style="text-size-adjust:100%;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;background-color:#939297;">
+            Copy Paste this url into browser if above link not works ${SERVER_CONFIG.FRONTED_URL}?rstPwd=${element}
+            </div>
         </body>
     </html>
     `

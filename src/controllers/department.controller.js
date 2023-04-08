@@ -14,9 +14,10 @@ exports.createDepartment = async (req, res) => {
     defaults: { name, companyId: req.user.companyId },
   })
 
-  if (!created) return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+  if (!created)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllDepartment = async (req, res) => {
@@ -27,7 +28,11 @@ exports.getAllDepartment = async (req, res) => {
 
   if (department.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, department)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    department,
+  )
 }
 
 exports.updateDepartment = async (req, res) => {
@@ -37,10 +42,10 @@ exports.updateDepartment = async (req, res) => {
     where: { name, companyId: req.user.companyId },
   })
   if (existetDepartment)
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
   await Department.update({ name }, { where: { id: req.params.id } })
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.deleteDepartment = async (req, res) => {
@@ -52,7 +57,7 @@ exports.deleteDepartment = async (req, res) => {
 
   if (!teamMemberRelatedToDepartment && !roleRelatedDepartment) {
     await Department.destroy({ where: { id: req.params.id } })
-    return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+    return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
   } else {
     return forbiddenRequestError(
       res,

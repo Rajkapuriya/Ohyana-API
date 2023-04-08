@@ -58,6 +58,18 @@ const Team = sequelize.define('team', {
   deviceToken: {
     type: DataTypes.STRING,
   },
+  isCurrentMonthStarPerformer: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  isContactNoVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  isEmailVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 })
 
 module.exports = { Team }

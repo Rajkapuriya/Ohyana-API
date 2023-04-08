@@ -11,7 +11,7 @@ exports.setTarget = async (req, res) => {
 
   if (target) {
     await target.update(req.body)
-    return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+    return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
   }
 
   await Target.bulkCreate([
@@ -28,7 +28,7 @@ exports.setTarget = async (req, res) => {
       teamId: req.params.id,
     },
   ])
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getTargets = async (req, res) => {
@@ -41,5 +41,5 @@ exports.getTargets = async (req, res) => {
 
   if (target.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, target)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, target)
 }

@@ -21,9 +21,23 @@ exports.taskSchema = {
     }).required(),
   }).unknown(),
 
+  updateDuedate: Joi.object({
+    body: Joi.object({
+      due_date: Joi.string().required(),
+    }).required(),
+  }).unknown(),
+
   taskCheckListItemForm: Joi.object({
     body: Joi.object({
       task: Joi.string().min(2).required(),
+    }).required(),
+  }).unknown(),
+
+  taskList: Joi.object({
+    query: Joi.object({
+      searchQuery: Joi.string(),
+      due_date: Joi.string(),
+      teamId: Joi.number(),
     }).required(),
   }).unknown(),
 }

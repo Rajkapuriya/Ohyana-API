@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "c3fc31e0-94cb-4e09-a89a-d7b23e86e7af",
-		"name": "Ohyana API",
+		"name": "Ohyana",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "13975886"
 	},
@@ -483,7 +483,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/role/detail?roleId=1",
+							"raw": "{{baseUrl}}/role/detail?roleId=2",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -494,7 +494,7 @@
 							"query": [
 								{
 									"key": "roleId",
-									"value": "1"
+									"value": "2"
 								}
 							]
 						},
@@ -540,6 +540,42 @@
 					"response": []
 				},
 				{
+					"name": "Update Role Clock In Clock Out Time",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleId\" : 2,\r\n    \"clockOut\": \"22:00:00\",\r\n    \"clockIn\" : \"9:30:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/clockin-out",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"clockin-out"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Delete Role",
 					"request": {
 						"auth": {
@@ -572,6 +608,70 @@
 							]
 						},
 						"description": "Here PresentedAt is time stamp of office time as per that role"
+					},
+					"response": []
+				},
+				{
+					"name": "Permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleId\": 1,\r\n    \"clientMenu\": true,\r\n    \"viewClient\": true,\r\n    \"editClient\": true,\r\n    \"deleteClient\": true,\r\n    \"staffMenu\": true,\r\n    \"viewStaff\": true,\r\n    \"editStaff\": true,\r\n    \"deleteStaff\": true,\r\n    \"settingMenu\": true,\r\n    \"viewRole\": true,\r\n    \"editRole\": true,\r\n    \"deleteRole\": true,\r\n    \"deleteDepartment\": true,\r\n    \"viewProduct\": true,\r\n    \"editProduct\": true,\r\n    \"deleteProduct\": true,\r\n    \"accessClient\": true,\r\n    \"accessStaff\": true,\r\n    \"accessSetting\": true,\r\n    \"clientStageAccess\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Permissions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/permissions/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"permissions",
+								"2"
+							]
+						}
 					},
 					"response": []
 				}
@@ -619,9 +719,6 @@
 				},
 				{
 					"name": "GET All Products",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -635,10 +732,6 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "{{baseUrl}}/product",
 							"host": [
@@ -652,10 +745,7 @@
 					"response": []
 				},
 				{
-					"name": "GET Product Detail",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "Get Product by Product Id List",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -667,20 +757,24 @@
 								}
 							]
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\r\n    \"productIds\" : [2,3]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/product/1",
+							"raw": "{{baseUrl}}/product-list",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"product",
-								"1"
+								"product-list"
 							]
 						}
 					},
@@ -1004,7 +1098,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/user/leave?teamId=1",
+									"raw": "{{baseUrl}}/user/leave?month=3&year=2023&status=ALL&teamId=2",
 									"host": [
 										"{{baseUrl}}"
 									],
@@ -1015,18 +1109,15 @@
 									"query": [
 										{
 											"key": "month",
-											"value": "9",
-											"disabled": true
+											"value": "3"
 										},
 										{
 											"key": "year",
-											"value": "2022",
-											"disabled": true
+											"value": "2023"
 										},
 										{
 											"key": "status",
-											"value": "REJECTED",
-											"disabled": true
+											"value": "ALL"
 										},
 										{
 											"key": "profile",
@@ -1035,7 +1126,7 @@
 										},
 										{
 											"key": "teamId",
-											"value": "1"
+											"value": "2"
 										}
 									]
 								}
@@ -1137,7 +1228,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"date\": \"2023-10-05\",\r\n    \"expenseId\": 1,\r\n    \"amount\": 100\r\n}",
+									"raw": "{\r\n    \"date\": \"2023-10-05\",\r\n    \"expenseId\": 1,\r\n    \"amount\": 100,\r\n    \"expense_description\": \"Lorem ipsum\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1173,7 +1264,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/team/expense",
+									"raw": "{{baseUrl}}/team/expense?teamId=2",
 									"host": [
 										"{{baseUrl}}"
 									],
@@ -1189,12 +1280,16 @@
 										},
 										{
 											"key": "teamId",
-											"value": "2",
-											"disabled": true
+											"value": "2"
 										},
 										{
 											"key": "month",
-											"value": "1",
+											"value": "10",
+											"disabled": true
+										},
+										{
+											"key": "year",
+											"value": "2022",
 											"disabled": true
 										}
 									]
@@ -1414,6 +1509,43 @@
 					"response": []
 				},
 				{
+					"name": "Update Firebase Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"deviceToken\": \"AA91bFw83oPY_zC3dA3X9q3xGKjpyZgE1b1aHgKvR8DFOg4y4KdJxEp9HvRtWx-nzZ5YDj5N5q3HN8wAuJhMj-7CQb9vMpjj8xWj-XdZz7Km0mEMvV8GBwEcJj1nV88C9PydtP8VWxZ\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/team/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"team",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Save Location",
 					"request": {
 						"auth": {
@@ -1430,7 +1562,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"latitude\": \"22.308155\",\r\n    \"longitude\": \"70.800705\"\r\n}",
+							"raw": "{\r\n    \"latitude\": \"23.114593\",\r\n    \"longitude\": \"72.573719\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1598,13 +1730,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/member/2",
+							"raw": "{{baseUrl}}/member/4",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"member",
-								"2"
+								"4"
 							]
 						}
 					},
@@ -1744,7 +1876,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Permissions",
+					"name": "Get Team Leaderboard Details",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1759,49 +1891,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/permissions/2",
+							"raw": "{{baseUrl}}/team/leaderboard/2",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"permissions",
+								"team",
+								"leaderboard",
 								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Permission",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"roleId\": 1,\r\n    \"clientMenu\": true,\r\n    \"viewClient\": true,\r\n    \"editClient\": true,\r\n    \"deleteClient\": true,\r\n    \"staffMenu\": true,\r\n    \"viewStaff\": true,\r\n    \"editStaff\": true,\r\n    \"deleteStaff\": true,\r\n    \"settingMenu\": true,\r\n    \"viewDepartment\": true,\r\n    \"editDepartment\": true,\r\n    \"editRole\": true,\r\n    \"deleteRole\": true,\r\n    \"deleteDepartment\": true,\r\n    \"viewProduct\": true,\r\n    \"editProduct\": true,\r\n    \"deleteProduct\": true,\r\n    \"accessClient\": true,\r\n    \"accessStaff\": true,\r\n    \"accessSetting\": true,\r\n    \"clientStageAccess\": 5,\r\n    \"expensePolicies\": [\r\n        {\r\n            \"id\": 1,\r\n            \"amount\": 500\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"amount\": 350\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/permissions",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"permissions"
 							]
 						}
 					},
@@ -2081,14 +2178,16 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/status/client/109",
+									"raw": "http://localhost:9009/status/client/9",
+									"protocol": "http",
 									"host": [
-										"{{baseUrl}}"
+										"localhost"
 									],
+									"port": "9009",
 									"path": [
 										"status",
 										"client",
-										"109"
+										"9"
 									],
 									"query": [
 										{
@@ -2638,19 +2737,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/file/:path",
+							"raw": "{{baseUrl}}/file/274b16e2-a802-4464-9fef-6ec8ba3783db.png",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"file",
-								":path"
-							],
-							"variable": [
-								{
-									"key": "path",
-									"value": "274b16e2-a802-4464-9fef-6ec8ba3783db.png"
-								}
+								"274b16e2-a802-4464-9fef-6ec8ba3783db.png"
 							]
 						}
 					},
@@ -3145,7 +3238,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{baseUrl}}/points?size=2&year=2022&month=12&page=1&teamId=2",
+							"raw": "{{baseUrl}}/points?size=10&page=1&teamId=2&month=1&year=2023",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -3160,15 +3253,7 @@
 								},
 								{
 									"key": "size",
-									"value": "2"
-								},
-								{
-									"key": "year",
-									"value": "2022"
-								},
-								{
-									"key": "month",
-									"value": "12"
+									"value": "10"
 								},
 								{
 									"key": "page",
@@ -3177,6 +3262,14 @@
 								{
 									"key": "teamId",
 									"value": "2"
+								},
+								{
+									"key": "month",
+									"value": "1"
+								},
+								{
+									"key": "year",
+									"value": "2023"
 								}
 							]
 						}
@@ -3421,10 +3514,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/pjp",
+							"raw": "http://localhost:9009/pjp",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "9009",
 							"path": [
 								"pjp"
 							]
@@ -3448,7 +3543,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/pjp?teamId=2&day=TODAY",
+							"raw": "{{baseUrl}}/pjp?teamId=2",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -3472,7 +3567,13 @@
 								},
 								{
 									"key": "day",
-									"value": "TODAY"
+									"value": "TODAY",
+									"disabled": true
+								},
+								{
+									"key": "profile",
+									"value": "true",
+									"disabled": true
 								},
 								{
 									"key": "clientId",
@@ -3500,7 +3601,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/pjp/16?teamId=2",
+							"raw": "{{baseUrl}}/pjp/16",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -3521,7 +3622,8 @@
 								},
 								{
 									"key": "teamId",
-									"value": "2"
+									"value": "2",
+									"disabled": true
 								},
 								{
 									"key": "day",
@@ -3555,7 +3657,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"description\": \"Complete And Buy Some Product\",\r\n    \"status\": \"COMPLETED\"\r\n}",
+							"raw": "{\r\n    \"pjpId\":13,\r\n    \"description\": \"Complete And Buy Some Product\",\r\n    \"latitude\": \"0.00\",\r\n    \"longitude\": \"0.00\"\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3563,14 +3665,20 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/complete/pjp/13",
+							"raw": "{{baseUrl}}/complete/pjp",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"complete",
-								"pjp",
-								"13"
+								"pjp"
+							],
+							"query": [
+								{
+									"key": "pjpId",
+									"value": "13",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -3607,6 +3715,69 @@
 							],
 							"path": [
 								"status",
+								"pjp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update PJP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2023-03-23\",\r\n    \"pjpId\": 10,\r\n    \"description\" : \"LOrem\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/pjp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"pjp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete PJP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/pjp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
 								"pjp"
 							]
 						}
@@ -3708,14 +3879,22 @@
 						},
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orders\" : [\r\n        {\"productId\" : 3,\"quantity\" : 2},\r\n        {\"productId\" : 4,\"quantity\" : 2}\r\n    ],\r\n    \"clientId\" : 109\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/placeorder/2",
+							"raw": "{{baseUrl}}/placeorder",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"placeorder",
-								"2"
+								"placeorder"
 							]
 						}
 					},
@@ -3738,7 +3917,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"CONFIRMED\",\r\n    \"method\": \"UPI\"\r\n}",
+							"raw": "{\r\n    \"status\": \"PENDING\",\r\n    \"method\": \"UPI\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3753,6 +3932,43 @@
 							"path": [
 								"payment",
 								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Delivery Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"DISPATCH\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/delivery/6",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"delivery",
+								"6"
 							]
 						}
 					},
@@ -3787,7 +4003,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Order Summary",
+					"name": "Get Order List Per Client",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -3809,22 +4025,40 @@
 							"file": {}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/orders?clientId=109",
+							"raw": "http://localhost:9009/orders?payment=CONFIRMED&orderDate=2023-11-01",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "9009",
 							"path": [
 								"orders"
 							],
 							"query": [
 								{
-									"key": "all",
-									"value": "true",
+									"key": "clientId",
+									"value": "9",
 									"disabled": true
 								},
 								{
-									"key": "clientId",
-									"value": "109"
+									"key": "searchQuery",
+									"value": "Riyan",
+									"disabled": true
+								},
+								{
+									"key": "delivery",
+									"value": "PENDING",
+									"description": "PENDING , DISPATCH",
+									"disabled": true
+								},
+								{
+									"key": "payment",
+									"value": "CONFIRMED",
+									"description": "PENDING , CONFIRMED"
+								},
+								{
+									"key": "orderDate",
+									"value": "2023-11-01"
 								}
 							]
 						}
@@ -3832,7 +4066,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Item of Particular Order",
+					"name": "Get Order Detail",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -3854,13 +4088,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{baseUrl}}/orderitems/2",
+							"raw": "{{baseUrl}}/orderitems/6",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"orderitems",
-								"2"
+								"6"
 							]
 						}
 					},
@@ -3910,9 +4144,6 @@
 				},
 				{
 					"name": "Get All Task",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -3926,22 +4157,27 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\" : \"Jayesh Vagadiya\",\r\n    \"email\": \"jay@tmail.com\",\r\n    \"password\" : \"jay@123\",\r\n    \"companyName\" : \"Jay Enterprize\",\r\n    \"contact_number\" : \"93685251514\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{baseUrl}}/tasks",
+							"raw": "{{baseUrl}}/tasks?searchQuery=sd&teamId=4&due_date=2023-03-31",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"tasks"
+							],
+							"query": [
+								{
+									"key": "searchQuery",
+									"value": "sd"
+								},
+								{
+									"key": "teamId",
+									"value": "4"
+								},
+								{
+									"key": "due_date",
+									"value": "2023-03-31"
+								}
 							]
 						}
 					},
@@ -3980,6 +4216,44 @@
 								"task",
 								"1",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task Due date",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"due_date\" : \"2023-04-12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/due-date/task/31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"due-date",
+								"task",
+								"31"
 							]
 						}
 					},
@@ -4971,6 +5245,43 @@
 							],
 							"path": [
 								"expense"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role Expense Permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleId\": 1,\r\n    \"expensePolicies\": [\r\n        {\r\n            \"id\": 3,\r\n            \"amount\": 600\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"amount\": 300\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/expense/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"expense",
+								"permissions"
 							]
 						}
 					},

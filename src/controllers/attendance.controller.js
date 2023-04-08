@@ -96,7 +96,7 @@ exports.updateAttendance = async (req, res) => {
       await Attendance.update(updateObject, {
         where: { date: currentDate, teamId: req.user.id },
       })
-      return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+      return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
     }
 
     return badRequestError(res)
@@ -138,7 +138,11 @@ exports.getAttendanceOfAllUsers = async (req, res) => {
 
   if (attendance.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, attendance)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    attendance,
+  )
 }
 
 exports.getAllAttendancePerUser = async (req, res) => {
@@ -202,7 +206,7 @@ exports.getAllAttendancePerUser = async (req, res) => {
 
   if (data.totalPage === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, data)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, data)
 }
 
 exports.applyLeave = async (req, res) => {
@@ -299,5 +303,9 @@ exports.getAllLeavePerUser = async (req, res) => {
 
   if (leavesPerUser.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, leavesPerUser)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    leavesPerUser,
+  )
 }

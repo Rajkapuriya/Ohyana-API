@@ -1,6 +1,6 @@
 const { Points, Team, Team_Point } = require('../models')
 const sequelize = require('../database/mysql')
-const { Op, Sequelize } = require('sequelize')
+const { Op, Sequelize, QueryTypes } = require('sequelize')
 const { successResponse, notFoundError } = require('../utils/response.util')
 const { MESSAGE } = require('../constants/message.contant')
 const { updateTeamMemberPoint } = require('../utils/common.util')
@@ -28,11 +28,14 @@ exports.getAllTeamPoints = async (req, res) => {
   }
 
   const [totalPoints, teamPoints] = await Promise.all([
-    Team.findOne({
-      attributes: ['points'],
-      where: {
-        id: teamId ?? req.user.id,
-      },
+    Team_Point.findOne({
+      attributes: [
+        'id',
+        'createdAt',
+        [sequelize.fn('SUM', sequelize.col('points')), 'total_points'],
+      ],
+      where: whereCondition,
+      include: [{ model: Points }],
     }),
     Team_Point.findAndCountAll({
       attributes: ['id', 'createdAt'],
@@ -46,13 +49,13 @@ exports.getAllTeamPoints = async (req, res) => {
 
   const data = {
     totalPage: teamPoints.count,
-    totalPoints: totalPoints.points,
+    totalPoints: totalPoints.dataValues.total_points,
     points: teamPoints.rows,
   }
 
   if (data.totalPage === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, data)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, data)
 }
 
 exports.getPointsRules = async (req, res) => {
@@ -61,7 +64,7 @@ exports.getPointsRules = async (req, res) => {
     where: { companyId: req.user.companyId },
   })
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, points)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, points)
 }
 
 exports.giveAppreciationPoints = async (req, res) => {

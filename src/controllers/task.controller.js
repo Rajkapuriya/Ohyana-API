@@ -1,15 +1,24 @@
 const { Team, Task, Checklist } = require('../models')
-const { Sequelize } = require('sequelize')
-const { successResponse, notFoundError } = require('../utils/response.util')
+const { Sequelize, Op } = require('sequelize')
+const {
+  successResponse,
+  notFoundError,
+  unProcessableEntityRequestError,
+} = require('../utils/response.util')
 const { MESSAGE } = require('../constants/message.contant')
+const { YYYY_MM_DDHHMM } = require('../utils/moment.util')
 
 exports.createTask = async (req, res) => {
+  if (YYYY_MM_DDHHMM(req.body.due_date) <= YYYY_MM_DDHHMM()) {
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
+  }
+
   await Task.create({
     ...req.body,
     companyId: req.user.companyId,
     createdBy: req.user.name,
   })
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.assignMember = async (req, res) => {
@@ -20,9 +29,27 @@ exports.assignMember = async (req, res) => {
 }
 
 exports.getAllTask = async (req, res) => {
+  const { searchQuery, due_date, teamId } = req.query
+
+  const whereCondition = { companyId: req.user.companyId }
+
+  if (searchQuery) {
+    whereCondition.title = {
+      [Op.like]: `%${searchQuery}%`,
+    }
+  }
+
+  if (due_date) {
+    whereCondition.due_date = due_date
+  }
+
+  if (teamId) {
+    whereCondition.teamId = teamId
+  }
+
   const tasks = await Task.findAll({
     attributes: ['id', 'title', 'description', 'createdAt'],
-    where: { companyId: req.user.companyId },
+    where: whereCondition,
     include: [
       {
         model: Team,
@@ -33,7 +60,7 @@ exports.getAllTask = async (req, res) => {
 
   if (tasks.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, tasks)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, tasks)
 }
 
 exports.getSingleTaskWithChecklist = async (req, res) => {
@@ -54,14 +81,18 @@ exports.getSingleTaskWithChecklist = async (req, res) => {
 
   if (!task) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, task)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, task)
 }
 
 exports.updateDescription = async (req, res) => {
   const { description } = req.body
 
   const updatedTask = await Task.updateTask({ description }, req.params.taskId)
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY, updatedTask)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
+    updatedTask,
+  )
 }
 
 exports.updateTitle = async (req, res) => {
@@ -69,16 +100,43 @@ exports.updateTitle = async (req, res) => {
 
   const updatedTask = await Task.updateTask({ title }, req.params.taskId)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, updatedTask)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    updatedTask,
+  )
+}
+
+exports.updateDuedate = async (req, res) => {
+  const { due_date } = req.body
+
+  if (YYYY_MM_DDHHMM(due_date) <= YYYY_MM_DDHHMM()) {
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
+  }
+
+  console.log(due_date)
+  const updatedTask = await Task.updateTask({ due_date }, req.params.taskId)
+
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    updatedTask,
+  )
 }
 
 exports.addChecklistItems = async (req, res) => {
-  const [, checklists] = await Promise.all([
-    Checklist.create({ ...req.body, taskId: req.params.taskId }),
-    Checklist.findAll({ where: { taskId: req.params.taskId } }),
-  ])
+  // const [, checklists] = await Promise.all([
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY, checklists)
+  // ])
+  await Checklist.create({ ...req.body, taskId: req.params.taskId })
+  const checklists = await Checklist.findAll({
+    where: { taskId: req.params.taskId },
+  })
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY,
+    checklists,
+  )
 }
 
 exports.updateChecklistItemStatus = async (req, res) => {
@@ -93,18 +151,29 @@ exports.updateChecklistItemStatus = async (req, res) => {
     where: { taskId: req.params.taskId },
   })
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY, checklists)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
+    checklists,
+  )
 }
 
 exports.deleteChecklistItem = async (req, res) => {
-  const [, checklists] = await Promise.all([
-    Checklist.destroy({ where: { id: req.params.id } }),
-    Checklist.findAll({ where: { taskId: req.params.taskId } }),
-  ])
-  return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY, checklists)
+  // const [, checklists] = await Promise.all([
+
+  // ])
+  await Checklist.destroy({ where: { id: req.params.id } })
+  const checklists = await Checklist.findAll({
+    where: { taskId: req.params.taskId },
+  })
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY,
+    checklists,
+  )
 }
 
 exports.deleteTask = async (req, res) => {
   await Task.destroy({ where: { id: req.params.id } })
-  return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }

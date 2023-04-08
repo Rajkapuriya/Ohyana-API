@@ -107,7 +107,7 @@ exports.getProductReport = async (req, res) => {
 
   return successResponse(
     res,
-    MESSAGE.RECORD_FOUND_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
     finalProductReport,
   )
 }
@@ -278,7 +278,7 @@ exports.getTeamReport = async (req, res) => {
 
   return successResponse(
     res,
-    MESSAGE.RECORD_FOUND_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
     finalTeamReport,
   )
 }

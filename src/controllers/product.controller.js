@@ -13,9 +13,10 @@ exports.createProduct = async (req, res) => {
     defaults: { ...req.body, companyId: req.user.companyId },
   })
 
-  if (!created) return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+  if (!created)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllProducts = async (req, res) => {
@@ -34,7 +35,7 @@ exports.getAllProducts = async (req, res) => {
 
   if (data.totalPage === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, data)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, data)
 }
 
 exports.getProductDetail = async (req, res) => {
@@ -55,7 +56,7 @@ exports.getProductDetail = async (req, res) => {
 
   if (!product) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, product)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, product)
 }
 
 exports.updateProduct = async (req, res) => {
@@ -69,13 +70,13 @@ exports.updateProduct = async (req, res) => {
     },
   })
   if (existedProduct)
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
   await Product.update(req.body, { where: { id: req.params.id } })
 
   return successResponse(
     res,
-    MESSAGE.RECORD_UPDATED_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
     // updateProduct,
   )
 }
@@ -84,12 +85,12 @@ exports.updateProductQuantity = async (req, res) => {
   const updateProduct = await Product.updateProduct(req.body, req.params.id)
   return successResponse(
     res,
-    MESSAGE.RECORD_UPDATED_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
     updateProduct,
   )
 }
 
 exports.deleteProduct = async (req, res) => {
   await Product.destroy({ where: { id: req.params.id } })
-  return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }

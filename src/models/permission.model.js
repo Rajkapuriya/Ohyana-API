@@ -50,6 +50,18 @@ const Permission = sequelize.define('permission', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  viewRole: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  editRole: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  deleteRole: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   viewProduct: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

@@ -78,7 +78,8 @@ exports.addClient = async (req, res) => {
     },
   })
 
-  if (!created) return badRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+  if (!created)
+    return badRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
   if (client) {
     io.getIO().emit('client_list', {
@@ -98,7 +99,7 @@ exports.addClient = async (req, res) => {
     })
   }
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllClients = async (req, res) => {
@@ -232,7 +233,7 @@ exports.getAllClients = async (req, res) => {
 
   if (client[0].count == 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, {
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
     totalPage: client[0].count,
     client: client[0].rows,
   })
@@ -261,7 +262,7 @@ exports.getClientProfile = async (req, res) => {
   )
     return forbiddenRequestError(res, 'Invalid Stage Access')
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, client)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, client)
 }
 
 exports.takeClient = async (req, res) => {
@@ -306,7 +307,8 @@ exports.updateClient = async (req, res) => {
     },
   })
 
-  if (existedClient) return badRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+  if (existedClient)
+    return badRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
   await Client.update(
     {
@@ -317,12 +319,12 @@ exports.updateClient = async (req, res) => {
     { where: { id: req.params.id } },
   )
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.deleteClient = async (req, res) => {
   await Client.destroy({ where: { id: req.params.id } })
-  return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }
 
 exports.addBusinessCard = async (req, res) => {
@@ -344,7 +346,7 @@ exports.addBusinessCard = async (req, res) => {
     companyId: req.user.companyId,
   })
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getBusinessCardDetail = async (req, res) => {
@@ -361,7 +363,7 @@ exports.getBusinessCardDetail = async (req, res) => {
 
   return successResponse(
     res,
-    MESSAGE.RECORD_FOUND_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
     businessCardDetail,
   )
 }
@@ -390,7 +392,8 @@ exports.updateClientStage = async (req, res) => {
 
   if (stage <= client.stage) return forbiddenRequestError(res)
 
-  if (client.teamId !== req.user.id) return unauthorisedRequestError(res)
+  if (client.teamId !== req.user.id && req.user.role.parentId !== null)
+    return unauthorisedRequestError(res)
 
   await client.update({ stage })
   const clientWithStage = await Client_Stage_History.findOne({
@@ -420,7 +423,7 @@ exports.updateClientStage = async (req, res) => {
 }
 
 exports.addClientStatus = async (req, res) => {
-  const { description, clientId, callNotReceived } = req.body
+  const { description, clientId, callNotReceived, followUpType } = req.body
   let audioUrl = null
 
   if (!req.file && !callNotReceived) {
@@ -440,10 +443,11 @@ exports.addClientStatus = async (req, res) => {
     description,
     teamId: req.user.id,
     audioUrl,
+    followUpType,
     clientId: clientId,
   })
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllClientStatus = async (req, res) => {
@@ -476,7 +480,11 @@ exports.getAllClientStatus = async (req, res) => {
 
   if (clientStatus.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, clientStatus)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    clientStatus,
+  )
 }
 
 exports.updateStatus = async (req, res) => {
@@ -484,14 +492,14 @@ exports.updateStatus = async (req, res) => {
 
   await Client_Status.update({ description }, { where: { id: statusId } })
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.addClientReminder = async (req, res) => {
   const { description, date, time, clientId } = req.body
 
   if (YYYY_MM_DDHHMM(`${date} ${time}`) <= YYYY_MM_DDHHMM()) {
-    return unProcessableEntityRequestError(res, MESSAGE.INVALID_TIME)
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
   await Client_Reminder.create({
@@ -534,14 +542,18 @@ exports.getAllClientReminder = async (req, res) => {
 
   if (clientReminder.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, clientReminder)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    clientReminder,
+  )
 }
 
 exports.updateReminder = async (req, res) => {
   const { description, date, time, reminderId } = req.body
 
   if (YYYY_MM_DDHHMM(`${date} ${time}`) <= YYYY_MM_DDHHMM()) {
-    return unProcessableEntityRequestError(res, MESSAGE.INVALID_TIME)
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
   const client_reminder = await Client_Reminder.findOne({
@@ -566,7 +578,7 @@ exports.updateReminder = async (req, res) => {
    * }
    */
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.addClientAppointment = async (req, res) => {
@@ -580,7 +592,7 @@ exports.addClientAppointment = async (req, res) => {
   } = req.body
 
   if (YYYY_MM_DDHHMM(`${date} ${time}`) <= YYYY_MM_DDHHMM()) {
-    return unProcessableEntityRequestError(res, MESSAGE.INVALID_TIME)
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
   await sequelize.transaction(async t => {
@@ -644,7 +656,7 @@ exports.getAllClientAppointment = async (req, res) => {
 
   return successResponse(
     res,
-    MESSAGE.RECORD_FOUND_SUCCESSFULLY,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
     clientAppointment,
   )
 }
@@ -660,7 +672,7 @@ exports.updateAppointment = async (req, res) => {
   } = req.body
 
   if (YYYY_MM_DDHHMM(`${date} ${time}`) <= YYYY_MM_DDHHMM()) {
-    return unProcessableEntityRequestError(res, MESSAGE.INVALID_TIME)
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
   const client_appointment = await Client_Appointment.findOne({
@@ -713,7 +725,7 @@ exports.getFileForResponse = async (req, res) => {
 // Get All Country
 exports.getCoutries = async (req, res) => {
   const country = await Country.findAll({ attributes: ['id', 'name'] })
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, country)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, country)
 }
 
 function unlinkFile(path) {

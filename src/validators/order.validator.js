@@ -17,6 +17,12 @@ exports.orderSchema = {
     }).required(),
   }).unknown(),
 
+  orderTrackingStatus: Joi.object({
+    body: Joi.object({
+      status: Joi.string().valid('PENDING', 'DISPATCH').required(),
+    }).required(),
+  }).unknown(),
+
   productListById: Joi.object({
     body: Joi.object({
       productIds: Joi.array().required(),
@@ -28,11 +34,11 @@ exports.orderSchema = {
       page: Joi.number(),
       size: Joi.number(),
       all: Joi.boolean(),
-      clientId: Joi.number().when('all', {
-        is: true,
-        then: Joi.forbidden(),
-        otherwise: Joi.number().required(),
-      }),
+      delivery: Joi.string().valid('PENDING', 'DISPATCH'),
+      payment: Joi.string().valid('PENDING', 'CONFIRMED'),
+      orderDate: Joi.string(),
+      searchQuery: Joi.string(),
+      clientId: Joi.number(),
     }).required(),
   }).unknown(),
 

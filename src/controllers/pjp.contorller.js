@@ -24,7 +24,7 @@ exports.createPJP = async (req, res) => {
   let status
 
   if (YYYY_MM_DD(date) < YYYY_MM_DD())
-    return unProcessableEntityRequestError(res, MESSAGE.INVALID_TIME)
+    return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
 
   if (YYYY_MM_DD(date) > YYYY_MM_DD()) {
     status = 'UPCOMING'
@@ -42,7 +42,7 @@ exports.createPJP = async (req, res) => {
     companyId: req.user.companyId,
   })
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.addPJPStatus = async (req, res) => {
@@ -58,7 +58,7 @@ exports.addPJPStatus = async (req, res) => {
     clientId: clientId,
   })
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getClientPJPStatus = async (req, res) => {
@@ -84,7 +84,7 @@ exports.getClientPJPStatus = async (req, res) => {
 
   if (status.count === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, {
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
     totalPage: status.count,
     statuses: status.rows,
   })
@@ -105,7 +105,7 @@ exports.completePJPStatus = async (req, res) => {
     { where: { id: pjpId } },
   )
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.getAllPJP = async (req, res) => {
@@ -183,7 +183,11 @@ exports.getAllPJP = async (req, res) => {
 
   if (response.totalPage === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, response)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    response,
+  )
 }
 
 exports.getPJPDetail = async (req, res) => {
@@ -207,16 +211,16 @@ exports.getPJPDetail = async (req, res) => {
 
   if (!pjp) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, pjp)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, pjp)
 }
 
 exports.updatePjp = async (req, res) => {
   const { date } = req.body
   if (date && moment(date) <= moment())
-    return badRequestError(res, MESSAGE.INVALID_TIME)
+    return badRequestError(res, MESSAGE.COMMON.INVALID_TIME)
 
   await Pjp.update(req.body, { where: { id: req.body.pjpId } })
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.deletePjp = async (req, res) => {
@@ -226,5 +230,5 @@ exports.deletePjp = async (req, res) => {
 
   if (!isPjpDeleted) return badRequestError(res, 'PJP is not completed yet')
 
-  return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }

@@ -21,81 +21,88 @@ exports.getInquiryAnalytics = async (req, res) => {
   const currentMonth = moment().format('MM')
   const lastMonth = moment().subtract(1, 'months').format('MM')
 
-  const [
-    currentMonthInquiry,
-    lastMonthInquiry,
-    currentMonthOrders,
-    lastMonthOrders,
-    teams,
-    crtMonthPoints,
-    lastMonthPoints,
-  ] = await Promise.all([
-    Client.findAll({
-      where: getWhereConditionPerMonth(req.user, currentMonth, 'arrivalDate'),
-    }),
-    Client.findAll({
-      where: getWhereConditionPerMonth(req.user, lastMonth, 'arrivalDate'),
-    }),
-    Order.findAndCountAll({
-      where: {
-        ...getWhereConditionPerMonth(req.user, currentMonth, 'date'),
-        paymentStatus: 'CONFIRMED',
+  const currentMonthInquiry = await Client.findAll({
+    where: getWhereConditionPerMonth(req.user, currentMonth, 'arrivalDate'),
+  })
+
+  const lastMonthInquiry = await Client.findAll({
+    where: getWhereConditionPerMonth(req.user, lastMonth, 'arrivalDate'),
+  })
+
+  const currentMonthOrders = await Order.findAndCountAll({
+    where: {
+      ...getWhereConditionPerMonth(req.user, currentMonth, 'date'),
+      paymentStatus: 'CONFIRMED',
+    },
+    include: {
+      model: Client,
+      attributes: ['name'],
+    },
+    limit: 10,
+    order: [['id', 'DESC']],
+  })
+
+  const lastMonthOrders = await Order.count({
+    where: {
+      ...getWhereConditionPerMonth(req.user, lastMonth, 'date'),
+      paymentStatus: 'CONFIRMED',
+    },
+  })
+
+  const userAttendance = await Attendance.findOne({
+    attributes: ['checkIn', 'checkOut', 'breakIn', 'breakOut'],
+    where: {
+      teamId: req.user.id,
+    },
+  })
+
+  const teams = await Team.findAll({
+    attributes: ['id', 'name', 'points', 'location', 'imgUrl'],
+    where: {
+      companyId: req.user.companyId,
+      roleId: {
+        [Op.ne]: 1,
       },
-      limit: 10,
-      order: [['id', 'DESC']],
-    }),
-    Order.count({
-      where: {
-        ...getWhereConditionPerMonth(req.user, lastMonth, 'date'),
-        paymentStatus: 'CONFIRMED',
+    },
+    limit: 10,
+    include: [
+      { model: Role, attributes: ['name'] },
+      {
+        model: Attendance,
+        required: false,
+        attributes: ['attendanceType'],
+        where: { date: moment() },
       },
-    }),
-    Team.findAll({
-      attributes: ['id', 'points', 'location'],
-      where: {
-        companyId: req.user.companyId,
-        roleId: {
-          [Op.ne]: 1,
-        },
-      },
-      limit: 10,
-      include: [
-        { model: Role, attributes: ['name'] },
-        {
-          model: Attendance,
-          required: false,
-          attributes: ['attendanceType'],
-          where: { date: moment() },
-        },
+    ],
+  })
+
+  const crtMonthPoints = await Team_Point.findAll({
+    where: {
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('createdAt')),
+          currentMonth,
+        ),
       ],
-    }),
-    Team_Point.findAll({
-      where: {
-        [Op.and]: [
-          sequelize.where(
-            sequelize.fn('month', sequelize.col('createdAt')),
-            currentMonth,
-          ),
-        ],
-      },
-      include: {
-        model: Points,
-      },
-    }),
-    Team_Point.findAll({
-      where: {
-        [Op.and]: [
-          sequelize.where(
-            sequelize.fn('month', sequelize.col('createdAt')),
-            lastMonth,
-          ),
-        ],
-      },
-      include: {
-        model: Points,
-      },
-    }),
-  ])
+    },
+    include: {
+      model: Points,
+    },
+  })
+
+  const lastMonthPoints = await Team_Point.findAll({
+    where: {
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('createdAt')),
+          lastMonth,
+        ),
+      ],
+    },
+    include: {
+      model: Points,
+    },
+  })
 
   const lstTeamMemeberPoint = [],
     crtTeamMemberPoint = []
@@ -111,7 +118,7 @@ exports.getInquiryAnalytics = async (req, res) => {
     }
   })
 
-  lstTeamMemeberPoint.forEach(e => {
+  lastMonthPoints.forEach(e => {
     const index = lstTeamMemeberPoint.findIndex(ele => ele.teamId === e.teamId)
     if (index != -1) {
       lstTeamMemeberPoint[index].points += parseInt(e.point.points)
@@ -208,8 +215,19 @@ exports.getInquiryAnalytics = async (req, res) => {
   })
 
   const total = crtMonIndiaMart + crtMonWeb + crtMonOther + crtMonPJP
+  const leadPercentage = ((crtLead - lstLead) / lstLead) * 100
+  const orderPercentage =
+    ((currentMonthOrders.count - lastMonthOrders) / lastMonthOrders) * 100
+  const noRepsoneInquiryPercentage =
+    ((crtNoResponse - lstNoResponse) / lstNoResponse) * 100
+  const pendingInquiryPercentage =
+    ((crtPending - lstPending) / lstPending) * 100
+  const irrelevantInquiryPercentage =
+    ((crtIrrelevant - lstIrrelevant) / lstIrrelevant) * 100
+
   response = {
     data: {
+      userAttendance,
       inquiry: {
         total,
         crtMonIndiaMart,
@@ -219,12 +237,25 @@ exports.getInquiryAnalytics = async (req, res) => {
         lstMonWeb,
         lstMonOther,
         percentageIndiaMart:
-          (crtMonIndiaMart / 100 - lstMonIndiaMart / 100) * 100,
-        percentageOther: (crtMonOther / 100 - lstMonOther / 100) * 100,
+          ((crtMonIndiaMart - lstMonIndiaMart) / lstMonIndiaMart) * 100,
+        percentageOther: ((crtMonOther - lstMonOther) / lstMonOther) * 100,
       },
       sales: {
+        total,
+        totalPercentage:
+          (leadPercentage +
+            orderPercentage +
+            noRepsoneInquiryPercentage +
+            pendingInquiryPercentage +
+            irrelevantInquiryPercentage) /
+          5,
         crtIrrelevant,
         crtLead,
+        leadPercentage,
+        orderPercentage,
+        noRepsoneInquiryPercentage,
+        pendingInquiryPercentage,
+        irrelevantInquiryPercentage,
         crtNoResponse,
         crtPending,
         lstLead,
@@ -238,7 +269,11 @@ exports.getInquiryAnalytics = async (req, res) => {
       teamWithPoints,
     },
   }
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, response)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    response,
+  )
 }
 
 exports.getSalesTeamInquiryAnalytics = async (req, res) => {
@@ -246,70 +281,85 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
   const currentMonth = moment().format('MM')
   const lastMonth = moment().subtract(1, 'months').format('MM')
 
-  const [
-    currentMonthInquiry,
-    lastMonthInquiry,
-    teams,
-    targets,
-    attendance,
-    teamPoints,
-    tasks,
-  ] = await Promise.all([
-    Client.findAll({
-      where: getWhereConditionPerMonth(req.user, currentMonth, 'arrivalDate'),
-    }),
-    Client.findAll({
-      where: getWhereConditionPerMonth(req.user, lastMonth, 'arrivalDate'),
-    }),
-    Team.findAll({
-      attributes: ['id', 'points', 'location'],
-      where: {
-        id: req.user.id,
+  const userAttendance = await Attendance.findOne({
+    attributes: ['checkIn', 'checkOut', 'breakIn', 'breakOut'],
+    where: {
+      teamId: req.user.id,
+    },
+  })
+
+  const currentMonthInquiry = await Client.findAll({
+    where: getWhereConditionPerMonth(req.user, currentMonth, 'arrivalDate'),
+  })
+
+  const lastMonthInquiry = await Client.findAll({
+    where: getWhereConditionPerMonth(req.user, lastMonth, 'arrivalDate'),
+  })
+
+  const teams = await Team.findAll({
+    attributes: ['id', 'points', 'location'],
+    where: {
+      id: req.user.id,
+    },
+    limit: 10,
+    include: [
+      { model: Role, attributes: ['name'] },
+      // { model : Attendance ,attributes: ['attendanceType'], where : {date : moment()}}
+    ],
+  })
+
+  const targets = await Target.findAll({
+    where: {
+      teamId: 2,
+      type: 'Generate Lead',
+    },
+    order: [['endDate', 'DESC']],
+    limit: 2,
+  })
+
+  const attendance = await Attendance.findOne({
+    attributes: { exclude: ['teamId', 'id'] },
+    where: {
+      date: moment(),
+      teamId: req.user.id,
+    },
+  })
+
+  const teamPoints = await Team_Point.findAll({
+    attributes: ['id', 'createdAt'],
+    where: { teamId: req.user.id },
+    include: [{ model: Points, attributes: ['name', 'points'] }],
+    order: [['id', 'DESC']],
+    limit: 4,
+  })
+
+  const tasks = await Task.findOne({
+    attributes: ['id', 'title', 'due_date', 'description', 'createdBy'],
+    where: {
+      teamId: req.user.id,
+      due_date: {
+        [Op.gte]: moment(),
       },
-      limit: 10,
-      include: [
-        { model: Role, attributes: ['name'] },
-        // { model : Attendance ,attributes: ['attendanceType'], where : {date : moment()}}
-      ],
-    }),
-    Target.findAll({
-      where: {
-        teamId: 2,
-        type: 'Generate Lead',
+    },
+    include: [
+      {
+        model: Checklist,
+        attributes: ['id', 'task', 'done'],
       },
-      order: [['endDate', 'DESC']],
-      limit: 2,
-    }),
-    Attendance.findOne({
-      attributes: { exclude: ['teamId', 'id'] },
-      where: {
-        date: moment(),
-        teamId: req.user.id,
-      },
-    }),
-    Team_Point.findAll({
-      attributes: ['id', 'createdAt'],
-      where: { teamId: req.user.id },
-      include: [{ model: Points, attributes: ['name', 'points'] }],
-      order: [['id', 'DESC']],
-      limit: 4,
-    }),
-    Task.findOne({
-      attributes: ['id', 'title', 'due_date', 'description', 'createdBy'],
-      where: {
-        teamId: req.user.id,
-        due_date: {
-          [Op.gte]: moment(),
-        },
-      },
-      include: [
-        {
-          model: Checklist,
-          attributes: ['id', 'task', 'done'],
-        },
-      ],
-    }),
-  ])
+    ],
+  })
+
+  const starPerformerList = await Team.findAll({
+    attributes: ['id', 'name', 'imgUrl'],
+    where: {
+      isCurrentMonthStarPerformer: 1,
+    },
+    include: {
+      model: Role,
+      attributes: ['name'],
+      where: { parentId: { [Op.ne]: null } },
+    },
+  })
 
   let crtMonIndiaMart = 0,
     crtMonWeb = 0,
@@ -375,6 +425,7 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
   const total = crtMonIndiaMart + crtMonWeb + crtMonOther + crtMonPJP
 
   responseData = {
+    userAttendance,
     performance: {
       total,
       targets: {
@@ -384,21 +435,26 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
           (currentTargetRecords.achieve / currentTargetRecords.target -
             lastTargetRecords.achieve / currentTargetRecords.target) *
           100,
-        remainDays,
+        remainDays: remainDays > 0 ? remainDays : 0,
       },
     },
     attendance,
     teams,
     teamPoints,
+    starPerformerList,
     tasks,
   }
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, responseData)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    responseData,
+  )
 }
 
 function getWhereConditionPerMonth(user, month, dateColumn) {
   return {
-    companyId: user.companyId,
+    // companyId: user.companyId,
     [Op.and]: [
       sequelize.where(sequelize.fn('month', sequelize.col(dateColumn)), month),
     ],

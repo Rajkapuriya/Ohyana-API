@@ -32,34 +32,13 @@ exports.teamSchema = {
     }).required(),
   }).unknown(),
 
-  permissionsForm: Joi.object({
-    body: Joi.object({
-      teamId: Joi.number().required(),
-      clientMenu: Joi.boolean().required(),
-      editClient: Joi.boolean().required(),
-      deleteClient: Joi.boolean().required(),
-      staffMenu: Joi.boolean().required(),
-      editStaff: Joi.boolean().required(),
-      deleteStaff: Joi.boolean().required(),
-      settingMenu: Joi.boolean().required(),
-      viewDepartment: Joi.boolean().required(),
-      editDepartment: Joi.boolean().required(),
-      deleteDepartment: Joi.boolean().required(),
-      viewProduct: Joi.boolean().required(),
-      editProduct: Joi.boolean().required(),
-      deleteProduct: Joi.boolean().required(),
-      accessClient: Joi.boolean().required(),
-      accessStaff: Joi.boolean().required(),
-      accessSetting: Joi.boolean().required(),
-      clientStageAccess: Joi.number().required(),
-    }).required(),
-  }).unknown(),
-
   teamMemberList: Joi.object({
     query: Joi.object({
       roleId: Joi.number(),
-      departmentId: Joi.number(),
       admin: Joi.boolean(),
+      searchQuery: Joi.string(),
+      attendanceType: Joi.string(),
+      teamType: Joi.string().valid('FIELD', 'OFFICE'),
     }).required(),
   }).unknown(),
 

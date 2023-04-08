@@ -28,7 +28,7 @@ exports.createRole = async (req, res) => {
   })
 
   if (existedRole)
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
   await sequelize.transaction(async t => {
     const role = await Role.create(
@@ -46,7 +46,7 @@ exports.createRole = async (req, res) => {
     await Permission.create({ roleId: role.id }, { transaction: t })
   })
 
-  return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllRoles = async (req, res) => {
@@ -66,7 +66,7 @@ exports.getAllRoles = async (req, res) => {
 
     if (role.length === 0) return notFoundError(res)
 
-    return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, {
+    return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
       department,
       roles: role,
     })
@@ -78,7 +78,7 @@ exports.getAllRoles = async (req, res) => {
 
     if (roles.length === 0) return notFoundError(res)
 
-    return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, roles)
+    return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, roles)
   }
 }
 
@@ -87,16 +87,26 @@ exports.getSingleRoles = async (req, res) => {
 
   const role = await Role.findOne({
     where: { id: roleId },
-    include: [{ model: Department }, { model: Permission }],
+    include: [{ model: Permission }],
   })
 
   if (!role) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, role)
+  if (role.parentId) {
+    const parentRole = await Role.findOne({
+      attributes: ['name', 'description'],
+      where: { id: role.parentId },
+    })
+    role.setDataValue('senior', parentRole)
+
+    delete role.dataValues.parentId
+  }
+
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, role)
 }
 
 exports.updateRole = async (req, res) => {
-  const { name, description, departmentId, clockIn } = req.body
+  const { name, description, clockIn } = req.body
 
   if (name.toLowerCase() === 'CEO'.toLowerCase())
     return forbiddenRequestError(res, 'Name is Prohibited')
@@ -104,19 +114,18 @@ exports.updateRole = async (req, res) => {
   const existedRole = await Role.findOne({
     where: {
       name,
-      departmentId,
       id: { [Op.ne]: req.params.id },
       companyId: req.user.companyId,
     },
   })
   if (existedRole)
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
-
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
+  console.log()
   await Role.update(
     { name, description, clockIn },
     { where: { id: req.params.id } },
   )
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.updateClockInOutTime = async (req, res) => {
@@ -127,7 +136,7 @@ exports.updateClockInOutTime = async (req, res) => {
 
   await Role.update({ ...req.body }, { where: { id: roleId } })
 
-  return successResponse(res, MESSAGE.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
 exports.deleteRole = async (req, res) => {
@@ -136,7 +145,7 @@ exports.deleteRole = async (req, res) => {
   })
   if (!teamMemberRelatedToDepartment) {
     await Role.destroy({ where: { id: req.params.id } })
-    return successResponse(res, MESSAGE.RECORD_DELETED_SUCCESSFULLY)
+    return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
   } else {
     return forbiddenRequestError(res, 'This Role is associated to team member')
   }
@@ -145,7 +154,7 @@ exports.deleteRole = async (req, res) => {
 exports.getPermissions = async (req, res) => {
   const { id } = req.params
 
-  const [permission, roleExpenseRule, expensePolicies] = await Promise.all([
+  const [permission, expensePermissions, expensePolicies] = await Promise.all([
     Permission.findOne({
       attributes: { exclude: ['createdAt', 'updatedAt', 'roleId'] },
       where: { roleId: id },
@@ -159,9 +168,9 @@ exports.getPermissions = async (req, res) => {
     }),
   ])
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, {
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
     permissions: permission,
-    roleExpense: roleExpenseRule,
+    expensePermissions,
     expensePolicies,
   })
 }

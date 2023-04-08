@@ -11,6 +11,8 @@ const {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
 } = require('../utils/common.util')
+const { Op } = require('sequelize')
+const sequelize = require('../database/mysql')
 
 exports.addToCart = async (req, res) => {
   const { productId, quantity } = req.body
@@ -21,10 +23,10 @@ exports.addToCart = async (req, res) => {
   if (alreadyInCart) {
     // await alreadyInCart.update({ quantity: Sequelize.literal(`case when ${quantity} < 0 then 0 else remainDays + ${rdc} end`) },
     //     { where: whereClause, transaction: t })
-    return forbiddenRequestError(res, MESSAGE.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
   } else {
     await Cart.create({ productId, teamId: req.user.id, quantity: quantity })
-    return successResponse(res, MESSAGE.RECORD_CREATED_SUCCESSFULLY)
+    return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
   }
 }
 
@@ -49,7 +51,7 @@ exports.getAllCartItem = async (req, res) => {
 
   if (cart.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, cart)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, cart)
 }
 
 exports.getProductListFromIds = async (req, res) => {
@@ -60,7 +62,7 @@ exports.getProductListFromIds = async (req, res) => {
 
   if (prdouct.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, prdouct)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, prdouct)
 }
 
 exports.placeOrder = async (req, res) => {
@@ -115,11 +117,13 @@ exports.placeOrder = async (req, res) => {
   }
 }
 
-exports.getAllOrderSummary = async (req, res) => {
+exports.getAllOrderList = async (req, res) => {
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
 
-  let whereClause = { clientId: req.query.clientId }
+  const { clientId, searchQuery, delivery, payment, orderDate } = req.query
+
+  let whereClause = { clientId }
   let include = [
     {
       model: Team,
@@ -127,7 +131,7 @@ exports.getAllOrderSummary = async (req, res) => {
     },
   ]
 
-  if (req.query.all === 'true') {
+  if (!clientId) {
     whereClause = {}
     include = [
       {
@@ -139,6 +143,32 @@ exports.getAllOrderSummary = async (req, res) => {
         attributes: ['name'],
       },
     ]
+  }
+
+  if (searchQuery && !clientId) {
+    include[1].where = {
+      name: {
+        [Op.like]: `%${searchQuery}%`,
+      },
+    }
+  }
+
+  if (delivery && !clientId) {
+    whereClause.orderTrackingStatus = delivery
+  }
+
+  if (payment && !clientId) {
+    whereClause.paymentStatus = payment
+  }
+
+  if (orderDate && !clientId) {
+    whereClause = {
+      ...whereClause,
+      [Op.and]: [
+        // { date: date },
+        sequelize.where(sequelize.fn('date', sequelize.col('date')), orderDate),
+      ],
+    }
   }
 
   const order = await Order.findAndCountAll({
@@ -159,59 +189,13 @@ exports.getAllOrderSummary = async (req, res) => {
 
   if (order.count === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, {
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
     totalPage: order.count,
     orders: order.rows,
   })
 }
 
 exports.getAllItemsPerOrder = async (req, res) => {
-  // const [orderDetail, orderitems] = await Promise.all([
-  //     Order.findOne({
-  //         attributes: [
-  //             'id',
-  //             'date',
-  //             'total_items',
-  //             'order_total',
-  //             'orderTrackingStatus',
-  //             'paymentStatus',
-  //             'paymentMethod',
-  //         ],
-  //         where: { id: req.params.orderId },
-  //         include: [
-  //             {
-  //                 model: Team,
-  //                 attributes: ['name'],
-  //             },
-  //             {
-  //                 model: Client,
-  //                 attributes: ['name', 'address', 'city', 'state'],
-  //             },
-  //             {
-  //                 model: Order_Item,
-  //                 attributes: ['id', 'quantity'],
-  //                 include: [
-  //                     {
-  //                         model: Product,
-  //                         attributes: ['id', 'imageUrl', 'name', 'price'],
-  //                     },
-  //                 ],
-  //             }
-  //         ],
-  //         plain: true
-  //     }),
-  //     Order_Item.findAll({
-  //         attributes: ['id', 'quantity'],
-  //         where: { orderId: req.params.orderId },
-  //         include: [
-  //             {
-  //                 model: Product,
-  //                 attributes: ['id', 'imageUrl', 'name', 'price'],
-  //             },
-  //         ],
-  //     }),
-  // ])
-
   const orderDetail = await Order.findOne({
     attributes: [
       'id',
@@ -248,7 +232,7 @@ exports.getAllItemsPerOrder = async (req, res) => {
 
   if (!orderDetail) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.RECORD_FOUND_SUCCESSFULLY, {
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
     orderDetail,
     // orderitems,
   })
@@ -257,20 +241,43 @@ exports.getAllItemsPerOrder = async (req, res) => {
 exports.updatePaymentStatus = async (req, res) => {
   const { status, method } = req.body
 
-  const order = await Order.updateOrder(
-    {
-      paymentStatus: status,
-      paymentMethod: method,
-    },
-    req.params.orderId,
-  )
+  const order = await Order.findOne({ where: { id: req.params.orderId } })
 
   if (!order) return notFoundError(res)
 
+  if (order.paymentStatus == 'CONFIRMED' && status == 'PENDING')
+    return forbiddenRequestError(res, 'Payment is already confirmed')
+
+  const updateOrder = await order.update({
+    paymentStatus: status,
+    paymentMethod: method,
+  })
+
   return successResponse(res, 'Payment Confirmed', {
     order: {
-      status: order.paymentStatus,
-      method: order.paymentMethod,
+      status: updateOrder.paymentStatus,
+      method: updateOrder.paymentMethod,
+    },
+  })
+}
+
+exports.updateOrderTrackingStatus = async (req, res) => {
+  const { status } = req.body
+
+  const order = await Order.findOne({ where: { id: req.params.orderId } })
+
+  if (!order) return notFoundError(res)
+
+  if (order.orderTrackingStatus == 'DISPATCH' && status == 'PENDING')
+    return forbiddenRequestError(res, 'Order is already dispatched')
+
+  const updateOrder = await order.update({
+    orderTrackingStatus: status,
+  })
+
+  return successResponse(res, 'Status Updated', {
+    order: {
+      status: updateOrder.orderTrackingStatus,
     },
   })
 }
