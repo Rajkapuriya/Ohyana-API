@@ -18,13 +18,13 @@ const {
 const { MESSAGE } = require('../constants/message.contant')
 
 exports.createRole = async (req, res) => {
-  const { name, description, departmentId, clockIn, parentId } = req.body
+  const { name, description, clockIn, parentId } = req.body
 
   if (name.toLowerCase() === 'Admin'.toLowerCase())
     return forbiddenRequestError(res, 'Name is Prohibited')
 
   const existedRole = await Role.findOne({
-    where: { name, departmentId, companyId: req.user.companyId },
+    where: { name, companyId: req.user.companyId },
   })
 
   if (existedRole)
@@ -35,7 +35,6 @@ exports.createRole = async (req, res) => {
       {
         name,
         description,
-        departmentId,
         clockIn,
         companyId: req.user.companyId,
         parentId,

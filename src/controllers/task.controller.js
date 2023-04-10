@@ -84,21 +84,10 @@ exports.getSingleTaskWithChecklist = async (req, res) => {
   return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, task)
 }
 
-exports.updateDescription = async (req, res) => {
-  const { description } = req.body
+exports.updateTaskDetails = async (req, res) => {
+  const { title, description, taskId } = req.body
 
-  const updatedTask = await Task.updateTask({ description }, req.params.taskId)
-  return successResponse(
-    res,
-    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
-    updatedTask,
-  )
-}
-
-exports.updateTitle = async (req, res) => {
-  const { title } = req.body
-
-  const updatedTask = await Task.updateTask({ title }, req.params.taskId)
+  const updatedTask = await Task.updateTask({ title, description }, taskId)
 
   return successResponse(
     res,

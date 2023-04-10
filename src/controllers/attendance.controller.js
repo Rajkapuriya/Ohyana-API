@@ -295,7 +295,7 @@ exports.getAllLeavePerUser = async (req, res) => {
   }
 
   const leavesPerUser = await Team_Leave.findAll({
-    attributes: ['date', 'takenDays', 'remainDays', 'status'],
+    attributes: ['id', 'date', 'takenDays', 'remainDays', 'status'],
     where: whereCondition,
     order: [['date', 'DESC']],
     include: [{ model: Leave, attributes: ['type'] }],

@@ -9,9 +9,11 @@ exports.taskSchema = {
     }).required(),
   }).unknown(),
 
-  updateTitle: Joi.object({
+  updateTaskDetails: Joi.object({
     body: Joi.object({
-      title: Joi.string().min(2).required(),
+      title: Joi.string(),
+      description: Joi.string(),
+      taskId: Joi.number().required(),
     }).required(),
   }).unknown(),
 

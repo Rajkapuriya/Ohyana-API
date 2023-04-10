@@ -9,6 +9,7 @@ const {
   Points,
   Team_Point,
   Team_Expense,
+  Role,
 } = require('../models')
 const { YYYY_MM_DD } = require('../utils/moment.util')
 const moment = require('moment')
@@ -186,6 +187,11 @@ exports.getTeamReport = async (req, res) => {
           [Op.notIn]: teams.map(e => e.id),
         },
       },
+      include: {
+        attributes: ['id'],
+        model: Role,
+        where: { parentId: { [Op.ne]: null } },
+      },
     })
     allTeamMembers.forEach(e => {
       const index = teams.findIndex(el => el.id == e.id)
@@ -220,7 +226,14 @@ exports.getTeamReport = async (req, res) => {
   }
 
   if (comparison == 'points') {
-    teams = await Team.findAll(whereCondition)
+    teams = await Team.findAll({
+      ...whereCondition,
+      include: {
+        model: Role,
+        attributes: ['id'],
+        where: { parentId: { [Op.ne]: null } },
+      },
+    })
     teamPoints = await Team_Point.findAll({
       where: {
         teamId: teams.map(e => e.id),

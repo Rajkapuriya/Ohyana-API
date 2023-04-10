@@ -19,6 +19,7 @@ targetRouter.post(
 
 targetRouter.get(
   '/targets/:id',
+  joiValidationMiddleware(targetSchema.targetList),
   authTokenMiddleware,
   targetController.getTargets,
 )

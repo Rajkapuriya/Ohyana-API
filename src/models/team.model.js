@@ -49,11 +49,16 @@ const Team = sequelize.define('team', {
   rating: {
     type: DataTypes.FLOAT,
   },
+  jobType: {
+    type: DataTypes.INTEGER(2),
+    comment: '0=office,1=field',
+  },
   location: {
     type: DataTypes.STRING(65),
   },
   points: {
     type: DataTypes.STRING(10),
+    defaultValue: '0',
   },
   deviceToken: {
     type: DataTypes.STRING,

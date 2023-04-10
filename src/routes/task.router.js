@@ -36,18 +36,11 @@ taskRouter.put(
   taskController.assignMember,
 )
 
-taskRouter.patch(
-  '/title/task/:taskId',
-  joiValidationMiddleware(taskSchema.updateTitle),
+taskRouter.put(
+  '/task',
+  joiValidationMiddleware(taskSchema.updateTaskDetails),
   authTokenMiddleware,
-  taskController.updateTitle,
-)
-
-taskRouter.patch(
-  '/description/task/:taskId',
-  joiValidationMiddleware(taskSchema.updateDescription),
-  authTokenMiddleware,
-  taskController.updateDescription,
+  taskController.updateTaskDetails,
 )
 
 taskRouter.patch(

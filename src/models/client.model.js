@@ -14,7 +14,7 @@ const Client = sequelize.define('client', {
     type: DataTypes.STRING(50),
   },
   arrivalDate: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
   },
   arrivalTime: {
     type: DataTypes.TIME,
@@ -40,7 +40,7 @@ const Client = sequelize.define('client', {
   reference: {
     type: DataTypes.STRING(15),
     validate: {
-      // isIn: [['INDIAMART', 'WEBSITE', 'OFFICE', 'OTHER']],
+      isIn: [['DIGITAL', 'OFFICE', 'OTHER']],
     },
   },
   reference_name: {

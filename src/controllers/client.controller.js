@@ -48,7 +48,7 @@ const {
 } = require('../models')
 
 exports.addClient = async (req, res) => {
-  const { email, contact_number, client_type } = req.body
+  const { email, contact_number, isInternational } = req.body
 
   let clientFindOneCondition = [{ email }, { contact_number }]
 
@@ -70,7 +70,7 @@ exports.addClient = async (req, res) => {
     where: { [Op.or]: clientFindOneCondition },
     defaults: {
       ...req.body,
-      isInternational: client_type,
+      isInternational: isInternational,
       arrivalDate: newDate.split(' ')[0],
       arrivalTime: newDate.split(' ')[1],
       stage: 0,
@@ -81,29 +81,37 @@ exports.addClient = async (req, res) => {
   if (!created)
     return badRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  if (client) {
-    io.getIO().emit('client_list', {
-      action: 'Get Client',
-      client: [
-        {
-          id: client.id,
-          name: client.name,
-          business: client.business,
-          contact_number: client.contact_number,
-          state: client.state,
-          city: client.city,
-          arrivalDate: client.arrivalDate,
-          time: client.arrivalTime,
-        },
-      ],
-    })
-  }
+  // if (client) {
+  //   io.getIO().emit('client_list', {
+  //     action: 'Get Client',
+  //     client: [
+  //       {
+  //         id: client.id,
+  //         name: client.name,
+  //         business: client.business,
+  //         contact_number: client.contact_number,
+  //         state: client.state,
+  //         city: client.city,
+  //         arrivalDate: client.arrivalDate,
+  //         time: client.arrivalTime,
+  //       },
+  //     ],
+  //   })
+  // }
 
   return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
 exports.getAllClients = async (req, res) => {
-  const { isInternational, stage, forMobile, tabType, searchQuery } = req.query
+  const {
+    isInternational,
+    stage,
+    forMobile,
+    tabType,
+    searchQuery,
+    city,
+    state,
+  } = req.query
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
 
@@ -121,8 +129,8 @@ exports.getAllClients = async (req, res) => {
     ],
     where: {
       companyId: req.user.companyId,
-      email: { [Op.not]: null },
-      contact_number: { [Op.not]: null },
+      // email: { [Op.not]: null },
+      // contact_number: { [Op.not]: null },
     },
     offset: (currentPage - 1) * size,
     order: [['id', 'DESC']],
@@ -185,6 +193,20 @@ exports.getAllClients = async (req, res) => {
       name: {
         [Op.like]: `%${searchQuery}%`,
       },
+    }
+  }
+
+  if (city) {
+    whereCondition.where = {
+      ...whereCondition.where,
+      city: city,
+    }
+  }
+
+  if (state) {
+    whereCondition.where = {
+      ...whereCondition.where,
+      state: state,
     }
   }
 
@@ -390,7 +412,9 @@ exports.updateClientStage = async (req, res) => {
 
   if (!client) return notFoundError(res)
 
-  if (stage <= client.stage) return forbiddenRequestError(res)
+  // 5 = client inquiry closed
+  if (stage <= client.stage || client.stage === 5)
+    return forbiddenRequestError(res)
 
   if (client.teamId !== req.user.id && req.user.role.parentId !== null)
     return unauthorisedRequestError(res)
@@ -491,6 +515,21 @@ exports.updateStatus = async (req, res) => {
   const { description, statusId } = req.body
 
   await Client_Status.update({ description }, { where: { id: statusId } })
+
+  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
+}
+
+exports.closeClientInquery = async (req, res) => {
+  const { description, clientId } = req.body
+
+  // stage 5 for closed inquiry
+  await Client.update({ stage: 5 }, { where: { id: clientId } })
+  await Client_Stage_History.create({
+    stage: 5,
+    clientId: clientId,
+    teamId: req.user.id,
+  })
+  await Client_Status.create({ description, clientId, teamId: req.user.id })
 
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
@@ -720,12 +759,6 @@ exports.getFileForResponse = async (req, res) => {
       return internalServerError(res, 'Error Reading File')
     })
     .pipe(res)
-}
-
-// Get All Country
-exports.getCoutries = async (req, res) => {
-  const country = await Country.findAll({ attributes: ['id', 'name'] })
-  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, country)
 }
 
 function unlinkFile(path) {

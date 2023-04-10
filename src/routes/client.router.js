@@ -132,6 +132,14 @@ clientRouter.put(
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
   clientController.updateStatus,
 )
+
+clientRouter.patch(
+  '/client/status/closed',
+  joiValidationMiddleware(clientSchema.closeClientInquiry),
+  authTokenMiddleware,
+  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  clientController.closeClientInquery,
+)
 // clientRouter.get('/status/audio/:path', clientController.getStatusAudio)
 
 // ------------------------------- Client Reminder Routes -------------------------------
@@ -182,15 +190,6 @@ clientRouter.put(
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
   clientController.updateAppointment,
-)
-
-// ------------------------------- Country -------------------------------
-
-clientRouter.get(
-  '/country',
-  authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
-  clientController.getCoutries,
 )
 
 // ------------------------------- Get Files From Server -------------------------------

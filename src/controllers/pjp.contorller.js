@@ -34,7 +34,6 @@ exports.createPJP = async (req, res) => {
 
   await Pjp.create({
     date,
-
     status,
     description,
     teamId: teamId || req.user.id,
@@ -114,15 +113,7 @@ exports.getAllPJP = async (req, res) => {
   const { statusType, date, day, clientId, followUpType, teamId } = req.query
 
   const whereCondition = {
-    attributes: [
-      'id',
-      'date',
-      'status',
-      'name',
-      'city',
-      'business',
-      'contact_number',
-    ],
+    attributes: ['id', 'date', 'status', 'is_completed'],
     where: {
       companyId: req.user.companyId,
       teamId: teamId ?? req.user.id,
@@ -130,7 +121,7 @@ exports.getAllPJP = async (req, res) => {
     order: [['id', 'DESC']],
     include: {
       model: Client,
-      attributes: ['id', 'name', 'contact_number', 'city', 'state'],
+      attributes: ['id', 'name', 'contact_number', 'city', 'state', 'business'],
     },
     offset: (currentPage - 1) * size,
     limit: size,

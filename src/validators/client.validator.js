@@ -13,14 +13,14 @@ exports.clientSchema = {
       contact_number: Joi.string()
         .regex(/[^a-zA-Z!@#$%^&*]/)
         .allow(null, ''),
-      client_type: Joi.boolean().required(),
+      isInternational: Joi.boolean().required(),
       state: Joi.string().required(),
       city: Joi.string().required(),
       address: Joi.string().allow(null, ''),
       countryId: Joi.number().allow(null, ''),
       max_invesment_amount: Joi.number(),
     })
-      .xor('email', 'contact_number')
+      .or('email', 'contact_number')
       .required(),
   }).unknown(),
 
@@ -31,6 +31,8 @@ exports.clientSchema = {
       tabType: Joi.string(),
       forMobile: Joi.boolean(),
       searchQuery: Joi.string(),
+      city: Joi.string(),
+      state: Joi.string(),
       page: Joi.number(),
       size: Joi.number(),
     }).required(),
@@ -56,6 +58,13 @@ exports.clientSchema = {
       description: Joi.string().min(5).required(),
       statusId: Joi.number().required(),
       callNotReceived: Joi.boolean().allow(null),
+    }).required(),
+  }).unknown(),
+
+  closeClientInquiry: Joi.object({
+    body: Joi.object({
+      description: Joi.string().min(3).required(),
+      clientId: Joi.number().required(),
     }).required(),
   }).unknown(),
 

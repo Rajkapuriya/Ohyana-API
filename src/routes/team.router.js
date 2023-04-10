@@ -41,9 +41,9 @@ teamRouter.get(
 )
 
 teamRouter.put(
-  '/member/:id',
+  '/member',
   upload.single('image'),
-  joiValidationMiddleware(teamSchema.teamForm),
+  joiValidationMiddleware(teamSchema.updateTeamMemberDetails),
   authTokenMiddleware,
   permissionHandleMiddleware(
     'req.user.role.permission.staffMenu && req.user.role.permission.editStaff',
@@ -58,7 +58,7 @@ teamRouter.get('/profile', authTokenMiddleware, teamController.getProfile)
 teamRouter.put(
   '/profile',
   upload.single('image'),
-  joiValidationMiddleware(teamSchema.teamForm),
+  joiValidationMiddleware(teamSchema.updateProfile),
   authTokenMiddleware,
   teamController.updateAdminProfile,
 )

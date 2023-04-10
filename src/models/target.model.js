@@ -22,9 +22,11 @@ const Target = sequelize.define('target', {
   },
   target: {
     type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
   achieve: {
     type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
   state: {
     type: DataTypes.STRING(10),

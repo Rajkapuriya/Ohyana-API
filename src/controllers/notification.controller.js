@@ -53,7 +53,7 @@ exports.getAllNotification = async (req, res) => {
 
   let notifications = await Notification.findAll({
     attributes: {
-      exclude: ['updatedAt', 'senderType', 'roleId', 'departmentId'],
+      exclude: ['updatedAt', 'senderType', 'roleId'],
     },
     where: whereCondition,
     order: [['id', 'DESC']],

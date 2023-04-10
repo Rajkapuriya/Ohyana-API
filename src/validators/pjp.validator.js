@@ -30,8 +30,8 @@ exports.pjpSchema = {
   pjpCompletionStatusForm: Joi.object({
     body: Joi.object({
       description: Joi.string().min(5).required(),
-      latitude: Joi.string().required(),
-      longitude: Joi.string().required(),
+      latitude: Joi.string(),
+      longitude: Joi.string(),
       pjpId: Joi.number().required(),
       // status: Joi.string().valid('COMPLETED', 'POST-POND').required(),
     }).required(),

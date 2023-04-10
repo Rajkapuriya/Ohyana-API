@@ -56,8 +56,7 @@ exports.addTeamMember = async (req, res) => {
 }
 
 exports.getAllTeamMembers = async (req, res) => {
-  const { roleId, departmentId, admin, searchQuery, teamType, attendanceType } =
-    req.query
+  const { roleId, admin, searchQuery, teamType, attendanceType } = req.query
 
   const getAdminRoleId = await Role.findOne({
     attributes: ['id'],
@@ -65,7 +64,7 @@ exports.getAllTeamMembers = async (req, res) => {
   })
 
   let teamWhereCondtion = {
-    attributes: ['id', 'name', 'email', 'location', 'contact_number'],
+    attributes: ['id', 'name', 'email', 'contact_number', 'points'],
     where: {
       roleId: {
         [Op.ne]: getAdminRoleId.id,
@@ -112,9 +111,7 @@ exports.getAllTeamMembers = async (req, res) => {
   if (teamType) {
     teamWhereCondtion.where = {
       ...teamWhereCondtion.where,
-      location: {
-        [Op.like]: `%${teamType == 'FIELD' ? ',' : teamType}%`,
-      },
+      jobType: teamType,
     }
   }
 
@@ -140,6 +137,8 @@ exports.getSingleMember = async (req, res) => {
       'gender',
       'birthDay',
       'rating',
+      'state',
+      'jobType',
     ],
     where: {
       id: req.params.id,
@@ -209,7 +208,7 @@ exports.getProfile = async (req, res) => {
 }
 
 exports.updateTeamMemberDetails = async (req, res) => {
-  const member = await Team.findOne({ where: { id: req.params.id } })
+  const member = await Team.findOne({ where: { id: req.body.id } })
   let imgUrl
 
   if (req.file) {
@@ -273,18 +272,17 @@ exports.verfifyAndUpdateFirebaseToken = async (req, res) => {
 exports.saveLocation = async (req, res) => {
   const { latitude, longitude } = req.body
 
-  console.log(`location: ${latitude},${longitude}`)
-  // await Team.update(
-  //   { location: `${latitude},${longitude}` },
-  //   { where: { id: req.user.id } },
-  // )
+  await Team.update(
+    { location: `${latitude},${longitude}` },
+    { where: { id: req.user.id } },
+  )
 
-  // await Team_Location_History.create({
-  //   teamId: req.user.id,
-  //   latitude,
-  //   longitude,
-  //   date: moment(),
-  // })
+  await Team_Location_History.create({
+    teamId: req.user.id,
+    latitude,
+    longitude,
+    date: moment(),
+  })
 
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
@@ -459,7 +457,7 @@ exports.getTeamLeaderBoardDetails = async (req, res) => {
   }
 
   response.memberDetail = await Team.findOne({
-    attributes: ['id', 'name', 'imgUrl', 'contact_number', 'email', 'location'],
+    attributes: ['id', 'name', 'imgUrl', 'contact_number', 'email', 'jobType'],
     where: { id },
     include: {
       model: Role,

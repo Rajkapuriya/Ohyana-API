@@ -57,16 +57,17 @@ exports.getInquiryAnalytics = async (req, res) => {
   })
 
   const teams = await Team.findAll({
-    attributes: ['id', 'name', 'points', 'location', 'imgUrl'],
+    attributes: ['id', 'name', 'points', 'jobType', 'imgUrl'],
     where: {
       companyId: req.user.companyId,
-      roleId: {
-        [Op.ne]: 1,
-      },
     },
     limit: 10,
     include: [
-      { model: Role, attributes: ['name'] },
+      {
+        model: Role,
+        attributes: ['name'],
+        where: { parentId: { [Op.ne]: null } },
+      },
       {
         model: Attendance,
         required: false,
@@ -144,8 +145,9 @@ exports.getInquiryAnalytics = async (req, res) => {
       id: e.id,
       name: e.name,
       points: e.points,
-      location: e.location,
+      jobType: e.jobType,
       role: e.role.name,
+      imgUrl: e.imgUrl,
       attendances:
         e.attendances.length > 0 ? e.attendances[0].attendanceType : '-',
       pointPercentage: pointPercentage || 0,
@@ -296,18 +298,6 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
     where: getWhereConditionPerMonth(req.user, lastMonth, 'arrivalDate'),
   })
 
-  const teams = await Team.findAll({
-    attributes: ['id', 'points', 'location'],
-    where: {
-      id: req.user.id,
-    },
-    limit: 10,
-    include: [
-      { model: Role, attributes: ['name'] },
-      // { model : Attendance ,attributes: ['attendanceType'], where : {date : moment()}}
-    ],
-  })
-
   const targets = await Target.findAll({
     where: {
       teamId: 2,
@@ -439,7 +429,6 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
       },
     },
     attendance,
-    teams,
     teamPoints,
     starPerformerList,
     tasks,
