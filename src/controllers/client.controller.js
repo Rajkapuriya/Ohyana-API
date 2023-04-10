@@ -103,124 +103,86 @@ exports.addClient = async (req, res) => {
 }
 
 exports.getAllClients = async (req, res) => {
-  const {
-    isInternational,
-    stage,
-    forMobile,
-    tabType,
-    searchQuery,
-    city,
-    state,
-  } = req.query
+  const { isInternational, stage, tabType, searchQuery, city, state } =
+    req.query
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
 
-  const whereCondition = {
-    attributes: [
-      'id',
-      'name',
-      'email',
-      'business',
-      'contact_number',
-      'teamId',
-      'state',
-      'city',
-      'createdAt',
-    ],
-    where: {
-      companyId: req.user.companyId,
-      // email: { [Op.not]: null },
-      // contact_number: { [Op.not]: null },
-    },
-    offset: (currentPage - 1) * size,
-    order: [['id', 'DESC']],
-    limit: size,
-    distinct: true,
-  }
+  let attributes = [
+    'id',
+    'name',
+    'email',
+    'business',
+    'contact_number',
+    'teamId',
+    'state',
+    'city',
+    'createdAt',
+  ]
+  const filterCondition = {}
 
-  if (isInternational) {
-    whereCondition.where.isInternational =
-      isInternational === 'true' ? true : false
-  }
+  if (isInternational)
+    filterCondition.isInternational = isInternational === 'true'
 
-  if (tabType === 'digital') {
-    whereCondition.where = {
-      reference: 'DIGITAL',
-    }
-  }
+  if (tabType) {
+    switch (tabType) {
+      case 'digital':
+        filterCondition.reference = 'DIGITAL'
+        break
 
-  if (tabType === 'prospective') {
-    whereCondition.where = {
-      reference: 'PROSPECTIVE',
-    }
-  }
+      case 'prospective':
+        filterCondition.reference = 'PROSPECTIVE'
+        break
 
-  if (tabType === 'existing') {
-    const orderOfClients = await Order.findAll({
-      attributes: ['clientId'],
-      where: {
-        clientId: {
-          [Op.ne]: null,
-        },
-      },
-    })
-    whereCondition.where = {
-      id: orderOfClients.map(e => e.clientId),
-    }
-  }
+      case 'existing':
+        // eslint-disable-next-line no-case-declarations
+        const orderOfClients = await Order.findAll({
+          attributes: ['clientId'],
+          group: ['clientId'],
+          where: {
+            clientId: {
+              [Op.ne]: null,
+            },
+          },
+        })
+        filterCondition.id = orderOfClients.map(e => e.clientId)
+        break
 
-  if (tabType === 'other') {
-    whereCondition.where = {
-      reference: 'OTHER',
-      reference_name: {
-        [Op.ne]: 'BUSINESS_CARD',
-      },
-    }
-  }
+      case 'other':
+        filterCondition.reference = 'OTHER'
+        filterCondition.reference_name = {
+          [Op.ne]: 'BUSINESS_CARD',
+        }
+        break
 
-  if (tabType === 'business_card') {
-    whereCondition.attributes = ['id', 'arrivalDate', 'imageUrl']
-    whereCondition.where = {
-      reference: 'OTHER',
-      reference_name: 'BUSINESS_CARD',
-      companyId: req.user.companyId,
+      case 'business_card':
+        attributes = ['id', 'arrivalDate', 'imageUrl']
+        filterCondition.reference = 'OTHER'
+        filterCondition.reference_name = 'BUSINESS_CARD'
+        break
     }
   }
 
   if (searchQuery) {
-    whereCondition.where = {
-      ...whereCondition.where,
-      name: {
-        [Op.like]: `%${searchQuery}%`,
-      },
+    filterCondition.name = {
+      [Op.like]: `%${searchQuery}%`,
     }
   }
 
-  if (city) {
-    whereCondition.where = {
-      ...whereCondition.where,
-      city: city,
-    }
-  }
-
-  if (state) {
-    whereCondition.where = {
-      ...whereCondition.where,
-      state: state,
-    }
-  }
+  if (city) filterCondition.city = city
+  if (state) filterCondition.state = state
 
   if (req.user.role.permission.clientStageAccess !== null) {
     if (stage) {
       if (stage > req.user.role.permission.clientStageAccess)
         return forbiddenRequestError(res, 'Invalid Stage Access')
-      whereCondition.where.stage = stage
+      filterCondition.stage = stage
     } else {
       const array = []
       for (let i = 0; i < req.user.role.permission.clientStageAccess + 1; i++) {
         array.push(i)
       }
-      whereCondition.where.stage = {
+      filterCondition.stage = {
         [Op.or]: array,
       }
     }
@@ -242,22 +204,33 @@ exports.getAllClients = async (req, res) => {
         },
       })
       if (allEmployeeWithRole.length > 0) {
-        whereCondition.where.teamId = allEmployeeWithRole.map(e => e.id)
+        filterCondition.teamId = allEmployeeWithRole.map(e => e.id)
       } else {
-        whereCondition.where.teamId = req.user.id
+        filterCondition.teamId = req.user.id
       }
     } else {
-      whereCondition.where.teamId = req.user.id
+      filterCondition.teamId = req.user.id
     }
   }
 
-  const client = await Promise.all([Client.findAndCountAll(whereCondition)])
+  const client = await Client.findAndCountAll({
+    attributes: attributes,
+    where: {
+      companyId: req.user.companyId,
+      // email: { [Op.not]: null },
+      // contact_number: { [Op.not]: null },
+      ...filterCondition,
+    },
+    offset: (currentPage - 1) * size,
+    order: [['id', 'DESC']],
+    limit: size,
+  })
 
-  if (client[0].count == 0) return notFoundError(res)
+  if (client.count == 0) return notFoundError(res)
 
   return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
-    totalPage: client[0].count,
-    client: client[0].rows,
+    totalPage: client.count,
+    client: client.rows,
   })
 }
 
