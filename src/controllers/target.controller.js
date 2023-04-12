@@ -35,19 +35,14 @@ exports.setTarget = async (req, res) => {
 exports.getTargets = async (req, res) => {
   const { month, year } = req.query
 
-  let filterCondition = {}
+  const filterCondition = {}
 
   if (month && year) {
-    filterCondition = {
-      [Op.and]: [
-        // { date: date },
-        sequelize.where(sequelize.fn('year', sequelize.col('startDate')), year),
-        sequelize.where(
-          sequelize.fn('month', sequelize.col('startDate')),
-          month,
-        ),
-      ],
-    }
+    filterCondition[Op.and] = [
+      // { date: date },
+      sequelize.where(sequelize.fn('year', sequelize.col('startDate')), year),
+      sequelize.where(sequelize.fn('month', sequelize.col('startDate')), month),
+    ]
   }
 
   const target = await Target.findAll({

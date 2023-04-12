@@ -4,7 +4,7 @@ exports.holidaySchema = {
   holidayForm: Joi.object({
     body: Joi.object({
       date: Joi.string().allow(null, ''),
-      occasion: Joi.string().min(2).required(),
+      occasion: Joi.string().required(),
       duration: Joi.number().allow(null, ''),
       regular: Joi.boolean().required(),
     }).required(),

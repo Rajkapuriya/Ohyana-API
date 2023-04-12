@@ -9,22 +9,14 @@ exports.getAllTeamPoints = async (req, res) => {
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
   const { month, year, teamId } = req.query
-  let whereCondition = {
-    teamId: teamId ?? req.user.id,
-  }
+  const filterCondition = {}
 
   if (month && year && month != 0 && year != 0) {
-    whereCondition = {
-      ...whereCondition,
-      [Op.and]: [
-        // { date: date },
-        sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), year),
-        sequelize.where(
-          sequelize.fn('month', sequelize.col('createdAt')),
-          month,
-        ),
-      ],
-    }
+    filterCondition[Op.and] = [
+      // { date: date },
+      sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), year),
+      sequelize.where(sequelize.fn('month', sequelize.col('createdAt')), month),
+    ]
   }
 
   const [totalPoints, teamPoints] = await Promise.all([
@@ -34,12 +26,12 @@ exports.getAllTeamPoints = async (req, res) => {
         'createdAt',
         [sequelize.fn('SUM', sequelize.col('points')), 'total_points'],
       ],
-      where: whereCondition,
+      where: { teamId: teamId ?? req.user.id, ...filterCondition },
       include: [{ model: Points }],
     }),
     Team_Point.findAndCountAll({
       attributes: ['id', 'createdAt'],
-      where: whereCondition,
+      where: { teamId: teamId ?? req.user.id, ...filterCondition },
       include: [{ model: Points }],
       order: [['id', 'DESC']],
       offset: (currentPage - 1) * size,

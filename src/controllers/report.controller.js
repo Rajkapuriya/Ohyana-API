@@ -1,4 +1,7 @@
-const { successResponse } = require('../utils/response.util')
+const {
+  successResponse,
+  forbiddenRequestError,
+} = require('../utils/response.util')
 const { Op, QueryTypes } = require('sequelize')
 const sequelize = require('../database/mysql')
 const { MESSAGE } = require('../constants/message.contant')
@@ -17,68 +20,50 @@ const moment = require('moment')
 exports.getProductReport = async (req, res) => {
   const { period, comparison } = req.query
   const { cities, productIds } = req.body
-  let whereCondition, whereProductCondition
+  const productFilterCondition = {},
+    productFilterSubCondition = {}
 
   if (period && period.includes('day')) {
     // day-7,day-30
     const days = parseInt(period.split('-')[1])
-    whereCondition = {
-      where: {
-        createdAt: {
-          [Op.gte]: YYYY_MM_DD(moment().subtract(days, 'days')),
-        },
-      },
+    productFilterSubCondition.createdAt = {
+      [Op.gte]: YYYY_MM_DD(moment().subtract(days, 'days')),
     }
   } else if (period && period.includes('month')) {
     // month-sepetember
     const month = moment().month(period.split('-')[1]).format('M')
-    whereCondition = {
-      where: {
-        createdAt: {
-          [Op.and]: [
-            sequelize.where(
-              sequelize.fn('month', sequelize.col('order_items.createdAt')),
-              month,
-            ),
-          ],
-        },
-      },
+    productFilterSubCondition.createdAt = {
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('order_items.createdAt')),
+          month,
+        ),
+      ],
     }
   } else if (period && period.includes('year')) {
     // year-2023
     const year = period.split('-')[1]
-    whereCondition = {
-      where: {
-        createdAt: {
-          [Op.and]: [
-            sequelize.where(
-              sequelize.fn('year', sequelize.col('order_items.createdAt')),
-              year,
-            ),
-          ],
-        },
-      },
+    productFilterSubCondition.createdAt = {
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('year', sequelize.col('order_items.createdAt')),
+          year,
+        ),
+      ],
     }
   }
 
   if (comparison && comparison == 'city') {
-    whereCondition = {
-      where: {
-        ...whereCondition.where,
-        // city: cities
-      },
-    }
+    // productFilterSubCondition.city = cities
   } else if (comparison && comparison == 'product') {
-    whereProductCondition = {
-      id: productIds,
-    }
+    productFilterCondition.id = productIds
   }
 
   const products = await Product.findAll({
-    where: whereProductCondition,
+    where: { ...productFilterCondition },
     include: {
       model: Order_Item,
-      ...whereCondition,
+      where: { ...productFilterSubCondition },
     },
   })
 
@@ -115,11 +100,8 @@ exports.getProductReport = async (req, res) => {
 
 exports.getTeamReport = async (req, res) => {
   const { period, comparison, cities, roleId, teamIds } = req.query
-  const whereCondition = {
-    attributes: ['id', 'name'],
-    where: { companyId: req.user.companyId },
-  }
-  const whereSubCondition = { where: {} }
+  const filterSubCondition = {}
+  const filterCondition = {}
   let teamPoints
   let teams
   const teamPointObject = []
@@ -129,34 +111,26 @@ exports.getTeamReport = async (req, res) => {
   if (period && period.includes('days')) {
     // days-7,days-30
     const days = parseInt(period.split('-')[1])
-    whereSubCondition.where = {
-      [whereParam]: {
-        [Op.gte]: moment().subtract(days, 'days').format('YYYY-MM-DD'),
-      },
+    filterSubCondition[whereParam] = {
+      [Op.gte]: moment().subtract(days, 'days').format('YYYY-MM-DD'),
     }
+
     expenseWhereCondition += ` AND te.date >= ${moment()
       .subtract(days, 'days')
       .format('YYYY-MM-DD')} `
   } else if (period && period.includes('month')) {
     // month-sepetember
     const month = moment().month(period.split('-')[1]).format('M')
-    whereSubCondition.where = {
-      [Op.and]: [
-        sequelize.where(
-          sequelize.fn('month', sequelize.col(whereParam)),
-          month,
-        ),
-      ],
-    }
+    filterSubCondition[Op.and] = [
+      sequelize.where(sequelize.fn('month', sequelize.col(whereParam)), month),
+    ]
     expenseWhereCondition += ` AND MONTH(te.date) >= ${month} `
   } else if (period && period.includes('year')) {
     // year-2023
     const year = period.split('-')[1]
-    whereSubCondition.where = {
-      [Op.and]: [
-        sequelize.where(sequelize.fn('year', sequelize.col(whereParam)), year),
-      ],
-    }
+    filterSubCondition[Op.and] = [
+      sequelize.where(sequelize.fn('year', sequelize.col(whereParam)), year),
+    ]
     expenseWhereCondition += ` AND YEAR(te.date) >= ${year} `
   }
 
@@ -204,30 +178,32 @@ exports.getTeamReport = async (req, res) => {
       }
     })
 
-    whereCondition.include = {
-      model: Team_Expense,
-      where: whereSubCondition.where,
-      required: false,
-    }
+    // whereCondition.include = {
+    //   model: Team_Expense,
+    //   where: whereSubCondition.where,
+    //   required: false,
+    // }
   }
 
-  if (roleId && roleId != 1) {
-    whereCondition.where = {
-      ...whereCondition.where,
-      roleId: roleId,
-    }
+  if (roleId) {
+    const getRoleDetail = await Role.findOne({
+      attributes: ['id', 'parentId'],
+      where: { id: roleId },
+    })
+
+    if (!getRoleDetail.parentId) return forbiddenRequestError(res)
+
+    filterCondition.roleId = roleId
   }
 
   if (teamIds && teamIds.length > 0) {
-    whereCondition.where = {
-      ...whereCondition.where,
-      id: teamIds,
-    }
+    filterCondition.id = teamIds
   }
 
   if (comparison == 'points') {
     teams = await Team.findAll({
-      ...whereCondition,
+      attributes: ['id', 'name'],
+      where: { companyId: req.user.companyId, ...filterCondition },
       include: {
         model: Role,
         attributes: ['id'],
@@ -235,10 +211,7 @@ exports.getTeamReport = async (req, res) => {
       },
     })
     teamPoints = await Team_Point.findAll({
-      where: {
-        teamId: teams.map(e => e.id),
-        ...whereSubCondition.where,
-      },
+      where: { teamId: teams.map(e => e.id), ...filterSubCondition },
       include: [{ model: Points, attributes: ['id', 'points'] }],
     })
     teamPoints.forEach(e => {

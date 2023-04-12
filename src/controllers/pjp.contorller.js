@@ -64,18 +64,20 @@ exports.getClientPJPStatus = async (req, res) => {
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
 
-  const whereCondition = {
-    clientId: req.query.clientId,
-    teamId: req.user.id,
-  }
+  const { clientId, followUpType } = req.query
+  const filterCondition = {}
 
-  if (req.query.followUpType) {
-    whereCondition.followUpType = req.query.followUpType
+  if (followUpType) {
+    filterCondition.followUpType = followUpType
   }
 
   const status = await Client_Status.findAndCountAll({
     attributes: ['id', 'date', 'description', 'followUpType'],
-    where: whereCondition,
+    where: {
+      clientId: clientId,
+      teamId: req.user.id,
+      ...filterCondition,
+    },
     order: [['id', 'DESC']],
     offset: (currentPage - 1) * size,
     limit: size,
@@ -112,24 +114,12 @@ exports.getAllPJP = async (req, res) => {
   const size = parseInt(req.query.size) || 20
   const { statusType, date, day, clientId, followUpType, teamId } = req.query
 
-  const whereCondition = {
-    attributes: ['id', 'date', 'status', 'is_completed'],
-    where: {
-      companyId: req.user.companyId,
-      teamId: teamId ?? req.user.id,
-    },
-    order: [['id', 'DESC']],
-    include: {
-      model: Client,
-      attributes: ['id', 'name', 'contact_number', 'city', 'state', 'business'],
-    },
-    offset: (currentPage - 1) * size,
-    limit: size,
-  }
+  const filterCondition = {}
+  let attributes = ['id', 'date', 'status', 'is_completed']
 
   if (clientId) {
-    whereCondition.where.clientId = clientId
-    whereCondition.attributes = ['date', 'followUpType', 'description']
+    filterCondition.clientId = clientId
+    attributes = ['date', 'followUpType', 'description']
   } else {
     /*
      * whereCondition.include = [
@@ -138,33 +128,36 @@ exports.getAllPJP = async (req, res) => {
      */
   }
 
-  if (day == 'TODAY') {
-    whereCondition.where.date = YYYY_MM_DD()
-  }
+  if (day == 'TODAY') filterCondition.date = YYYY_MM_DD()
 
-  if (day == 'TOMORROW') {
-    whereCondition.where.date = YYYY_MM_DD(moment().add(1, 'days'))
-  }
+  if (day == 'TOMORROW')
+    filterCondition.date = YYYY_MM_DD(moment().add(1, 'days'))
 
-  if (statusType) {
-    whereCondition.where.status = statusType
-  }
+  if (statusType) filterCondition.status = statusType
 
-  if (followUpType) {
-    whereCondition.where.followUpType = followUpType
-  }
+  if (followUpType) filterCondition.followUpType = followUpType
 
-  if (date) {
-    whereCondition.where.date = date
-  }
+  if (date) filterCondition.date = date
 
-  let response = {}
+  const pjp = await Pjp.findAndCountAll({
+    attributes: attributes,
+    where: {
+      companyId: req.user.companyId,
+      teamId: teamId ?? req.user.id,
+      ...filterCondition,
+    },
+    order: [['id', 'DESC']],
+    include: {
+      model: Client,
+      attributes: ['id', 'name', 'contact_number', 'city', 'state', 'business'],
+    },
+    offset: (currentPage - 1) * size,
+    limit: size,
+  })
 
-  response = await Pjp.findAndCountAll(whereCondition)
-
-  response = {
-    totalPage: response.count,
-    pjps: response.rows,
+  const response = {
+    totalPage: pjp.count,
+    pjps: pjp.rows,
   }
 
   response.completedPJP =

@@ -12,7 +12,7 @@ const sequelize = require('../database/mysql')
 const { uploadFileToS3, deleteFileFromS3 } = require('../helpers/s3.helper')
 const fs = require('fs')
 const { ENCRYP_CONFIG } = require('../config/encryp.config')
-const { Op, QueryTypes, where } = require('sequelize')
+const { Op, QueryTypes } = require('sequelize')
 const {
   successResponse,
   forbiddenRequestError,
@@ -62,63 +62,41 @@ exports.getAllTeamMembers = async (req, res) => {
     where: { parentId: null },
   })
 
-  let teamWhereCondtion = {
-    attributes: ['id', 'name', 'email', 'contact_number', 'points'],
-    where: {
-      roleId: {
-        [Op.ne]: getAdminRoleId.id,
-      },
-      id: {
-        [Op.ne]: req.user.id,
-      },
-      companyId: req.user.companyId,
-    },
-    include: [
-      { model: Role, attributes: ['name'] },
-      {
-        model: Attendance,
-        required: false,
-        attributes: ['attendanceType'],
-        where: { date: moment() },
-      },
-    ],
-  }
-
-  if (roleId && roleId !== 1 && roleId !== 'null') {
-    teamWhereCondtion.where = { roleId }
-  }
+  const attributes = ['id', 'name', 'email', 'contact_number', 'points']
+  const filterCondition = {}
+  const includeModels = []
 
   if (admin === 'true') {
-    teamWhereCondtion = {
-      attributes: ['id', 'name'],
-      where: {
-        roleId: { [Op.ne]: getAdminRoleId.id },
-        companyId: req.user.companyId,
-      },
+    attributes.slice(attributes.length - 3, 3)
+    filterCondition.roleId = { [Op.ne]: getAdminRoleId.id }
+  } else {
+    includeModels.push({ model: Role, attributes: ['name'] })
+    includeModels.push({
+      model: Attendance,
+      required: false,
+      attributes: ['attendanceType'],
+      where: { date: moment() },
+    })
+
+    filterCondition.roleId = { [Op.ne]: getAdminRoleId.id }
+    filterCondition.id = { [Op.ne]: req.user.id }
+
+    if (roleId && roleId !== 'null' && roleId !== getAdminRoleId.id) {
+      filterCondition.roleId = roleId
     }
+
+    if (searchQuery) filterCondition.name = { [Op.like]: `%${searchQuery}%` }
+
+    if (teamType) filterCondition.jobType = teamType
+
+    if (attendanceType) includeModels[1].where.attendanceType = attendanceType
   }
 
-  if (searchQuery) {
-    teamWhereCondtion.where = {
-      ...teamWhereCondtion.where,
-      name: {
-        [Op.like]: `%${searchQuery}%`,
-      },
-    }
-  }
-
-  if (teamType) {
-    teamWhereCondtion.where = {
-      ...teamWhereCondtion.where,
-      jobType: teamType,
-    }
-  }
-
-  if (attendanceType) {
-    teamWhereCondtion.include[1].where.attendanceType = attendanceType
-  }
-
-  const team = await Team.findAll(teamWhereCondtion)
+  const team = await Team.findAll({
+    attributes: attributes,
+    where: { companyId: req.user.companyId, ...filterCondition },
+    include: includeModels,
+  })
 
   if (team.length === 0) return notFoundError(res)
 

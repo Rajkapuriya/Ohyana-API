@@ -31,25 +31,17 @@ exports.assignMember = async (req, res) => {
 exports.getAllTask = async (req, res) => {
   const { searchQuery, due_date, teamId } = req.query
 
-  const whereCondition = { companyId: req.user.companyId }
+  const filterCondition = {}
 
-  if (searchQuery) {
-    whereCondition.title = {
-      [Op.like]: `%${searchQuery}%`,
-    }
-  }
+  if (searchQuery) filterCondition.title = { [Op.like]: `%${searchQuery}%` }
 
-  if (due_date) {
-    whereCondition.due_date = due_date
-  }
+  if (due_date) filterCondition.due_date = due_date
 
-  if (teamId) {
-    whereCondition.teamId = teamId
-  }
+  if (teamId) filterCondition.teamId = teamId
 
   const tasks = await Task.findAll({
     attributes: ['id', 'title', 'description', 'createdAt'],
-    where: whereCondition,
+    where: { companyId: req.user.companyId, ...filterCondition },
     include: [
       {
         model: Team,
@@ -103,7 +95,6 @@ exports.updateDuedate = async (req, res) => {
     return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
-  console.log(due_date)
   const updatedTask = await Task.updateTask({ due_date }, req.params.taskId)
 
   return successResponse(

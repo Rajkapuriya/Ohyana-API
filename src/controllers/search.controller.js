@@ -38,24 +38,20 @@ exports.getStates = async (req, res) => {
 }
 
 async function getSearchData(type, searchQuery) {
-  const whereCondition = { [type]: { [Op.ne]: null } }
+  const filterCondition = { [type]: { [Op.ne]: null } }
 
-  if (searchQuery) {
-    whereCondition[type] = {
-      [Op.like]: `%${searchQuery}%`,
-    }
-  }
+  if (searchQuery) filterCondition[type][Op.like] = `%${searchQuery}%`
 
   const clientCities = await Client.findAll({
     attributes: [type],
-    where: whereCondition,
+    where: { ...filterCondition },
     limit: 5,
     group: [type],
   })
 
   const teamCities = await Team.findAll({
     attributes: [type],
-    where: whereCondition,
+    where: { ...filterCondition },
     limit: 5,
     group: [type],
   })

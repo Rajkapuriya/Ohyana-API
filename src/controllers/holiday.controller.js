@@ -10,7 +10,7 @@ const { Op } = require('sequelize')
 
 exports.createHoliday = async (req, res) => {
   const { date, duration, occasion, regular } = req.body
-  let createBody = {
+  const body = {
     date,
     occasion,
     duration,
@@ -19,17 +19,20 @@ exports.createHoliday = async (req, res) => {
   }
 
   if (regular) {
-    createBody = { occasion, type: 'REGULAR', companyId: req.user.companyId }
+    body.type = 'REGULAR'
+    if (isNaN(parseInt(occasion)))
+      return unProcessableEntityRequestError(res, 'Invalide Day')
+    delete body.date
+    delete body.duration
   } else {
-    if (!req.body.date)
-      return unProcessableEntityRequestError(res, 'Please Select Date')
-    if (!req.body.duration)
+    if (!date) return unProcessableEntityRequestError(res, 'Please Select Date')
+    if (!duration)
       return unProcessableEntityRequestError(res, 'Please Select Duration')
   }
 
   const [, created] = await Holiday.findOrCreate({
     where: { occasion, companyId: req.user.companyId },
-    defaults: createBody,
+    defaults: body,
   })
   if (!created)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
@@ -40,10 +43,12 @@ exports.createHoliday = async (req, res) => {
 exports.getAllHolidays = async (req, res) => {
   const { type } = req.query
 
-  const attributes =
-    type === 'regular'
-      ? ['id', 'occasion']
-      : ['id', 'date', 'occasion', 'duration']
+  const attributes = ['id', 'occasion']
+
+  if (type !== 'regular') {
+    attributes.push('date')
+    attributes.push('duration')
+  }
 
   const holidays = await Holiday.findAll({
     attributes,
@@ -65,14 +70,15 @@ exports.getAllHolidays = async (req, res) => {
 
 exports.updateHoliday = async (req, res) => {
   const { date, duration, occasion, regular } = req.body
-  let updateBody = { date, occasion, duration }
+  const body = { date, occasion, duration }
 
   if (regular) {
-    updateBody = { occasion }
+    body.occasion = occasion
+    delete body.date
+    delete body.duration
   } else {
-    if (!req.body.date)
-      return unProcessableEntityRequestError(res, 'Please Select Date')
-    if (!req.body.duration)
+    if (!date) return unProcessableEntityRequestError(res, 'Please Select Date')
+    if (!duration)
       return unProcessableEntityRequestError(res, 'Please Select Duration')
   }
 
@@ -86,7 +92,7 @@ exports.updateHoliday = async (req, res) => {
   if (existedHoliday)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  await Holiday.update(updateBody, { where: { id: req.params.id } })
+  await Holiday.update(body, { where: { id: req.params.id } })
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 

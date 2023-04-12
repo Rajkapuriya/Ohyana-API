@@ -148,26 +148,18 @@ exports.getAttendanceOfAllUsers = async (req, res) => {
 exports.getAllAttendancePerUser = async (req, res) => {
   const { month, year, attendanceType } = req.query
   const teamId = req.query.teamId ?? req.user.id
-  let whereCondition = {
-    teamId,
-  }
+  const filterCondition = {}
 
   if (month && year) {
-    whereCondition = {
-      ...whereCondition,
-      [Op.and]: [
-        // { date: date },
-        sequelize.where(sequelize.fn('year', sequelize.col('date')), year),
-        sequelize.where(sequelize.fn('month', sequelize.col('date')), month),
-      ],
-    }
+    filterCondition[Op.and] = [
+      // { date: date },
+      sequelize.where(sequelize.fn('year', sequelize.col('date')), year),
+      sequelize.where(sequelize.fn('month', sequelize.col('date')), month),
+    ]
   }
 
   if (attendanceType && attendanceType != 'ALL') {
-    whereCondition = {
-      ...whereCondition,
-      attendanceType,
-    }
+    filterCondition.attendanceType = attendanceType
   }
 
   const [absentDayCount, lateDayCount, attendancePerUser] = await Promise.all([
@@ -175,7 +167,7 @@ exports.getAllAttendancePerUser = async (req, res) => {
     await Attendance.count({ where: { teamId, attendanceType: 'LT' } }),
     await Attendance.findAndCountAll({
       attributes: { exclude: ['createdAt', 'updatedAt', 'teamId'] },
-      where: whereCondition,
+      where: { teamId, ...filterCondition },
       order: [['date', 'DESC']],
       // include: [
       //     { model: Leave, attributes: ['type'] }
@@ -246,8 +238,8 @@ exports.applyLeave = async (req, res) => {
 
 exports.grantLeave = async (req, res) => {
   if (!req.user.role.parentId) {
-    let message,
-      updateObject = { status: 'PENDING' }
+    let message
+    const updateObject = { status: 'PENDING' }
 
     const teamLeave = await Team_Leave.findOne({
       where: { id: req.params.id, status: 'PENDING' },
@@ -256,13 +248,11 @@ exports.grantLeave = async (req, res) => {
     if (!teamLeave) return notFoundError(res, 'No Leave Found')
 
     if (req.query.isApproved === 'false') {
-      updateObject = {
-        status: 'REJECTED',
-        remainDays: teamLeave.remainDays + teamLeave.takenDays,
-      }
+      updateObject.status = 'REJECTED'
+      updateObject.remainDays = teamLeave.remainDays + teamLeave.takenDays
       message = 'Leave Rejected'
     } else if (req.query.isApproved === 'true') {
-      updateObject = { status: 'APPROVED' }
+      updateObject.status = 'APPROVED'
       message = 'Leave Approved'
     }
 
@@ -275,28 +265,23 @@ exports.grantLeave = async (req, res) => {
 
 exports.getAllLeavePerUser = async (req, res) => {
   const { teamId, status, month, year } = req.query
-  let whereCondition = {
-    teamId: teamId ?? req.user.id,
-  }
+  const filterCondition = {}
 
   if (status && status !== 'ALL') {
-    whereCondition.status = status
+    filterCondition.status = status
   }
 
   if (month && month != 0 && year && year != 0) {
-    whereCondition = {
-      ...whereCondition,
-      [Op.and]: [
-        // { date: date },
-        sequelize.where(sequelize.fn('month', sequelize.col('date')), month),
-        sequelize.where(sequelize.fn('year', sequelize.col('date')), year),
-      ],
-    }
+    filterCondition[Op.and] = [
+      // { date: date },
+      sequelize.where(sequelize.fn('month', sequelize.col('date')), month),
+      sequelize.where(sequelize.fn('year', sequelize.col('date')), year),
+    ]
   }
 
   const leavesPerUser = await Team_Leave.findAll({
     attributes: ['id', 'date', 'takenDays', 'remainDays', 'status'],
-    where: whereCondition,
+    where: { teamId: teamId ?? req.user.id, ...filterCondition },
     order: [['date', 'DESC']],
     include: [{ model: Leave, attributes: ['type'] }],
   })

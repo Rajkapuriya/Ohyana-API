@@ -123,51 +123,38 @@ exports.getAllOrderList = async (req, res) => {
 
   const { clientId, searchQuery, delivery, payment, orderDate } = req.query
 
-  let whereClause = { clientId }
-  let include = [
+  const filterCondition = {}
+  const include = [
     {
       model: Team,
       attributes: ['name'],
     },
+    {
+      model: Client,
+      attributes: ['name'],
+    },
   ]
 
-  if (!clientId) {
-    whereClause = {}
-    include = [
-      {
-        model: Team,
-        attributes: ['name'],
-      },
-      {
-        model: Client,
-        attributes: ['name'],
-      },
-    ]
-  }
-
-  if (searchQuery && !clientId) {
-    include[1].where = {
-      name: {
-        [Op.like]: `%${searchQuery}%`,
-      },
+  if (clientId) {
+    filterCondition.clientId = clientId
+    include.pop()
+  } else {
+    if (searchQuery) {
+      include[1].where = {
+        name: {
+          [Op.like]: `%${searchQuery}%`,
+        },
+      }
     }
-  }
 
-  if (delivery && !clientId) {
-    whereClause.orderTrackingStatus = delivery
-  }
+    if (delivery) filterCondition.orderTrackingStatus = delivery
+    if (payment) filterCondition.paymentStatus = payment
 
-  if (payment && !clientId) {
-    whereClause.paymentStatus = payment
-  }
-
-  if (orderDate && !clientId) {
-    whereClause = {
-      ...whereClause,
-      [Op.and]: [
+    if (orderDate && !clientId) {
+      filterCondition[Op.and] = [
         // { date: date },
         sequelize.where(sequelize.fn('date', sequelize.col('date')), orderDate),
-      ],
+      ]
     }
   }
 
@@ -180,7 +167,7 @@ exports.getAllOrderList = async (req, res) => {
       'orderTrackingStatus',
       'paymentStatus',
     ],
-    where: whereClause,
+    where: { ...filterCondition },
     offset: (currentPage - 1) * size,
     order: [['id', 'DESC']],
     limit: size,

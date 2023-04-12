@@ -50,10 +50,10 @@ const {
 exports.addClient = async (req, res) => {
   const { email, contact_number, isInternational } = req.body
 
-  let clientFindOneCondition = [{ email }, { contact_number }]
+  const clientFindOneCondition = [{ email }, { contact_number }]
 
   if (email === null || email === '' || email == undefined) {
-    clientFindOneCondition = [{ contact_number }]
+    clientFindOneCondition.shift()
   }
 
   if (
@@ -61,7 +61,7 @@ exports.addClient = async (req, res) => {
     contact_number === '' ||
     contact_number == undefined
   ) {
-    clientFindOneCondition = [{ email }]
+    clientFindOneCondition.pop()
   }
 
   const newDate = YYYY_MM_DD_HHMMSS()
@@ -284,14 +284,14 @@ exports.takeClient = async (req, res) => {
 exports.updateClient = async (req, res) => {
   const { email, contact_number, client_type, memberId } = req.body
 
-  let clientFindOneCondition = [{ email }, { contact_number }]
+  const clientFindOneCondition = [{ email }, { contact_number }]
 
   if (email === null || email === '') {
-    clientFindOneCondition = [{ contact_number }]
+    clientFindOneCondition.shift()
   }
 
   if (contact_number === null || contact_number === '') {
-    clientFindOneCondition = [{ email }]
+    clientFindOneCondition.pop()
   }
 
   const existedClient = await Client.findOne({

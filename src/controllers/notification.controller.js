@@ -37,25 +37,18 @@ exports.createNotification = async (req, res) => {
 }
 
 exports.getAllNotification = async (req, res) => {
-  let whereCondition = { companyId: req.user.companyId }
-
-  if (req.user.roleId !== 1) {
-    whereCondition.teamId = req.user.id
-  }
+  const filterCondition = {}
 
   if (req.query.sent === 'true') {
-    whereCondition = {
-      teamId: req.user.id,
-      senderType: 'INDIVIDUAL',
-      companyId: req.user.companyId,
-    }
+    filterCondition.teamId = req.user.id
+    filterCondition.senderType = 'INDIVIDUAL'
   }
 
   let notifications = await Notification.findAll({
     attributes: {
       exclude: ['updatedAt', 'senderType', 'roleId'],
     },
-    where: whereCondition,
+    where: { companyId: req.user.companyId, ...filterCondition },
     order: [['id', 'DESC']],
   })
 
