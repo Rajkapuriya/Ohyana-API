@@ -55,7 +55,7 @@ roleRouter.get(
 
 roleRouter.put(
   '/role/:id',
-  joiValidationMiddleware(roleSchema.roleForm),
+  joiValidationMiddleware(roleSchema.updateRoleForm),
   authTokenMiddleware,
   permissionHandleMiddleware(
     'req.user.role.permission.settingMenu && req.user.role.permission.editRole',

@@ -1,6 +1,5 @@
 const {
   Role,
-  Department,
   Team,
   Permission,
   Role_Expense_Permissions,
@@ -19,9 +18,6 @@ const { MESSAGE } = require('../constants/message.contant')
 
 exports.createRole = async (req, res) => {
   const { name, description, clockIn, parentId } = req.body
-
-  if (name.toLowerCase() === 'Admin'.toLowerCase())
-    return forbiddenRequestError(res, 'Name is Prohibited')
 
   const existedRole = await Role.findOne({
     where: { name, companyId: req.user.companyId },
@@ -49,36 +45,24 @@ exports.createRole = async (req, res) => {
 }
 
 exports.getAllRoles = async (req, res) => {
-  const { departmentId } = req.query
+  const { selection } = req.query
 
-  if (departmentId && departmentId !== 'null') {
-    const [department, role] = await Promise.all([
-      Department.findOne({
-        attributes: ['id', 'name'],
-        where: { id: departmentId },
-      }),
-      Role.findAll({
-        attributes: ['id', 'name', 'description'],
-        where: { departmentId: departmentId },
-      }),
-    ])
+  const attributes = ['id', 'name', 'description']
+  const filterCondition = { parentId: { [Op.ne]: null } }
 
-    if (role.length === 0) return notFoundError(res)
-
-    return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
-      department,
-      roles: role,
-    })
-  } else {
-    const roles = await Role.findAll({
-      attributes: ['id', 'name', 'description'],
-      where: { parentId: { [Op.ne]: null }, companyId: req.user.companyId },
-    })
-
-    if (roles.length === 0) return notFoundError(res)
-
-    return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, roles)
+  if (selection === 'true') {
+    attributes.pop()
+    delete filterCondition.parentId
   }
+
+  const roles = await Role.findAll({
+    attributes,
+    where: { companyId: req.user.companyId, ...filterCondition },
+  })
+
+  if (roles.length === 0) return notFoundError(res)
+
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, roles)
 }
 
 exports.getSingleRoles = async (req, res) => {
@@ -93,7 +77,7 @@ exports.getSingleRoles = async (req, res) => {
 
   if (role.parentId) {
     const parentRole = await Role.findOne({
-      attributes: ['name', 'description'],
+      attributes: ['id', 'name', 'description'],
       where: { id: role.parentId },
     })
     role.setDataValue('senior', parentRole)
@@ -139,10 +123,10 @@ exports.updateClockInOutTime = async (req, res) => {
 }
 
 exports.deleteRole = async (req, res) => {
-  const teamMemberRelatedToDepartment = await Team.findOne({
+  const teamMemberRelatedToRole = await Team.findOne({
     where: { roleId: req.params.id },
   })
-  if (!teamMemberRelatedToDepartment) {
+  if (!teamMemberRelatedToRole) {
     await Role.destroy({ where: { id: req.params.id } })
     return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
   } else {

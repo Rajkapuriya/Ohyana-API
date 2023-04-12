@@ -6,12 +6,21 @@ exports.roleSchema = {
       name: Joi.string().min(2).required(),
       description: Joi.string().min(5).allow(null, ''),
       clockIn: Joi.string().required(),
+      parentId: Joi.number().required(),
+    }).required(),
+  }).unknown(),
+
+  updateRoleForm: Joi.object({
+    body: Joi.object({
+      name: Joi.string().min(2),
+      description: Joi.string().min(5).allow(null, ''),
+      parentId: Joi.number(),
     }).required(),
   }).unknown(),
 
   roleList: Joi.object({
-    body: Joi.object({
-      departmentId: Joi.number(),
+    query: Joi.object({
+      selection: Joi.boolean(),
     }).required(),
   }).unknown(),
 

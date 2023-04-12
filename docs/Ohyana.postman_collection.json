@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\" : \"ericlefkofsky@gmail.com\",\r\n    \"password\" : \"eric@123\"\r\n}",
+							"raw": "{\r\n    \"email\" : \"marcopolo@gmail.com\",\r\n    \"password\" : \"marco@123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -133,13 +133,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJlcmljbGVma29mc2t5QGdtYWlsLmNvbSIsImlhdCI6MTY2MTE0OTY1MCwiZXhwIjoxNjYxMTUwMjUwfQ.sfXl9u_XmmeULSbtHgk_ZFvu9yiHg5mRM_v0L8aHWJY",
+							"raw": "{{baseUrl}}/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJqZW5pc2hzaGVraGFsaXlhQGdtYWlsLmNvbSIsImlhdCI6MTY4MDk4MDIyMiwiZXhwIjoxNjgwOTgwODIyfQ.UMdDYJR8OoPMnUhzYAmci_YoDqxtEW0ydUSTDSzvxLs",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"reset-password",
-								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJlcmljbGVma29mc2t5QGdtYWlsLmNvbSIsImlhdCI6MTY2MTE0OTY1MCwiZXhwIjoxNjYxMTUwMjUwfQ.sfXl9u_XmmeULSbtHgk_ZFvu9yiHg5mRM_v0L8aHWJY"
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJqZW5pc2hzaGVraGFsaXlhQGdtYWlsLmNvbSIsImlhdCI6MTY4MDk4MDIyMiwiZXhwIjoxNjgwOTgwODIyfQ.UMdDYJR8OoPMnUhzYAmci_YoDqxtEW0ydUSTDSzvxLs"
 							]
 						},
 						"description": "Change Password For Admin and Company Team Members"
@@ -175,7 +175,7 @@
 					"response": []
 				},
 				{
-					"name": "Sent OTP",
+					"name": "Send Email Verification",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -202,13 +202,13 @@
 					"response": []
 				},
 				{
-					"name": "Verify OTP",
+					"name": "Verify Email",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\" : \"jenishshekhaliya@gmail.com\",\r\n    \"otp\" : \"784749\"\r\n}",
+							"raw": "{\r\n    \"email\" : \"jenishshekhaliya@gmail.com\",\r\n    \"otp\" : \"918535\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -225,162 +225,6 @@
 							]
 						},
 						"description": "Verify Otp with email address to verify otp"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Department",
-			"item": [
-				{
-					"name": "Create Department",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/department/",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"department",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Departments",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/department/",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"department",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Department Name",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/department/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"department",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Department",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\" : \"Production\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/department/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"department",
-								"1"
-							]
-						}
 					},
 					"response": []
 				}
@@ -406,7 +250,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\" : \"Product Manager\",\r\n    \"description\" : \"lorem ipsum\",\r\n    \"departmentId\" : 1,\r\n    \"clockIn\" : \"8:00\"\r\n}",
+							"raw": "{\r\n    \"name\" : \"Product Manager\",\r\n    \"description\" : \"lorem ipsum\",\r\n    \"parentId\" : 1,\r\n    \"clockIn\" : \"8:00\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -434,7 +278,7 @@
 					"response": []
 				},
 				{
-					"name": "Get All Role Per Department",
+					"name": "Get All Role",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -449,7 +293,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/role?departmentId=1",
+							"raw": "{{baseUrl}}/role?selection=true",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -458,8 +302,8 @@
 							],
 							"query": [
 								{
-									"key": "departmentId",
-									"value": "1"
+									"key": "selection",
+									"value": "true"
 								}
 							]
 						},
@@ -1493,6 +1337,11 @@
 									"key": "pincode",
 									"value": "123321",
 									"type": "text"
+								},
+								{
+									"key": "jobType",
+									"value": "0",
+									"type": "text"
 								}
 							]
 						},
@@ -1686,7 +1535,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/member",
+							"raw": "{{baseUrl}}/member?searchQuery=abc&teamType&attendanceType",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1708,6 +1557,20 @@
 									"key": "admin",
 									"value": "true",
 									"disabled": true
+								},
+								{
+									"key": "searchQuery",
+									"value": "abc"
+								},
+								{
+									"key": "teamType",
+									"value": null,
+									"description": "FIELD , OFFICE"
+								},
+								{
+									"key": "attendanceType",
+									"value": null,
+									"description": "A,L,P,LT"
 								}
 							]
 						}
@@ -2133,7 +1996,7 @@
 										},
 										{
 											"key": "clientId",
-											"value": "2",
+											"value": "129",
 											"type": "text"
 										},
 										{
@@ -2144,6 +2007,12 @@
 										{
 											"key": "callNotReceived",
 											"value": "true",
+											"type": "text"
+										},
+										{
+											"key": "followUpType",
+											"value": "WHATSAPP",
+											"description": "FIELD, CALL, WHATSAPP, EMAIL",
 											"type": "text"
 										}
 									]
@@ -2575,7 +2444,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"RDJ19\",\r\n    \"reference\": \"OTHER\",\r\n    \"reference_name\": \"Other\",\r\n    \"business\": \"Avengers Association\",\r\n    \"contact_number\": \"+91-95117566026\",\r\n    \"client_type\": \"true\",\r\n    \"countryId\": 2,\r\n    \"city\": \"Rajkot\",\r\n    \"state\": \"Gujarat\",\r\n    \"address\": \"RK Empire 250,150 Feer Ring Road Rajkot\"\r\n}",
+							"raw": "{\r\n    \"name\": \"RDJ19\",\r\n    \"reference\": \"OTHER\",\r\n    \"reference_name\": \"Other\",\r\n    \"business\": \"Avengers Association\",\r\n    \"contact_number\": \"+91-95117566026\",\r\n    \"isInternational\": \"true\",\r\n    \"countryId\": 2,\r\n    \"city\": \"Rajkot\",\r\n    \"state\": \"Gujarat\",\r\n    \"address\": \"RK Empire 250,150 Feer Ring Road Rajkot\",\r\n    \"max_invesment_amount\": 100\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2589,6 +2458,45 @@
 							],
 							"path": [
 								"client"
+							]
+						},
+						"description": "Here Name, Contact Number, Products are compulsary\n\ncontact_number of email one of these compulsary"
+					},
+					"response": []
+				},
+				{
+					"name": "Close Client Inquiry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"\",\r\n    \"clientId\": 131\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/client/status/closed",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"client",
+								"status",
+								"closed"
 							]
 						},
 						"description": "Here Name, Contact Number, Products are compulsary\n\ncontact_number of email one of these compulsary"
@@ -2650,7 +2558,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/clients",
+							"raw": "{{baseUrl}}/clients?tabType=existing",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2661,11 +2569,6 @@
 								{
 									"key": "stage",
 									"value": "2",
-									"disabled": true
-								},
-								{
-									"key": "type",
-									"value": "MACHINE",
 									"disabled": true
 								},
 								{
@@ -2685,8 +2588,12 @@
 								},
 								{
 									"key": "teamId",
-									"value": null,
+									"value": "",
 									"disabled": true
+								},
+								{
+									"key": "tabType",
+									"value": "existing"
 								}
 							]
 						}
@@ -4260,7 +4167,7 @@
 					"response": []
 				},
 				{
-					"name": "Update Title Of Task",
+					"name": "Update Task Details",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -4272,11 +4179,11 @@
 								}
 							]
 						},
-						"method": "PATCH",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\" : \"title\"\r\n}",
+							"raw": "{\r\n    \"title\": \"title\",\r\n    \"description\": \"description\",\r\n    \"taskId\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4298,44 +4205,6 @@
 									"key": "taskId",
 									"value": null
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Description Of Task Copy",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"description\" : \"desa9ip6ion\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/description/task/4",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"description",
-								"task",
-								"4"
 							]
 						}
 					},
@@ -5290,6 +5159,105 @@
 			]
 		},
 		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Get All Country",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/country",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search City",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/city?searchQuery=rajkot",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"city"
+							],
+							"query": [
+								{
+									"key": "searchQuery",
+									"value": "rajkot"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search State",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/state",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"state"
+							],
+							"query": [
+								{
+									"key": "searchQuery",
+									"value": "gujarat",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "IndiaMartAPI",
 			"request": {
 				"method": "GET",
@@ -5322,33 +5290,6 @@
 							"key": "end_time",
 							"value": "22-May-2022"
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get All Country",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{auth_token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/country",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"country"
 					]
 				}
 			},

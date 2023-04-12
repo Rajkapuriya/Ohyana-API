@@ -38,18 +38,6 @@ const Permission = sequelize.define('permission', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  viewDepartment: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  editDepartment: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  deleteDepartment: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
   viewRole: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
@@ -88,6 +76,7 @@ const Permission = sequelize.define('permission', {
   },
   clientStageAccess: {
     type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
 })
 

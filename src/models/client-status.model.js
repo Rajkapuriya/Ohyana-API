@@ -20,7 +20,7 @@ const Client_Status = sequelize.define('client_status', {
   },
   followUpType: {
     type: DataTypes.STRING(15),
-    comment: 'FIELD , CALL , WHATSAPP',
+    comment: 'FIELD , CALL , WHATSAPP , EMAIL',
   },
   audioUrl: {
     type: DataTypes.STRING(80),

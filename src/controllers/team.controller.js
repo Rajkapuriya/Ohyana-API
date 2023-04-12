@@ -1,7 +1,6 @@
 const {
   Team,
   Role,
-  Department,
   Team_Expense,
   Attendance,
   Client,

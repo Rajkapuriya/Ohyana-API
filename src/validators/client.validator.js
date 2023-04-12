@@ -48,7 +48,9 @@ exports.clientSchema = {
     body: Joi.object({
       description: Joi.string().min(5).required(),
       clientId: Joi.number().required(),
-      followUpType: Joi.string().valid('FIELD', 'CALL', 'WHATSAPP').required(),
+      followUpType: Joi.string()
+        .valid('FIELD', 'CALL', 'WHATSAPP', 'EMAIL', 'OTHER')
+        .required(),
       callNotReceived: Joi.boolean().allow(null),
     }).required(),
   }).unknown(),
@@ -57,7 +59,6 @@ exports.clientSchema = {
     body: Joi.object({
       description: Joi.string().min(5).required(),
       statusId: Joi.number().required(),
-      callNotReceived: Joi.boolean().allow(null),
     }).required(),
   }).unknown(),
 

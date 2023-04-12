@@ -1,7 +1,6 @@
 const db = {}
 
 db.Client = require('./client.model').Client
-db.Department = require('./department.model').Department
 db.Product = require('./product.model').Product
 db.Role = require('./role.model').Role
 db.Team = require('./team.model').Team
@@ -78,16 +77,10 @@ db.Team.belongsToMany(db.Client_Appointment, {
 db.Client.belongsToMany(db.Product, { through: db.Client_Product })
 db.Product.belongsToMany(db.Client, { through: db.Client_Product })
 
-db.Department.hasMany(db.Team)
-db.Team.belongsTo(db.Department)
-
 db.Role.hasMany(db.Team)
 db.Team.belongsTo(db.Role)
 
-db.Department.hasMany(db.Role)
-db.Role.belongsTo(db.Department)
-
-// Team And Their Permissions
+// Team Role And Their Permissions
 db.Role.hasOne(db.Permission)
 
 // Notification as per User
@@ -196,9 +189,6 @@ db.Appointment_Reminder.belongsTo(db.Company)
 
 db.Company.hasMany(db.Role)
 db.Role.belongsTo(db.Company)
-
-db.Company.hasMany(db.Department)
-db.Department.belongsTo(db.Company)
 
 db.Company.hasMany(db.Product)
 db.Product.belongsTo(db.Company)
