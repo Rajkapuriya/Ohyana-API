@@ -6,7 +6,7 @@ const {
   forbiddenRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 const { YYYY_MM_DDHHMM, YYYY_MM_DD_HHMM } = require('../utils/moment.util')
 
 exports.createAppointmentReminder = async (req, res) => {

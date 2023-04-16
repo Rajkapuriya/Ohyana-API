@@ -6,7 +6,7 @@ const {
   forbiddenRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 
 exports.createLeaveType = async (req, res) => {
   const { type, duration } = req.body

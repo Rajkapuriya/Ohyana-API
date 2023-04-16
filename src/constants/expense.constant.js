@@ -1,0 +1,11 @@
+exports.EXPENSE = {
+  PAYMENT_STATUS: {
+    PENDING: 'PENDING',
+    DONE: 'DONE',
+  },
+  APPROVAL_STATUS: {
+    REJECTED: 'REJECTED',
+    APPROVED: 'APPROVED',
+    PENDING: 'PENDING',
+  },
+}

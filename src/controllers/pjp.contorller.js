@@ -8,7 +8,7 @@ const {
   notFoundError,
   badRequestError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, PJP } = require('../constants')
 
 exports.createPJP = async (req, res) => {
   const {
@@ -27,9 +27,9 @@ exports.createPJP = async (req, res) => {
     return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
 
   if (YYYY_MM_DD(date) > YYYY_MM_DD()) {
-    status = 'UPCOMING'
+    status = PJP.STATUS.UPCOMING
   } else {
-    status = 'TODAY'
+    status = PJP.STATUS.TODAY
   }
 
   await Pjp.create({
@@ -162,7 +162,7 @@ exports.getAllPJP = async (req, res) => {
 
   response.completedPJP =
     day == 'TODAY'
-      ? response.pjps.filter(e => e.status === 'FINISHED').length
+      ? response.pjps.filter(e => e.status === PJP.STATUS.COMPLETED).length
       : 0
 
   if (response.totalPage === 0) return notFoundError(res)

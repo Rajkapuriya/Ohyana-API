@@ -5,7 +5,7 @@ const {
   forbiddenRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, HOLIDAY } = require('../constants')
 const { Op } = require('sequelize')
 
 exports.createHoliday = async (req, res) => {
@@ -14,12 +14,12 @@ exports.createHoliday = async (req, res) => {
     date,
     occasion,
     duration,
-    type: 'OCCASIONAL',
+    type: HOLIDAY.TYPE.OCCASIONAL,
     companyId: req.user.companyId,
   }
 
   if (regular) {
-    body.type = 'REGULAR'
+    body.type = HOLIDAY.TYPE.REGULAR
     if (isNaN(parseInt(occasion)))
       return unProcessableEntityRequestError(res, 'Invalide Day')
     delete body.date

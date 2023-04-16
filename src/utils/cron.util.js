@@ -37,6 +37,13 @@ const async = require('async')
 const { updateTeamMemberPoint } = require('./common.util')
 const sequelize = require('../database/mysql')
 const { mailHelper } = require('../helpers/mail.helper')
+const {
+  ATTENDANCE,
+  POINTS,
+  TARGET,
+  HOLIDAY,
+  NOTIFICATION,
+} = require('../constants')
 
 new CronJob(
   '0 * * * *',
@@ -67,10 +74,10 @@ new CronJob(
             }),
             Team_Leave.findOne({
               where: { date: currentDate, teamId: item.id },
-              status: 'APPROVED',
+              status: ATTENDANCE.LEAVE_TYPE.APPROVED,
             }),
             Holiday.findAll({
-              where: { type: 'REGULAR', companyId: item.companyId },
+              where: { type: HOLIDAY.TYPE.REGULAR, companyId: item.companyId },
             }),
           ]).then(result => {
             const attendance = result[0]
@@ -83,18 +90,18 @@ new CronJob(
             ) {
               if (attendance === null && teamLeave === null) {
                 Attendance.create({
-                  attendanceType: 'A',
+                  attendanceType: ATTENDANCE.TYPE.ABSENT,
                   companyId: item.companyId,
                   teamId: item.id,
                 })
-                updateTeamMemberPoint(item.id, 4)
+                updateTeamMemberPoint(item.id, POINTS.TYPE.ABSENT)
               } else if (teamLeave !== null && !attendance) {
                 Attendance.create({
-                  attendanceType: 'L',
+                  attendanceType: ATTENDANCE.TYPE.LEAVE,
                   companyId: item.companyId,
                   teamId: item.id,
                 })
-                updateTeamMemberPoint(item.id, 1)
+                updateTeamMemberPoint(item.id, POINTS.TYPE.LEAVE)
               }
             }
           })
@@ -120,7 +127,7 @@ new CronJob(
 
     for (let i = 0; i < allTasks.length; i++) {
       // 3 for task not completed in due time
-      // updateTeamMemberPoint(allTasks[i].teamId, 3)
+      // updateTeamMemberPoint(allTasks[i].teamId, POINTS.TYPE.TASK_NOT_COMPLETE_IN_DUEDATE)
     }
   },
   null,
@@ -213,7 +220,7 @@ async function sendNotification(now, type, Model, include) {
           type === 'Appointemnt' ? element.heading : element.client.name
         }`,
         description: element.description,
-        type: 'APPOINTMENT',
+        type: NOTIFICATION.TYPE.INFORMATION,
         button:
           type !== 'Appointemnt'
             ? [
@@ -250,7 +257,7 @@ new CronJob(
           model: Target,
           attributes: { exclude: ['createdAt', 'updatedAt', 'teamId'] },
           where: {
-            state: { [Op.not]: 'PAST' },
+            state: { [Op.not]: TARGET.STATE.PAST },
           },
         },
       ],
@@ -260,17 +267,20 @@ new CronJob(
       teamWithTarget,
       async function (item, callback) {
         const upcomingTarget = {
-          type: item.targets.find(e => e.state === 'UPCOMING').type,
-          period: item.targets.find(e => e.state === 'UPCOMING').period,
-          target: item.targets.find(e => e.state === 'UPCOMING').target,
+          type: item.targets.find(e => e.state === TARGET.STATE.UPCOMING).type,
+          period: item.targets.find(e => e.state === TARGET.STATE.UPCOMING)
+            .period,
+          target: item.targets.find(e => e.state === TARGET.STATE.UPCOMING)
+            .target,
         }
 
         if (
-          item.targets.find(e => e.state === 'CURRENT').endDate === yesterday
+          item.targets.find(e => e.state === TARGET.STATE.CURRENT).endDate ===
+          yesterday
         ) {
           Target.update(
-            { state: 'PAST' },
-            { where: { teamId: item.id, state: 'CURRENT' } },
+            { state: TARGET.STATE.PAST },
+            { where: { teamId: item.id, state: TARGET.STATE.CURRENT } },
           )
             .then(() => {
               Target.create({
@@ -279,7 +289,7 @@ new CronJob(
                 target: upcomingTarget.target,
                 startDate: moment(),
                 endDate: moment().add(upcomingTarget.period, 'days'),
-                state: 'CURRENT',
+                state: TARGET.STATE.CURRENT,
                 teamId: item.id,
               })
             })
@@ -304,7 +314,7 @@ new CronJob(
     // 0 0 28-31 * *
     const targets = await Target.findAll({
       where: {
-        state: { [Op.not]: 'UPCOMING' },
+        state: { [Op.not]: TARGET.STATE.UPCOMING },
         [Op.and]: [
           // { date: date },
           sequelize.where(
@@ -319,13 +329,22 @@ new CronJob(
       const achievedTarget = targets[i].achieve || 0
       if (achievedTarget < targets[i].target) {
         // 5 for target not achieved
-        await updateTeamMemberPoint(targets[i].teamId, 5)
+        await updateTeamMemberPoint(
+          targets[i].teamId,
+          POINTS.TYPE.TARGET_NOT_ACHEIVE,
+        )
       } else if (achievedTarget > targets[i].target) {
         // 8 for extra target achieved
-        await updateTeamMemberPoint(targets[i].teamId, 8)
+        await updateTeamMemberPoint(
+          targets[i].teamId,
+          POINTS.TYPE.EXTRA_TARGET_ACHEIVE,
+        )
       } else if (achievedTarget === targets[i].target) {
         // 9 for target achieved
-        await updateTeamMemberPoint(targets[i].teamId, 9)
+        await updateTeamMemberPoint(
+          targets[i].teamId,
+          POINTS.TYPE.TARGET_ACHEIVE,
+        )
       }
     }
 

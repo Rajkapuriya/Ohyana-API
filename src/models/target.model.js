@@ -32,6 +32,7 @@ const Target = sequelize.define('target', {
     type: DataTypes.STRING(10),
     allowNull: false,
     required: true,
+    comment: 'UPCOMING , CURRENT , PAST',
     validate: {
       isIn: [['UPCOMING', 'CURRENT', 'PAST']],
     },

@@ -1,0 +1,11 @@
+exports.NOTIFICATION = {
+  SENDER_TYPE: {
+    SYSTEM: 0,
+    INDIVIDUAL: 1,
+  },
+  TYPE: {
+    NOTICE: 'NOTICE',
+    ACHIEVEMENT: 'ACHIEVEMENT',
+    INFORMATION: 'INFORMATION',
+  },
+}

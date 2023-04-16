@@ -39,8 +39,9 @@ const Client = sequelize.define('client', {
   },
   reference: {
     type: DataTypes.STRING(15),
+    comment: 'DIGITAL , OFFICE , OTHER , PROSPECTIVE',
     validate: {
-      isIn: [['DIGITAL', 'OFFICE', 'OTHER']],
+      isIn: [['DIGITAL', 'OFFICE', 'OTHER', 'PROSPECTIVE']],
     },
   },
   reference_name: {

@@ -21,7 +21,7 @@ const {
   internalServerError,
   unauthorisedRequestError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, CLIENT, POINTS, TARGET } = require('../constants')
 const { SERVER_CONFIG } = require('../config/server.config')
 const {
   updateTeamMemberPoint,
@@ -73,7 +73,7 @@ exports.addClient = async (req, res) => {
       isInternational: isInternational,
       arrivalDate: newDate.split(' ')[0],
       arrivalTime: newDate.split(' ')[1],
-      stage: 0,
+      stage: CLIENT.STAGE.INTIATE,
       companyId: req.user.companyId,
     },
   })
@@ -127,11 +127,11 @@ exports.getAllClients = async (req, res) => {
   if (tabType) {
     switch (tabType) {
       case 'digital':
-        filterCondition.reference = 'DIGITAL'
+        filterCondition.reference = CLIENT.REFERENCE_TYPE.DIGITAL
         break
 
       case 'prospective':
-        filterCondition.reference = 'PROSPECTIVE'
+        filterCondition.reference = CLIENT.REFERENCE_TYPE.PROSPECTIVE
         break
 
       case 'existing':
@@ -149,16 +149,16 @@ exports.getAllClients = async (req, res) => {
         break
 
       case 'other':
-        filterCondition.reference = 'OTHER'
+        filterCondition.reference = CLIENT.REFERENCE_TYPE.OTHER
         filterCondition.reference_name = {
-          [Op.ne]: 'BUSINESS_CARD',
+          [Op.ne]: CLIENT.REFERENCE_SUB_TYPE.BUSINESS_CARD,
         }
         break
 
       case 'business_card':
         attributes = ['id', 'arrivalDate', 'imageUrl']
-        filterCondition.reference = 'OTHER'
-        filterCondition.reference_name = 'BUSINESS_CARD'
+        filterCondition.reference = CLIENT.REFERENCE_TYPE.OTHER
+        filterCondition.reference_name = CLIENT.REFERENCE_SUB_TYPE.BUSINESS_CARD
         break
     }
   }
@@ -344,8 +344,8 @@ exports.addBusinessCard = async (req, res) => {
     arrivalDate: newDate,
     teamId: req.user.id,
     imageUrl,
-    reference: 'OTHER',
-    reference_name: 'BUSINESS_CARD',
+    reference: CLIENT.REFERENCE_TYPE.OTHER,
+    reference_name: CLIENT.REFERENCE_SUB_TYPE.BUSINESS_CARD,
     companyId: req.user.companyId,
   })
 
@@ -394,7 +394,7 @@ exports.updateClientStage = async (req, res) => {
   if (!client) return notFoundError(res)
 
   // 5 = client inquiry closed
-  if (stage <= client.stage || client.stage === 5)
+  if (stage <= client.stage || client.stage === CLIENT.STAGE.CLOSED)
     return forbiddenRequestError(res)
 
   if (client.teamId !== req.user.id && req.user.role.parentId !== null)
@@ -417,11 +417,11 @@ exports.updateClientStage = async (req, res) => {
     })
   }
 
-  if (stage === 5) {
+  if (stage === CLIENT.STAGE.CONFIRM) {
     // 7 = point id
-    updateTeamMemberPoint(req.user.id, 7)
+    updateTeamMemberPoint(req.user.id, POINTS.TYPE.LEAD_GENERATION)
     // 0 = generate lead
-    updateTeamMemberTarget(req.user.id, 0)
+    updateTeamMemberTarget(req.user.id, TARGET.TYPE.GENERATE_LEAD)
   }
 
   return successResponse(res, 'Stage Updated Successfully')
@@ -504,9 +504,12 @@ exports.closeClientInquery = async (req, res) => {
   const { description, clientId } = req.body
 
   // stage 5 for closed inquiry
-  await Client.update({ stage: 5 }, { where: { id: clientId } })
+  await Client.update(
+    { stage: CLIENT.STAGE.CLOSED },
+    { where: { id: clientId } },
+  )
   await Client_Stage_History.create({
-    stage: 5,
+    stage: CLIENT.STAGE.CLOSED,
     clientId: clientId,
     teamId: req.user.id,
   })

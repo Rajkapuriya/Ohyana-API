@@ -5,7 +5,7 @@ const {
   forbiddenRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 
 exports.createProduct = async (req, res) => {
   const [, created] = await Product.findOrCreate({

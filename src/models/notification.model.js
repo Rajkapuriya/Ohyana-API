@@ -35,12 +35,9 @@ const Notification = sequelize.define('notification', {
     type: DataTypes.INTEGER,
   },
   senderType: {
-    type: DataTypes.STRING(15),
-    allowNull: false,
-    required: true,
-    validate: {
-      isIn: [['SYSTEM', 'INDIVIDUAL']],
-    },
+    type: DataTypes.INTEGER(1),
+    defaultValue: 0,
+    comment: '0=system,1=individual',
   },
   button: {
     type: DataTypes.JSON,

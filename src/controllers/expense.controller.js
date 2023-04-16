@@ -11,7 +11,7 @@ const {
   notFoundError,
   forbiddenRequestError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 
 exports.createExpense = async (req, res) => {
   const [, created] = await Expense.findOrCreate({

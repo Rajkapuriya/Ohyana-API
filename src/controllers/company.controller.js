@@ -4,7 +4,7 @@ const {
   badRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 
 exports.updateCompanyProfile = async (req, res) => {
   const company = await Company.findOne({ where: { id: req.user.companyId } })

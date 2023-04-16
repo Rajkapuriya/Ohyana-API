@@ -19,9 +19,9 @@ const {
   notFoundError,
   badRequestError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
 const moment = require('moment')
 const bcrypt = require('bcrypt')
+const { ATTENDANCE, MESSAGE, EXPENSE } = require('../constants')
 
 exports.addTeamMember = async (req, res) => {
   const { email, password } = req.body
@@ -274,8 +274,8 @@ exports.addExpense = async (req, res) => {
 
   await Team_Expense.create({
     ...req.body,
-    payment_status: 'PENDING',
-    status: 'PENDING',
+    payment_status: EXPENSE.PAYMENT_STATUS.PENDING,
+    status: EXPENSE.APPROVAL_STATUS.PENDING,
     teamId: req.user.id,
     file: fileName,
   })
@@ -348,16 +348,16 @@ exports.getExpense = async (req, res) => {
     expenses,
   }
   expenseCount.map(e => {
-    if (e.payment_status == 'DONE') {
+    if (e.payment_status == EXPENSE.PAYMENT_STATUS.DONE) {
       response.paymentDone += e.amount
     }
-    if (e.status == 'APPROVED') {
+    if (e.status == EXPENSE.APPROVAL_STATUS.APPROVED) {
       response.approved += e.amount
     }
-    if (e.status == 'REJECTED') {
+    if (e.status == EXPENSE.APPROVAL_STATUS.REJECTED) {
       response.rejected += e.amount
     }
-    if (e.status == 'PENDING') {
+    if (e.status == EXPENSE.APPROVAL_STATUS.PENDING) {
       response.pending += e.amount
     }
   })
@@ -375,7 +375,7 @@ exports.approveExpense = async (req, res) => {
   const updateBody = {
     approvalAmount: amount,
     aprroval_description: description,
-    status: 'APPROVED',
+    status: EXPENSE.APPROVAL_STATUS.APPROVED,
     aprrovalBy: req.user.name,
   }
 
@@ -385,7 +385,7 @@ exports.approveExpense = async (req, res) => {
   if (!existedExpense) return notFoundError(res)
 
   if (amount === 0) {
-    updateBody.status = 'REJECTED'
+    updateBody.status = EXPENSE.APPROVAL_STATUS.REJECTED
   }
 
   const expenses = await existedExpense.update(updateBody)
@@ -400,7 +400,7 @@ exports.approveExpensePayment = async (req, res) => {
   })
   if (!existedExpense) return notFoundError(res)
 
-  if (existedExpense.status === 'REJECTED')
+  if (existedExpense.status === EXPENSE.APPROVAL_STATUS.REJECTED)
     return badRequestError(res, 'This Expense is Rejected')
 
   const expenses = await existedExpense.update(updateBody)
@@ -455,7 +455,7 @@ exports.getTeamLeaderBoardDetails = async (req, res) => {
     where: {
       teamId: id,
       attendanceType: {
-        [Op.ne]: 'L',
+        [Op.ne]: ATTENDANCE.TYPE.LEAVE,
       },
       [Op.and]: [
         sequelize.where(
@@ -543,21 +543,21 @@ exports.getTeamLeaderBoardDetails = async (req, res) => {
     clientsResponseTime / response.currentMonthClients.attend / 1000 / 60 || 0
 
   teamMemberAttendance.forEach(e => {
-    if (e.attendanceType === 'LT') {
+    if (e.attendanceType === ATTENDANCE.TYPE.LATE) {
       response.currentMonthAttendance.totalLate++
-    } else if (e.attendanceType === 'A') {
+    } else if (e.attendanceType === ATTENDANCE.TYPE.ABSENT) {
       response.currentMonthAttendance.totalAbsent++
-    } else if (e.attendanceType === 'P') {
+    } else if (e.attendanceType === ATTENDANCE.TYPE.PRESENT) {
       response.currentMonthAttendance.totalPresent++
     }
   })
 
   teamMemberExpense.forEach(e => {
-    if (e.status === 'REJECTED') {
+    if (e.status === EXPENSE.APPROVAL_STATUS.REJECTED) {
       response.currentMonthExpense.rejectedExpense += e.amount
-    } else if (e.status === 'APPROVED') {
+    } else if (e.status === EXPENSE.APPROVAL_STATUS.APPROVED) {
       response.currentMonthExpense.approvedExpense += e.approvalAmount
-    } else if (e.status === 'PENDING') {
+    } else if (e.status === EXPENSE.APPROVAL_STATUS.PENDING) {
       response.currentMonthExpense.pendingExpense += e.amount
     }
   })

@@ -5,7 +5,7 @@ const {
   notFoundError,
   unProcessableEntityRequestError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 const { YYYY_MM_DDHHMM } = require('../utils/moment.util')
 
 exports.createTask = async (req, res) => {

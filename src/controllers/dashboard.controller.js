@@ -14,7 +14,7 @@ const {
   Checklist,
 } = require('../models')
 const { successResponse } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, CLIENT, ORDERS, TARGET } = require('../constants')
 const { YYYY_MM_DD } = require('../utils/moment.util')
 
 exports.getInquiryAnalytics = async (req, res) => {
@@ -33,7 +33,7 @@ exports.getInquiryAnalytics = async (req, res) => {
   const currentMonthOrders = await Order.findAndCountAll({
     where: {
       ...getWhereConditionPerMonth(req.user, currentMonth, 'date'),
-      paymentStatus: 'CONFIRMED',
+      paymentStatus: ORDERS.PAYMENT_STATUS.CONFIRMED,
     },
     include: {
       model: Client,
@@ -46,7 +46,7 @@ exports.getInquiryAnalytics = async (req, res) => {
   const lastMonthOrders = await Order.count({
     where: {
       ...getWhereConditionPerMonth(req.user, lastMonth, 'date'),
-      paymentStatus: 'CONFIRMED',
+      paymentStatus: ORDERS.PAYMENT_STATUS.CONFIRMED,
     },
   })
 
@@ -174,45 +174,45 @@ exports.getInquiryAnalytics = async (req, res) => {
     lstPending = 0
 
   currentMonthInquiry.map(e => {
-    if (e.reference === 'INDIAMART') {
+    if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.INDIAMART) {
       crtMonIndiaMart += 1
-    } else if (e.reference === 'WEBSITE') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.WEBSITE) {
       crtMonWeb += 1
-    } else if (e.reference === 'OTHER') {
+    } else if (e.reference === CLIENT.REFERENCE_TYPE.OTHER) {
       crtMonOther += 1
-    } else if (e.reference === 'PJP') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.PJP) {
       crtMonPJP += 1
     }
 
-    if (e.stage === 5) {
+    if (e.stage === CLIENT.STAGE.CONFIRM) {
       crtLead += 1
-    } else if (e.stage === 4) {
+    } else if (e.stage === CLIENT.STAGE.IRRELEVANT) {
       crtIrrelevant += 1
-    } else if (e.stage === 3) {
+    } else if (e.stage === CLIENT.STAGE.NO_RESPONSE) {
       crtNoResponse += 1
-    } else if (e.stage === 0) {
+    } else if (e.stage === CLIENT.STAGE.INTIATE) {
       crtPending += 1
     }
   })
 
   lastMonthInquiry.map(e => {
-    if (e.reference === 'INDIAMART') {
+    if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.INDIAMART) {
       lstMonIndiaMart += 1
-    } else if (e.reference === 'WEBSITE') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.WEBSITE) {
       lstMonWeb += 1
-    } else if (e.reference === 'OTHER') {
+    } else if (e.reference === CLIENT.REFERENCE_TYPE.OTHER) {
       lstMonOther += 1
-    } else if (e.reference === 'PJP') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.PJP) {
       lstMonPJP += 1
     }
 
-    if (e.stage === 5) {
+    if (e.stage === CLIENT.STAGE.CONFIRM) {
       lstLead += 1
-    } else if (e.stage === 4) {
+    } else if (e.stage === CLIENT.STAGE.IRRELEVANT) {
       lstIrrelevant += 1
-    } else if (e.stage === 3) {
+    } else if (e.stage === CLIENT.STAGE.NO_RESPONSE) {
       lstNoResponse += 1
-    } else if (e.stage === 0) {
+    } else if (e.stage === CLIENT.STAGE.INTIATE) {
       lstPending += 1
     }
   })
@@ -303,7 +303,7 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
   const targets = await Target.findAll({
     where: {
       teamId: req.user.id,
-      type: 0, // Generate Lead
+      type: TARGET.TYPE.GENERATE_LEAD,
     },
     order: [['endDate', 'DESC']],
     limit: 2,
@@ -388,47 +388,49 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
     lstNoResponse = 0
 
   currentMonthInquiry.map(e => {
-    if (e.reference_name === 'INDIAMART') {
+    if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.INDIAMART) {
       crtMonIndiaMart += 1
-    } else if (e.reference_name === 'WEBSITE') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.WEBSITE) {
       crtMonWeb += 1
-    } else if (e.reference === 'OTHER') {
+    } else if (e.reference === CLIENT.REFERENCE_TYPE.OTHER) {
       crtMonOther += 1
-    } else if (e.reference === 'PJP') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.PJP) {
       crtMonPJP += 1
     }
 
-    if (e.stage === 5) {
+    if (e.stage === CLIENT.STAGE.CONFIRM) {
       crtLead += 1
-    } else if (e.stage === 4) {
+    } else if (e.stage === CLIENT.STAGE.IRRELEVANT) {
       crtIrrelevant += 1
-    } else if (e.stage === 3) {
+    } else if (e.stage === CLIENT.STAGE.INTIATE) {
       crtNoResponse += 1
     }
   })
 
   lastMonthInquiry.map(e => {
-    if (e.reference_name === 'INDIAMART') {
+    if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.INDIAMART) {
       lstMonIndiaMart += 1
-    } else if (e.reference_name === 'WEBSITE') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.WEBSITE) {
       lstMonWeb += 1
-    } else if (e.reference === 'OTHER') {
+    } else if (e.reference === CLIENT.REFERENCE_TYPE.OTHER) {
       lstMonOther += 1
-    } else if (e.reference === 'PJP') {
+    } else if (e.reference_name === CLIENT.REFERENCE_SUB_TYPE.PJP) {
       lstMonPJP += 1
     }
 
-    if (e.stage === 5) {
+    if (e.stage === CLIENT.STAGE.CONFIRM) {
       lstLead += 1
-    } else if (e.stage === 4) {
+    } else if (e.stage === CLIENT.STAGE.IRRELEVANT) {
       lstIrrelevant += 1
-    } else if (e.stage === 3) {
+    } else if (e.stage === CLIENT.STAGE.NO_RESPONSE) {
       lstNoResponse += 1
     }
   })
 
-  const currentTargetRecords = targets.find(t => t.state === 'CURRENT')
-  const lastTargetRecords = targets.find(t => t.state === 'PAST')
+  const currentTargetRecords = targets.find(
+    t => t.state === TARGET.STATE.CURRENT,
+  )
+  const lastTargetRecords = targets.find(t => t.state === TARGET.STATE.PAST)
   const start = moment(currentTargetRecords.endDate)
   const remainDays = start.diff(moment(), 'days')
 

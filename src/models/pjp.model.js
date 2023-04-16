@@ -32,6 +32,7 @@ const Pjp = sequelize.define(
     },
     status: {
       type: DataTypes.STRING(15),
+      comment: 'COMPLETED , TODAY , UPCOMING',
     },
     followUpType: {
       type: DataTypes.STRING(15),

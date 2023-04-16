@@ -7,10 +7,10 @@ const {
   badRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
 const { YYYY_MM_DD, HH_MM_SS } = require('../utils/moment.util')
 const { Op } = require('sequelize')
 const { updateTeamMemberPoint } = require('../utils/common.util')
+const { ATTENDANCE, MESSAGE, POINTS } = require('../constants')
 
 exports.updateAttendance = async (req, res) => {
   const { checkIn, checkOut, breakIn, breakOut } = req.query
@@ -30,11 +30,14 @@ exports.updateAttendance = async (req, res) => {
       await Attendance.create({
         checkIn: currentTime,
         teamId: req.user.id,
-        attendanceType: currentTime > req.user.role.clockIn ? 'LT' : 'P',
+        attendanceType:
+          currentTime > req.user.role.clockIn
+            ? ATTENDANCE.TYPE.LATE
+            : ATTENDANCE.TYPE.PRESENT,
       })
-      let pointId = 6
+      let pointId = POINTS.TYPE.PRESENT
       if (currentTime > req.user.role.clockIn) {
-        pointId = 2
+        pointId = POINTS.TYPE.LATE
       }
       await updateTeamMemberPoint(req.user.id, pointId)
       return successResponse(res, 'CheckIn Successfully')
@@ -44,7 +47,9 @@ exports.updateAttendance = async (req, res) => {
     let updateObject
 
     if (
-      ['P', 'LT'].includes(existingPresentOfToday.attendanceType) &&
+      [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE].includes(
+        existingPresentOfToday.attendanceType,
+      ) &&
       existingPresentOfToday &&
       existingPresentOfToday.checkIn &&
       !existingPresentOfToday.breakIn &&
@@ -56,7 +61,9 @@ exports.updateAttendance = async (req, res) => {
     }
 
     if (
-      ['P', 'LT'].includes(existingPresentOfToday.attendanceType) &&
+      [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE].includes(
+        existingPresentOfToday.attendanceType,
+      ) &&
       existingPresentOfToday &&
       existingPresentOfToday.checkIn &&
       existingPresentOfToday.breakIn &&
@@ -70,7 +77,9 @@ exports.updateAttendance = async (req, res) => {
     console.log(existingPresentOfToday)
 
     if (
-      ['P', 'LT'].includes(existingPresentOfToday.attendanceType) &&
+      [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE].includes(
+        existingPresentOfToday.attendanceType,
+      ) &&
       existingPresentOfToday &&
       existingPresentOfToday.checkIn &&
       !existingPresentOfToday.checkOut &&
@@ -163,8 +172,12 @@ exports.getAllAttendancePerUser = async (req, res) => {
   }
 
   const [absentDayCount, lateDayCount, attendancePerUser] = await Promise.all([
-    await Attendance.count({ where: { teamId, attendanceType: 'A' } }),
-    await Attendance.count({ where: { teamId, attendanceType: 'LT' } }),
+    await Attendance.count({
+      where: { teamId, attendanceType: ATTENDANCE.TYPE.ABSENT },
+    }),
+    await Attendance.count({
+      where: { teamId, attendanceType: ATTENDANCE.TYPE.LATE },
+    }),
     await Attendance.findAndCountAll({
       attributes: { exclude: ['createdAt', 'updatedAt', 'teamId'] },
       where: { teamId, ...filterCondition },
@@ -213,7 +226,7 @@ exports.applyLeave = async (req, res) => {
 
   const [existedLeave, leaves] = await Promise.all([
     Team_Leave.findOne({
-      where: { leaveId: leavetypeId, status: 'APPROVED' },
+      where: { leaveId: leavetypeId, status: ATTENDANCE.LEAVE_TYPE.APPROVED },
       order: [['createdAt', 'DESC']],
     }),
     Leave.findOne({ where: { id: leavetypeId } }),
@@ -230,7 +243,7 @@ exports.applyLeave = async (req, res) => {
     remainDays: existedLeave
       ? existedLeave.remainDays - 1
       : leaves.duration - 1,
-    status: 'PENDING',
+    status: ATTENDANCE.LEAVE_TYPE.PENDING,
   })
 
   return successResponse(res, 'Leave is Added To Queue')
@@ -239,20 +252,20 @@ exports.applyLeave = async (req, res) => {
 exports.grantLeave = async (req, res) => {
   if (!req.user.role.parentId) {
     let message
-    const updateObject = { status: 'PENDING' }
+    const updateObject = { status: ATTENDANCE.LEAVE_TYPE.PENDING }
 
     const teamLeave = await Team_Leave.findOne({
-      where: { id: req.params.id, status: 'PENDING' },
+      where: { id: req.params.id, status: ATTENDANCE.LEAVE_TYPE.PENDING },
     })
 
     if (!teamLeave) return notFoundError(res, 'No Leave Found')
 
     if (req.query.isApproved === 'false') {
-      updateObject.status = 'REJECTED'
+      updateObject.status = ATTENDANCE.LEAVE_TYPE.REJECTED
       updateObject.remainDays = teamLeave.remainDays + teamLeave.takenDays
       message = 'Leave Rejected'
     } else if (req.query.isApproved === 'true') {
-      updateObject.status = 'APPROVED'
+      updateObject.status = ATTENDANCE.LEAVE_TYPE.APPROVED
       message = 'Leave Approved'
     }
 

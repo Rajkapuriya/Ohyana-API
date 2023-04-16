@@ -2,7 +2,7 @@ const { Notification, Team } = require('../models')
 const io = require('../helpers/socket.helper')
 const { Op } = require('sequelize')
 const { successResponse, notFoundError } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, NOTIFICATION } = require('../constants')
 const firebaseHelper = require('../helpers/firebase.helper')
 
 exports.createNotification = async (req, res) => {
@@ -11,7 +11,7 @@ exports.createNotification = async (req, res) => {
       ...req.body,
       teamId: req.user.id,
       companyId: req.user.companyId,
-      senderType: 'INDIVIDUAL',
+      senderType: NOTIFICATION.SENDER_TYPE.INDIVIDUAL,
     }),
     Team.findAll({
       where: {
@@ -41,7 +41,7 @@ exports.getAllNotification = async (req, res) => {
 
   if (req.query.sent === 'true') {
     filterCondition.teamId = req.user.id
-    filterCondition.senderType = 'INDIVIDUAL'
+    filterCondition.senderType = NOTIFICATION.SENDER_TYPE.INDIVIDUAL
   }
 
   let notifications = await Notification.findAll({

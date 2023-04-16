@@ -14,7 +14,7 @@ const {
   badRequestError,
   unProcessableEntityRequestError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 
 exports.createRole = async (req, res) => {
   const { name, description, clockIn, parentId } = req.body
@@ -178,6 +178,7 @@ exports.updateExpensePermissions = async (req, res) => {
       { status: 'inactive' },
       { where: { roleId } },
     )
+
     await Role_Expense_Permissions.bulkCreate(policies, {
       updateOnDuplicate: ['amount', 'status'],
     })

@@ -2,7 +2,7 @@ const { Points, Team, Team_Point } = require('../models')
 const sequelize = require('../database/mysql')
 const { Op, Sequelize, QueryTypes } = require('sequelize')
 const { successResponse, notFoundError } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, POINTS } = require('../constants')
 const { updateTeamMemberPoint } = require('../utils/common.util')
 
 exports.getAllTeamPoints = async (req, res) => {
@@ -60,7 +60,7 @@ exports.getPointsRules = async (req, res) => {
 }
 
 exports.giveAppreciationPoints = async (req, res) => {
-  await updateTeamMemberPoint(req.params.id, 11) // 11 for appreciation points
+  await updateTeamMemberPoint(req.params.id, POINTS.TYPE.APPRICIATION_POINT) // 11 for appreciation points
 
   return successResponse(res, 'Point Given Successfully')
 }

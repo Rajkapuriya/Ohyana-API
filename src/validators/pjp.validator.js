@@ -22,7 +22,9 @@ exports.pjpSchema = {
   pjpStatusForm: Joi.object({
     body: Joi.object({
       description: Joi.string().min(5).required(),
-      followUpType: Joi.string().valid('FIELD', 'CALL', 'WHATSAPP').required(),
+      followUpType: Joi.string()
+        .valid('FIELD', 'CALL', 'WHATSAPP', 'OTHER')
+        .required(),
       clientId: Joi.number().required(),
     }).required(),
   }).unknown(),

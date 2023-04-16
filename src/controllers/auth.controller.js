@@ -13,7 +13,7 @@ const {
   requestTimeOutError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 const { badRequestError } = require('../utils/response.util')
 
 let otpArray = []

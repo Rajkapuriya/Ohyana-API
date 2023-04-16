@@ -2,12 +2,12 @@ const { Target } = require('../models')
 const { Op } = require('sequelize')
 const moment = require('moment')
 const { successResponse, notFoundError } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, TARGET } = require('../constants')
 const sequelize = require('../database/mysql')
 
 exports.setTarget = async (req, res) => {
   const target = await Target.findOne({
-    where: { teamId: req.params.id, state: 'UPCOMING' },
+    where: { teamId: req.params.id, state: TARGET.STATE.UPCOMING },
   })
 
   if (target) {
@@ -20,12 +20,12 @@ exports.setTarget = async (req, res) => {
       ...req.body,
       startDate: moment(),
       endDate: moment().add(req.body.period, 'days'),
-      state: 'CURRENT',
+      state: TARGET.STATE.CURRENT,
       teamId: req.params.id,
     },
     {
       ...req.body,
-      state: 'UPCOMING',
+      state: TARGET.STATE.UPCOMING,
       teamId: req.params.id,
     },
   ])
@@ -48,7 +48,7 @@ exports.getTargets = async (req, res) => {
   const target = await Target.findAll({
     where: {
       teamId: req.params.id,
-      state: { [Op.not]: 'UPCOMING' },
+      state: { [Op.not]: TARGET.STATE.UPCOMING },
       ...filterCondition,
     },
   })

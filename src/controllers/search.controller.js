@@ -1,5 +1,5 @@
 const { Op } = require('sequelize')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 const { Country, Client, Team } = require('../models')
 const { successResponse, notFoundError } = require('../utils/response.util')
 

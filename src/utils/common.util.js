@@ -1,6 +1,7 @@
 const { Team, Team_Point, Points, Target } = require('../models')
 const { Sequelize, Op } = require('sequelize')
 const { YYYY_MM_DD } = require('./moment.util')
+const { TARGET } = require('../constants')
 
 async function updateTeamMemberPoint(teamId, pointId) {
   const point = await Points.findOne({ where: { id: pointId } })
@@ -19,7 +20,7 @@ async function updateTeamMemberTarget(teamId, type) {
     where: {
       teamId: teamId,
       type: type,
-      state: 'CURRENT',
+      state: TARGET.STATE.CURRENT,
       [Op.and]: [
         { startDate: { [Op.lte]: currentDate } },
         { endDate: { [Op.gte]: currentDate } },

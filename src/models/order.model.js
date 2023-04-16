@@ -20,6 +20,7 @@ const Order = sequelize.define('order', {
     type: DataTypes.STRING(15),
     allowNull: false,
     required: true,
+    comment: 'PENDING , DISPATCH , SHIPPING , DELIEVERED',
     validate: {
       isIn: [['PENDING', 'DISPATCH', 'SHIPPING', 'DELIEVERED']],
     },
@@ -28,6 +29,7 @@ const Order = sequelize.define('order', {
     type: DataTypes.STRING(10),
     allowNull: false,
     required: true,
+    comment: 'PENDING , CONFIRMED',
     validate: {
       isIn: [['PENDING', 'CONFIRMED']],
     },
@@ -36,6 +38,7 @@ const Order = sequelize.define('order', {
     type: DataTypes.STRING(15),
     // allowNull: false,
     // required: true,
+    comment: 'UPI , CASH , CARD , CHECK , NETBANKING , OTHER',
     validate: {
       isIn: [['UPI', 'CASH', 'CARD', 'CHECK', 'NETBANKING', 'OTHER']],
     },

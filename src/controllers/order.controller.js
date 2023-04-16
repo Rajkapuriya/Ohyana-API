@@ -5,7 +5,7 @@ const {
   forbiddenRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE, ORDERS, POINTS, TARGET } = require('../constants')
 const { YYYY_MM_DD } = require('../utils/moment.util')
 const {
   updateTeamMemberPoint,
@@ -88,8 +88,8 @@ exports.placeOrder = async (req, res) => {
     date: YYYY_MM_DD(),
     total_items: totalItems,
     order_total: orderTotal,
-    orderTrackingStatus: 'PENDING',
-    paymentStatus: 'PENDING',
+    orderTrackingStatus: ORDERS.TRACKING_STATUS.PENDING,
+    paymentStatus: ORDERS.PAYMENT_STATUS.PENDING,
     clientId,
     teamId: req.user.id,
   })
@@ -106,9 +106,9 @@ exports.placeOrder = async (req, res) => {
 
   if (order) {
     // 7 = point id
-    updateTeamMemberPoint(req.user.id, 7)
+    updateTeamMemberPoint(req.user.id, POINTS.TYPE.ORDER_TAKING)
     // 1 = take order
-    updateTeamMemberTarget(req.user.id, 1)
+    updateTeamMemberTarget(req.user.id, TARGET.TYPE.TAKE_ORDER)
   }
   if (order) {
     return successResponse(res, 'Order Placed Successfully')
@@ -232,7 +232,10 @@ exports.updatePaymentStatus = async (req, res) => {
 
   if (!order) return notFoundError(res)
 
-  if (order.paymentStatus == 'CONFIRMED' && status == 'PENDING')
+  if (
+    order.paymentStatus == ORDERS.PAYMENT_STATUS.CONFIRMED &&
+    status == ORDERS.PAYMENT_STATUS.PENDING
+  )
     return forbiddenRequestError(res, 'Payment is already confirmed')
 
   const updateOrder = await order.update({
@@ -255,7 +258,10 @@ exports.updateOrderTrackingStatus = async (req, res) => {
 
   if (!order) return notFoundError(res)
 
-  if (order.orderTrackingStatus == 'DISPATCH' && status == 'PENDING')
+  if (
+    order.orderTrackingStatus == ORDERS.TRACKING_STATUS.DISPATCH &&
+    status == ORDERS.TRACKING_STATUS.PENDING
+  )
     return forbiddenRequestError(res, 'Order is already dispatched')
 
   const updateOrder = await order.update({

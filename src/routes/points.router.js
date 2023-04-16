@@ -11,7 +11,7 @@ const pointsContorller = require('../controllers/points.controller')
 const express = require('express')
 const pointsRouter = express.Router()
 
-// ------------------------------- PJP -------------------------------
+// ------------------------------- Points -------------------------------
 
 pointsRouter.get(
   '/points',

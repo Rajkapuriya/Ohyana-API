@@ -4,7 +4,7 @@ const {
 } = require('../utils/response.util')
 const { Op, QueryTypes } = require('sequelize')
 const sequelize = require('../database/mysql')
-const { MESSAGE } = require('../constants/message.contant')
+const { MESSAGE } = require('../constants')
 const {
   Product,
   Order_Item,
