@@ -60,7 +60,7 @@ teamRouter.put(
   upload.single('image'),
   joiValidationMiddleware(teamSchema.updateProfile),
   authTokenMiddleware,
-  teamController.updateAdminProfile,
+  teamController.updateProfile,
 )
 
 teamRouter.put(

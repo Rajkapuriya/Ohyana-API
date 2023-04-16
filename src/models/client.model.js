@@ -50,7 +50,7 @@ const Client = sequelize.define('client', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
     comment:
-      '0=intiate,1=negative,2=no response,3=irrelevant,4=inter-mediate,5=confirm',
+      '0=intiate,1=no response,2=irrelevant,3=inter-mediate,4=confirm,5=closed',
   },
   indiaMartProductName: {
     type: DataTypes.STRING,

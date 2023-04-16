@@ -15,6 +15,7 @@ const {
 } = require('../models')
 const { successResponse } = require('../utils/response.util')
 const { MESSAGE } = require('../constants/message.contant')
+const { YYYY_MM_DD } = require('../utils/moment.util')
 
 exports.getInquiryAnalytics = async (req, res) => {
   let response = {}
@@ -284,9 +285,10 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
   const lastMonth = moment().subtract(1, 'months').format('MM')
 
   const userAttendance = await Attendance.findOne({
-    attributes: ['checkIn', 'checkOut', 'breakIn', 'breakOut'],
+    attributes: ['checkIn', 'checkOut', 'breakIn', 'breakOut', 'totalHours'],
     where: {
       teamId: req.user.id,
+      date: moment(),
     },
   })
 
@@ -300,19 +302,11 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
 
   const targets = await Target.findAll({
     where: {
-      teamId: 2,
-      type: 'Generate Lead',
+      teamId: req.user.id,
+      type: 0, // Generate Lead
     },
     order: [['endDate', 'DESC']],
     limit: 2,
-  })
-
-  const attendance = await Attendance.findOne({
-    attributes: { exclude: ['teamId', 'id'] },
-    where: {
-      date: moment(),
-      teamId: req.user.id,
-    },
   })
 
   const teamPoints = await Team_Point.findAll({
@@ -323,12 +317,38 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
     limit: 4,
   })
 
+  const crtMonthTotalPoints = await Team_Point.findOne({
+    attributes: [
+      'id',
+      'createdAt',
+      [sequelize.fn('SUM', sequelize.col('points')), 'total_points'],
+    ],
+    where: {
+      teamId: req.user.id,
+      ...getWhereConditionPerMonth(req.user, currentMonth, 'createdAt'),
+    },
+    include: [{ model: Points }],
+  })
+
+  const lstMonthTotalPoints = await Team_Point.findOne({
+    attributes: [
+      'id',
+      'createdAt',
+      [sequelize.fn('SUM', sequelize.col('points')), 'total_points'],
+    ],
+    where: {
+      teamId: req.user.id,
+      ...getWhereConditionPerMonth(req.user, lastMonth, 'createdAt'),
+    },
+    include: [{ model: Points }],
+  })
+
   const tasks = await Task.findOne({
     attributes: ['id', 'title', 'due_date', 'description', 'createdBy'],
     where: {
       teamId: req.user.id,
       due_date: {
-        [Op.gte]: moment(),
+        [Op.gte]: YYYY_MM_DD(),
       },
     },
     include: [
@@ -413,22 +433,35 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
   const remainDays = start.diff(moment(), 'days')
 
   const total = crtMonIndiaMart + crtMonWeb + crtMonOther + crtMonPJP
+  const lstTotal = lstMonIndiaMart + lstMonWeb + lstMonOther + lstMonPJP
+
+  const crtLeads = crtLead + crtIrrelevant + crtNoResponse
+  const lstLeads = lstLead + lstIrrelevant + lstNoResponse
+  const pointPercentage =
+    ((crtMonthTotalPoints.dataValues.total_points -
+      lstMonthTotalPoints.dataValues.total_points) /
+      lstMonthTotalPoints.dataValues.total_points) *
+    100
 
   responseData = {
     userAttendance,
     performance: {
       total,
+      totalInquiryPercentage: ((total - lstTotal) / lstTotal) * 100 || 0,
       targets: {
         target: currentTargetRecords.target,
         achieved: currentTargetRecords.achieve,
-        precentageAchieved:
+        percentageAchieved:
           (currentTargetRecords.achieve / currentTargetRecords.target -
             lastTargetRecords.achieve / currentTargetRecords.target) *
           100,
         remainDays: remainDays > 0 ? remainDays : 0,
       },
+      lead: crtLeads,
+      leadPercentage: ((crtLeads - lstLeads) / lstLeads) * 100 || 0,
+      points: crtMonthTotalPoints.dataValues.total_points,
+      pointsPercentage: isFinite(pointPercentage) ? pointPercentage : 0,
     },
-    attendance,
     teamPoints,
     starPerformerList,
     tasks,

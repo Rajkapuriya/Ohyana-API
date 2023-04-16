@@ -96,7 +96,7 @@ exports.updateHoliday = async (req, res) => {
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
-exports.deleteLeaveType = async (req, res) => {
+exports.deleteHoliday = async (req, res) => {
   await Holiday.destroy({ where: { id: req.params.id } })
   return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }

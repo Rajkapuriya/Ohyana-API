@@ -56,5 +56,10 @@ async function getSearchData(type, searchQuery) {
     group: [type],
   })
 
-  return clientCities.map(e => e[type]).concat(teamCities.map(e => e[type]))
+  const searchArray = clientCities
+    .map(e => e[type])
+    .concat(teamCities.map(e => e[type]))
+    .filter(e => e !== '')
+
+  return [...new Set(searchArray)]
 }

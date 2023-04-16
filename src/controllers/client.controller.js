@@ -169,8 +169,16 @@ exports.getAllClients = async (req, res) => {
     }
   }
 
-  if (city) filterCondition.city = city
-  if (state) filterCondition.state = state
+  if (city) {
+    filterCondition.city = {
+      [Op.like]: `%${city}%`,
+    }
+  }
+  if (state) {
+    filterCondition.state = {
+      [Op.like]: `%${state}%`,
+    }
+  }
 
   if (req.user.role.permission.clientStageAccess !== null) {
     if (stage) {

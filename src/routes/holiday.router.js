@@ -35,7 +35,7 @@ expenseRouter.put(
 expenseRouter.delete(
   '/holiday/:id',
   authTokenMiddleware,
-  holidayController.deleteLeaveType,
+  holidayController.deleteHoliday,
 )
 
 module.exports = expenseRouter

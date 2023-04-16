@@ -106,7 +106,11 @@ new CronJob(
     )
 
     const allTasks = await Task.findAll({
-      where: { due_date: YYYY_MM_DD() },
+      where: {
+        due_date: {
+          [Op.lt]: YYYY_MM_DD(),
+        },
+      },
       include: {
         model: Checklist,
         attributes: ['id', 'task', 'done'],
@@ -116,7 +120,7 @@ new CronJob(
 
     for (let i = 0; i < allTasks.length; i++) {
       // 3 for task not completed in due time
-      updateTeamMemberPoint(allTasks[i].teamId, 5)
+      // updateTeamMemberPoint(allTasks[i].teamId, 3)
     }
   },
   null,

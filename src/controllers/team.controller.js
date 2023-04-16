@@ -67,7 +67,7 @@ exports.getAllTeamMembers = async (req, res) => {
   const includeModels = []
 
   if (admin === 'true') {
-    attributes.slice(attributes.length - 3, 3)
+    attributes.splice(attributes.length - 3, 3)
     filterCondition.roleId = { [Op.ne]: getAdminRoleId.id }
   } else {
     includeModels.push({ model: Role, attributes: ['name'] })
@@ -206,7 +206,7 @@ exports.updateTeamMemberDetails = async (req, res) => {
   )
 }
 
-exports.updateAdminProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
   const member = await Team.findOne({ where: { id: req.user.id } })
   let imgUrl
 
@@ -223,6 +223,7 @@ exports.updateAdminProfile = async (req, res) => {
   }
 
   const updatedMember = await member.update({
+    ...req.body,
     imgUrl,
   })
   return successResponse(
