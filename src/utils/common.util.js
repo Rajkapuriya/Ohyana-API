@@ -2,6 +2,8 @@ const { Team, Team_Point, Points, Target } = require('../models')
 const { Sequelize, Op } = require('sequelize')
 const { YYYY_MM_DD } = require('./moment.util')
 const { TARGET } = require('../constants')
+const { mailHelper } = require('../helpers/mail.helper')
+const { EMAIL_CONFIG } = require('../config/mail.config')
 
 async function updateTeamMemberPoint(teamId, pointId) {
   const point = await Points.findOne({ where: { id: pointId } })
@@ -35,7 +37,20 @@ async function updateTeamMemberTarget(teamId, type) {
   }
 }
 
+function sendMail(to, subject, html) {
+  mailHelper.sendMail({
+    from: {
+      name: EMAIL_CONFIG.SENDER_NAME,
+      address: EMAIL_CONFIG.SENDER_EMAIL,
+    },
+    to,
+    subject,
+    html,
+  })
+}
+
 module.exports = {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
+  sendMail,
 }

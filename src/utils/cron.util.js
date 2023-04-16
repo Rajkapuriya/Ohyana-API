@@ -34,9 +34,8 @@ const CronJob = require('cron').CronJob
 // var exec = require('child_process').exec
 const fs = require('fs')
 const async = require('async')
-const { updateTeamMemberPoint } = require('./common.util')
+const { updateTeamMemberPoint, sendMail } = require('./common.util')
 const sequelize = require('../database/mysql')
-const { mailHelper } = require('../helpers/mail.helper')
 const {
   ATTENDANCE,
   POINTS,
@@ -206,12 +205,11 @@ async function sendNotification(now, type, Model, include) {
   //     })
   // })
 
-  // mailHelper.sendMail({
-  //   from: 'jenishshekhaliya@gmail.com',
-  //   to: 'rajkapuriya03@gmail.com',
-  //   subject: 'Auto Generated Message From Admin',
-  //   html: forgottenClientHTML(requestedClient),
-  // })
+  // sendMail(
+  //   'rajkapuriya03@gmail.com',
+  //   'Auto Generated Message From Admin',
+  //   forgottenClientHTML(requestedClient),
+  // )
 
   if (notification.length > 0) {
     const savedNotifications = notification.map(element => {

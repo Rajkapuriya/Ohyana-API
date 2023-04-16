@@ -2,7 +2,6 @@ const { Team, Role, Permission, Company } = require('../models')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { forgotPasswordHTML } = require('../utils/email-template.util')
-const { mailHelper } = require('../helpers/mail.helper')
 const sequelize = require('../database/mysql')
 const { ENCRYP_CONFIG } = require('../config/encryp.config')
 const { SERVER_CONFIG } = require('../config/server.config')
@@ -15,6 +14,7 @@ const {
 } = require('../utils/response.util')
 const { MESSAGE } = require('../constants')
 const { badRequestError } = require('../utils/response.util')
+const { sendMail } = require('../utils/common.util')
 
 let otpArray = []
 
@@ -73,12 +73,7 @@ exports.sendVerificationEmail = async (req, res) => {
 
   if (!otp) return internalServerError(res)
 
-  mailHelper.sendMail({
-    from: 'jenishshekhaliya@gmail.com',
-    to: email,
-    subject: 'Hello from Gmail',
-    text: `Otp for Our Application : ${otp}`,
-  })
+  sendMail(email, 'Hello from Gmail', `Otp for Our Application : ${otp}`)
 
   return successResponse(res, 'OTP Send Successfully To Mail')
 }
@@ -161,12 +156,8 @@ exports.forgotPassword = async (req, res) => {
     { algorithm: SERVER_CONFIG.JWT_AlGORITHM, expiresIn: '10m' },
   )
 
-  mailHelper.sendMail({
-    from: 'jenishshekhaliya@gmail.com',
-    to: email,
-    subject: 'Forgot Password',
-    html: forgotPasswordHTML(token),
-  })
+  sendMail(email, 'Forgot Password', forgotPasswordHTML(token))
+
   return successResponse(res, 'Link sent Successfully to your Email')
 }
 
