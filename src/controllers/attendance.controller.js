@@ -74,7 +74,6 @@ exports.updateAttendance = async (req, res) => {
     ) {
       updateObject = { breakOut: currentTime }
     }
-    console.log(existingPresentOfToday)
 
     if (
       [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE].includes(
@@ -93,11 +92,9 @@ exports.updateAttendance = async (req, res) => {
         moment(existingPresentOfToday.breakOut, 'HH:mm:ss').diff(
           moment(existingPresentOfToday.breakIn, 'HH:mm:ss'),
         ) || 0
-      // console.log(moment.duration(totalHourOfBreake).asSeconds())
       const hoursInSeconds =
         moment.duration(totalHourOfWork).asSeconds() -
         moment.duration(totalHourOfBreake).asSeconds()
-      // console.log(moment.duration(existingPresentOfToday.checkIn.diff(currentTime)))
       updateObject = { checkOut: currentTime, totalHours: hoursInSeconds }
     }
 

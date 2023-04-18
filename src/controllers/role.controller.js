@@ -103,7 +103,6 @@ exports.updateRole = async (req, res) => {
   })
   if (existedRole)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
-  console.log()
   await Role.update(
     { name, description, clockIn },
     { where: { id: req.params.id } },

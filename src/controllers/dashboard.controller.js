@@ -228,6 +228,10 @@ exports.getInquiryAnalytics = async (req, res) => {
   const irrelevantInquiryPercentage =
     ((crtIrrelevant - lstIrrelevant) / lstIrrelevant) * 100
 
+  const percentageIndiaMart =
+    ((crtMonIndiaMart - lstMonIndiaMart) / lstMonIndiaMart) * 100
+  const percentageOther = ((crtMonOther - lstMonOther) / lstMonOther) * 100
+
   response = {
     data: {
       userAttendance,
@@ -239,9 +243,10 @@ exports.getInquiryAnalytics = async (req, res) => {
         lstMonIndiaMart,
         lstMonWeb,
         lstMonOther,
-        percentageIndiaMart:
-          ((crtMonIndiaMart - lstMonIndiaMart) / lstMonIndiaMart) * 100,
-        percentageOther: ((crtMonOther - lstMonOther) / lstMonOther) * 100,
+        percentageIndiaMart: isFinite(percentageIndiaMart)
+          ? percentageIndiaMart
+          : 0,
+        percentageOther: isFinite(percentageOther) ? percentageOther : 0,
       },
       sales: {
         total,

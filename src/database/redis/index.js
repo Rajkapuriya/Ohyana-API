@@ -14,7 +14,6 @@ redisClient.on('error', error => {
 
 async function setRedisData(key, value) {
   // await redisClient.set(key,value)
-  // console.log([key,value])
   await redisClient.sAdd(key, value.toString())
 }
 

@@ -174,6 +174,7 @@ exports.getAllClients = async (req, res) => {
       [Op.like]: `%${city}%`,
     }
   }
+
   if (state) {
     filterCondition.state = {
       [Op.like]: `%${state}%`,
