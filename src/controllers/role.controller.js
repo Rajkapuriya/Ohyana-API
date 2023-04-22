@@ -142,7 +142,7 @@ exports.getPermissions = async (req, res) => {
       where: { roleId: id },
     }),
     Role_Expense_Permissions.findAll({
-      attributes: ['expenseId', 'amount', 'id'],
+      attributes: ['expenseId', 'amount'],
       where: { roleId: id, status: 'active' },
     }),
     Expense.findAll({
@@ -159,6 +159,13 @@ exports.getPermissions = async (req, res) => {
 
 exports.updateRolePermissions = async (req, res) => {
   const { roleId } = req.body
+
+  const adminRoleDetail = await Role.findOne({
+    attributes: ['parentId'],
+    where: { id: roleId },
+  })
+
+  if (!adminRoleDetail.parentId) return forbiddenRequestError(res)
 
   await Permission.update({ roleId, ...req.body }, { where: { roleId } })
 

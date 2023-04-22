@@ -439,7 +439,8 @@ exports.addClientStatus = async (req, res) => {
   if (req.file) {
     const result = await uploadFileToS3(req.file)
     unlinkFile(req.file.path)
-    audioUrl = result.Key
+    // audioUrl = result.Key
+    audioUrl = ''
   }
   const newDate = YYYY_MM_DD_HHMMSS()
 

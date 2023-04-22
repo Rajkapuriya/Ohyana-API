@@ -8,7 +8,7 @@ exports.clientSchema = {
       reference: Joi.string()
         // .valid('INDIAMART', 'WEBSITE', 'OFFICE', 'OTHER')
         .allow(null, ''),
-      reference_name: Joi.string(),
+      reference_name: Joi.string().allow(null, ''),
       business: Joi.string().allow(null, ''),
       contact_number: Joi.string()
         .regex(/[^a-zA-Z!@#$%^&*]/)
