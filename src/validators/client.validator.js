@@ -30,6 +30,7 @@ exports.clientSchema = {
       stage: Joi.number(),
       tabType: Joi.string(),
       forMobile: Joi.boolean(),
+      selection: Joi.boolean(),
       searchQuery: Joi.string(),
       city: Joi.string(),
       state: Joi.string(),

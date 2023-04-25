@@ -10,14 +10,14 @@ const reportRouter = express.Router()
 
 reportRouter.post(
   '/report/product',
-  joiValidationMiddleware(reportSchema.reportData),
+  joiValidationMiddleware(reportSchema.productReport),
   authTokenMiddleware,
   reportController.getProductReport,
 )
 
-reportRouter.get(
+reportRouter.post(
   '/report/team',
-  // joiValidationMiddleware(reportSchema.reportData),
+  joiValidationMiddleware(reportSchema.teamReport),
   authTokenMiddleware,
   reportController.getTeamReport,
 )

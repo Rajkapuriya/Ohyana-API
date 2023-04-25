@@ -48,6 +48,8 @@ exports.pjpSchema = {
       date: Joi.string(),
       day: Joi.string(),
       clientId: Joi.number(),
+      state: Joi.string(),
+      city: Joi.string(),
       followUpType: Joi.string(),
     }).required(),
   }).unknown(),

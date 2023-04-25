@@ -18,8 +18,7 @@ const { YYYY_MM_DD } = require('../utils/moment.util')
 const moment = require('moment')
 
 exports.getProductReport = async (req, res) => {
-  const { period, comparison } = req.query
-  const { cities, productIds } = req.body
+  const { cities, productIds, period, comparison } = req.body
   const productFilterCondition = {},
     productFilterSubCondition = {}
 
@@ -99,11 +98,11 @@ exports.getProductReport = async (req, res) => {
 }
 
 exports.getTeamReport = async (req, res) => {
-  const { period, comparison, cities, roleId, teamIds } = req.query
+  const { period, comparison, cities, roleId, teamIds } = req.body
   const filterSubCondition = {}
   const filterCondition = {}
   let teamPoints
-  let teams
+  let teams = []
   const teamPointObject = []
   let expenseWhereCondition = ''
   const whereParam = comparison == 'expense' ? 'date' : 'createdAt'
@@ -140,13 +139,19 @@ exports.getTeamReport = async (req, res) => {
       SELECT 
         t.id,
         t.name,
-        te.approvalAmount
+        te.approvalAmount,
+        r.id as roleId,
+        r.parentId 
       FROM 
         teams as t
       LEFT JOIN
         team_expenses te
       ON
         t.id = te.teamId
+      LEFT JOIN
+        roles as r
+      ON
+        r.id = t.roleId
       WHERE
         1=1
         ${expenseWhereCondition}  
@@ -154,6 +159,7 @@ exports.getTeamReport = async (req, res) => {
       { type: QueryTypes.SELECT },
     )
 
+    teams = teams.filter(e => e.parentId != null)
     const allTeamMembers = await Team.findAll({
       attributes: ['id', 'name'],
       where: {

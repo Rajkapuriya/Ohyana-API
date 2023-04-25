@@ -32,12 +32,23 @@ exports.createPJP = async (req, res) => {
     status = PJP.STATUS.TODAY
   }
 
+  const clientDetail = await Client.findOne({
+    attributes: ['id', 'state', 'city'],
+    where: {
+      id: clientId,
+    },
+  })
+
+  if (!clientDetail) return notFoundError(res)
+
   await Pjp.create({
     date,
     status,
     description,
     teamId: teamId || req.user.id,
     clientId,
+    state: clientDetail.state,
+    city: clientDetail.city,
     companyId: req.user.companyId,
   })
 
@@ -112,7 +123,8 @@ exports.completePJPStatus = async (req, res) => {
 exports.getAllPJP = async (req, res) => {
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
-  const { statusType, date, day, clientId, followUpType, teamId } = req.query
+  const { statusType, date, day, clientId, followUpType, teamId, city, state } =
+    req.query
 
   const filterCondition = {}
   let attributes = ['id', 'date', 'status', 'is_completed']
@@ -138,6 +150,10 @@ exports.getAllPJP = async (req, res) => {
   if (followUpType) filterCondition.followUpType = followUpType
 
   if (date) filterCondition.date = date
+
+  if (city) filterCondition.city = city
+
+  if (state) filterCondition.state = state
 
   const pjp = await Pjp.findAndCountAll({
     attributes: attributes,
