@@ -8,7 +8,7 @@ const reportController = require('../controllers/report.controller')
 const express = require('express')
 const reportRouter = express.Router()
 
-reportRouter.get(
+reportRouter.post(
   '/report/product',
   joiValidationMiddleware(reportSchema.reportData),
   authTokenMiddleware,
