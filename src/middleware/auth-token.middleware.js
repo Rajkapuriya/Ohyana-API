@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken')
 const { Team, Role, Permission } = require('../models')
 const { SERVER_CONFIG } = require('../config/server.config')
+const { verifyToken } = require('../utils/common.util')
 
 async function authTokenMiddleware(req, res, next) {
   const authHeader = req.get('Authorization')
@@ -15,9 +15,8 @@ async function authTokenMiddleware(req, res, next) {
   let user
 
   try {
-    decodedToken = jwt.verify(token, SERVER_CONFIG.JWT_SECRET, {
-      algorithm: SERVER_CONFIG.JWT_AlGORITHM,
-    })
+    decodedToken = verifyToken(token, SERVER_CONFIG.JWT_SECRET)
+
     user = await Team.findOne({
       attributes: ['id', 'companyId', 'name', 'email'],
       where: { id: decodedToken.id },

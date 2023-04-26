@@ -11,7 +11,6 @@ const {
 const sequelize = require('../database/mysql')
 const { uploadFileToS3, deleteFileFromS3 } = require('../helpers/s3.helper')
 const fs = require('fs')
-const { ENCRYP_CONFIG } = require('../config/encryp.config')
 const { Op, QueryTypes } = require('sequelize')
 const {
   successResponse,
@@ -20,11 +19,13 @@ const {
   badRequestError,
 } = require('../utils/response.util')
 const moment = require('moment')
-const bcrypt = require('bcrypt')
 const { ATTENDANCE, MESSAGE, EXPENSE } = require('../constants')
+const { sendMail, generateToken } = require('../utils/common.util')
+const { SERVER_CONFIG } = require('../config/server.config')
+const { resetPasswordHTML } = require('../utils/email-template.util')
 
 exports.addTeamMember = async (req, res) => {
-  const { email, password } = req.body
+  const { email } = req.body
   let imgUrl
   const existedMember = await Team.findOne({
     where: { email, companyId: req.user.companyId },
@@ -42,14 +43,23 @@ exports.addTeamMember = async (req, res) => {
     imgUrl = result.Key
   }
 
-  const hashPassword = await bcrypt.hash(password, ENCRYP_CONFIG.HASH_SALT)
-
-  await Team.create({
+  const createdTeamMember = await Team.create({
     ...req.body,
     imgUrl: imgUrl,
-    password: hashPassword,
     companyId: req.user.companyId,
   })
+
+  if (createdTeamMember) {
+    const token = generateToken(
+      { id: createdTeamMember.id, email: createdTeamMember.email },
+      SERVER_CONFIG.JWT_RESET_SECRET,
+    )
+    sendMail(
+      createdTeamMember.email,
+      'Create New Password',
+      resetPasswordHTML(token),
+    )
+  }
 
   return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }

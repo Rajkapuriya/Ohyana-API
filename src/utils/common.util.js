@@ -4,6 +4,8 @@ const { YYYY_MM_DD } = require('./moment.util')
 const { TARGET } = require('../constants')
 const { mailHelper } = require('../helpers/mail.helper')
 const { EMAIL_CONFIG } = require('../config/mail.config')
+const jwt = require('jsonwebtoken')
+const { SERVER_CONFIG } = require('../config/server.config')
 
 async function updateTeamMemberPoint(teamId, pointId) {
   const point = await Points.findOne({ where: { id: pointId } })
@@ -49,8 +51,27 @@ function sendMail(to, subject, html) {
   })
 }
 
+function generateToken(payload, privateKey, isLoginToken) {
+  const jwtOption = {}
+  if (!isLoginToken) {
+    jwtOption.expiresIn = '10m'
+  }
+  return jwt.sign(payload, privateKey, {
+    algorithm: SERVER_CONFIG.JWT_AlGORITHM,
+    ...jwtOption,
+  })
+}
+
+function verifyToken(token, privateKey) {
+  return jwt.verify(token, privateKey, {
+    algorithm: SERVER_CONFIG.JWT_AlGORITHM,
+  })
+}
+
 module.exports = {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
   sendMail,
+  generateToken,
+  verifyToken,
 }

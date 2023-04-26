@@ -6,7 +6,6 @@ exports.teamSchema = {
       name: Joi.string().required(),
       email: Joi.string().email().required(),
       roleId: Joi.number().required(),
-      password: Joi.string().required(),
       contact_number: Joi.string().required(),
       gender: Joi.string().valid('Male', 'Female').required(),
       birthDay: Joi.string(),

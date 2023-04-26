@@ -9,6 +9,7 @@ const {
   badRequestError,
 } = require('../utils/response.util')
 const { MESSAGE, PJP } = require('../constants')
+const { Op } = require('sequelize')
 
 exports.createPJP = async (req, res) => {
   const {
@@ -151,9 +152,17 @@ exports.getAllPJP = async (req, res) => {
 
   if (date) filterCondition.date = date
 
-  if (city) filterCondition.city = city
+  if (city) {
+    filterCondition.city = {
+      [Op.like]: `%${city}%`,
+    }
+  }
 
-  if (state) filterCondition.state = state
+  if (state) {
+    filterCondition.state = {
+      [Op.like]: `%${state}%`,
+    }
+  }
 
   const pjp = await Pjp.findAndCountAll({
     attributes: attributes,

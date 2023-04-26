@@ -22,8 +22,6 @@ const Team = sequelize.define('team', {
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
-    required: true,
   },
   contact_number: {
     type: DataTypes.STRING(15),

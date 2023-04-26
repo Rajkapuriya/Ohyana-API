@@ -1,5 +1,4 @@
 const { Team, Role, Permission, Company } = require('../models')
-const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { forgotPasswordHTML } = require('../utils/email-template.util')
 const sequelize = require('../database/mysql')
@@ -14,7 +13,7 @@ const {
 } = require('../utils/response.util')
 const { MESSAGE } = require('../constants')
 const { badRequestError } = require('../utils/response.util')
-const { sendMail } = require('../utils/common.util')
+const { sendMail, generateToken, verifyToken } = require('../utils/common.util')
 
 let otpArray = []
 
@@ -129,11 +128,12 @@ exports.login = async (req, res) => {
 
   if (!match) return badRequestError(res, MESSAGE.AUTH.INVALID_USERNAME)
 
-  const token = jwt.sign(
+  const token = generateToken(
     { id: teamMember.id, role: teamMember.roleId },
     SERVER_CONFIG.JWT_SECRET,
-    { algorithm: SERVER_CONFIG.JWT_AlGORITHM },
+    true,
   )
+
   return successResponse(res, 'login successfully', {
     token,
     permissions: teamMember.role.permission,
@@ -147,13 +147,12 @@ exports.forgotPassword = async (req, res) => {
 
   if (!team) return badRequestError(res, MESSAGE.AUTH.INVALID_EMAIL)
 
-  if (!team.isEmailVerified)
-    return badRequestError(res, MESSAGE.AUTH.EMAIL_NOT_VERIFIED)
+  // if (!team.isEmailVerified)
+  //   return badRequestError(res, MESSAGE.AUTH.EMAIL_NOT_VERIFIED)
 
-  const token = jwt.sign(
+  const token = generateToken(
     { id: team.id, email: team.email },
     SERVER_CONFIG.JWT_RESET_SECRET,
-    { algorithm: SERVER_CONFIG.JWT_AlGORITHM, expiresIn: '10m' },
   )
 
   sendMail(email, 'Forgot Password', forgotPasswordHTML(token))
@@ -165,10 +164,9 @@ exports.resetPassword = async (req, res) => {
   const { password } = req.body
   // eslint-disable-next-line no-useless-catch
   try {
-    const decodedToken = jwt.verify(
+    const decodedToken = verifyToken(
       req.params.token,
       SERVER_CONFIG.JWT_RESET_SECRET,
-      { algorithm: SERVER_CONFIG.JWT_AlGORITHM },
     )
 
     const team = await Team.findOne({ where: { id: decodedToken.id } })
