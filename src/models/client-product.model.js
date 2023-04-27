@@ -21,7 +21,7 @@ const Client_Product = sequelize.define(
       },
     },
   },
-  { timestamps: false },
+  { paranoid: true },
 )
 
 module.exports = { Client_Product }

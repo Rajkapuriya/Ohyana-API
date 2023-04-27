@@ -17,7 +17,7 @@ const Points = sequelize.define(
       defaultValue: '0',
     },
   },
-  { timestamps: false },
+  { paranoid: true },
 )
 
 module.exports = { Points }

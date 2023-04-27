@@ -1,49 +1,53 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../database/mysql')
 
-const Order = sequelize.define('order', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  date: {
-    type: DataTypes.DATE,
-  },
-  total_items: {
-    type: DataTypes.INTEGER,
-  },
-  order_total: {
-    type: DataTypes.INTEGER,
-  },
-  orderTrackingStatus: {
-    type: DataTypes.STRING(15),
-    allowNull: false,
-    required: true,
-    comment: 'PENDING , DISPATCH , SHIPPING , DELIEVERED',
-    validate: {
-      isIn: [['PENDING', 'DISPATCH', 'SHIPPING', 'DELIEVERED']],
+const Order = sequelize.define(
+  'order',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    date: {
+      type: DataTypes.DATE,
+    },
+    total_items: {
+      type: DataTypes.INTEGER,
+    },
+    order_total: {
+      type: DataTypes.INTEGER,
+    },
+    orderTrackingStatus: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
+      required: true,
+      comment: 'PENDING , DISPATCH , SHIPPING , DELIEVERED',
+      validate: {
+        isIn: [['PENDING', 'DISPATCH', 'SHIPPING', 'DELIEVERED']],
+      },
+    },
+    paymentStatus: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      required: true,
+      comment: 'PENDING , CONFIRMED',
+      validate: {
+        isIn: [['PENDING', 'CONFIRMED']],
+      },
+    },
+    paymentMethod: {
+      type: DataTypes.STRING(15),
+      // allowNull: false,
+      // required: true,
+      comment: 'UPI , CASH , CARD , CHECK , NETBANKING , OTHER',
+      validate: {
+        isIn: [['UPI', 'CASH', 'CARD', 'CHECK', 'NETBANKING', 'OTHER']],
+      },
     },
   },
-  paymentStatus: {
-    type: DataTypes.STRING(10),
-    allowNull: false,
-    required: true,
-    comment: 'PENDING , CONFIRMED',
-    validate: {
-      isIn: [['PENDING', 'CONFIRMED']],
-    },
-  },
-  paymentMethod: {
-    type: DataTypes.STRING(15),
-    // allowNull: false,
-    // required: true,
-    comment: 'UPI , CASH , CARD , CHECK , NETBANKING , OTHER',
-    validate: {
-      isIn: [['UPI', 'CASH', 'CARD', 'CHECK', 'NETBANKING', 'OTHER']],
-    },
-  },
-})
+  { paranoid: true },
+)
 
 Order.updateOrder = async function (body, id) {
   await this.update(body, { where: { id } })

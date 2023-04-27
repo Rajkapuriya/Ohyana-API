@@ -122,15 +122,8 @@ exports.updateClockInOutTime = async (req, res) => {
 }
 
 exports.deleteRole = async (req, res) => {
-  const teamMemberRelatedToRole = await Team.findOne({
-    where: { roleId: req.params.id },
-  })
-  if (!teamMemberRelatedToRole) {
-    await Role.destroy({ where: { id: req.params.id } })
-    return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
-  } else {
-    return forbiddenRequestError(res, 'This Role is associated to team member')
-  }
+  await Role.destroy({ where: { id: req.params.id } })
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }
 
 exports.getPermissions = async (req, res) => {

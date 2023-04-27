@@ -77,17 +77,6 @@ exports.updateLeaveType = async (req, res) => {
 }
 
 exports.deleteLeaveType = async (req, res) => {
-  const teamLeaveRelatedToLeaveType = await Team_Leave.findOne({
-    where: { leaveId: req.params.id },
-  })
-
-  if (!teamLeaveRelatedToLeaveType) {
-    await Leave.destroy({ where: { id: req.params.id } })
-    return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
-  } else {
-    return forbiddenRequestError(
-      res,
-      'This Leave is associated to team member leave or job role',
-    )
-  }
+  await Leave.destroy({ where: { id: req.params.id } })
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }

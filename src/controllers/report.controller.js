@@ -121,14 +121,20 @@ exports.getTeamReport = async (req, res) => {
     // month-sepetember
     const month = moment().month(period.split('-')[1]).format('M')
     filterSubCondition[Op.and] = [
-      sequelize.where(sequelize.fn('month', sequelize.col(whereParam)), month),
+      sequelize.where(
+        sequelize.fn('month', sequelize.col(`team_point.${whereParam}`)),
+        month,
+      ),
     ]
     expenseWhereCondition += ` AND MONTH(te.date) >= ${month} `
   } else if (period && period.includes('year')) {
     // year-2023
     const year = period.split('-')[1]
     filterSubCondition[Op.and] = [
-      sequelize.where(sequelize.fn('year', sequelize.col(whereParam)), year),
+      sequelize.where(
+        sequelize.fn('year', sequelize.col(`team_point.${whereParam}`)),
+        year,
+      ),
     ]
     expenseWhereCondition += ` AND YEAR(te.date) >= ${year} `
   }

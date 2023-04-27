@@ -48,7 +48,7 @@ const Pjp = sequelize.define(
       defaultValue: false,
     },
   },
-  { timestamps: false },
+  { paranoid: true },
 )
 
 module.exports = { Pjp }

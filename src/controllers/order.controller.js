@@ -209,6 +209,7 @@ exports.getAllItemsPerOrder = async (req, res) => {
         include: [
           {
             model: Product,
+            paranoid: false,
             attributes: ['id', 'imageUrl', 'name', 'price'],
           },
         ],

@@ -555,9 +555,11 @@ exports.getAllClientReminder = async (req, res) => {
       {
         model: Team,
         attributes: ['name'],
+        paranoid: false,
         include: [
           {
             model: Role,
+            paranoid: false,
             attributes: ['name'],
           },
         ],
@@ -717,6 +719,7 @@ exports.updateAppointment = async (req, res) => {
       await Promise.all([
         Client_Appointed_Member.destroy({
           where: { clientAppointmentId: updatedAppointment.id },
+          force: true,
           transaction: t,
         }),
         updatedAppointment.addTeams(appointed_member, { transaction: t }),

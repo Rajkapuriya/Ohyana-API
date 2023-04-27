@@ -43,16 +43,8 @@ exports.updateExpense = async (req, res) => {
 }
 
 exports.deleteExpense = async (req, res) => {
-  const assignedExpense = await Team_Expense.findOne({
-    where: { expenseId: req.params.id },
-  })
-
-  if (!assignedExpense) {
-    await Expense.destroy({ where: { id: req.params.id } })
-    return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
-  } else {
-    return forbiddenRequestError(res)
-  }
+  await Expense.destroy({ where: { id: req.params.id } })
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }
 
 exports.getExpenseByRole = async (req, res) => {

@@ -80,7 +80,7 @@ exports.getAllTeamMembers = async (req, res) => {
     attributes.splice(attributes.length - 3, 3)
     filterCondition.roleId = { [Op.ne]: getAdminRoleId.id }
   } else {
-    includeModels.push({ model: Role, attributes: ['name'] })
+    includeModels.push({ model: Role, paranoid: false, attributes: ['name'] })
     includeModels.push({
       model: Attendance,
       required: false,
@@ -133,6 +133,7 @@ exports.getSingleMember = async (req, res) => {
     include: [
       {
         model: Role,
+        paranoid: false,
         where: { parentId: { [Op.ne]: null } },
         attributes: ['id', 'name', 'parentId'],
       },

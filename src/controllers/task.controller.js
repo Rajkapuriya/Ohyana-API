@@ -142,7 +142,7 @@ exports.deleteChecklistItem = async (req, res) => {
   // const [, checklists] = await Promise.all([
 
   // ])
-  await Checklist.destroy({ where: { id: req.params.id } })
+  await Checklist.destroy({ where: { id: req.params.id }, force: true })
   const checklists = await Checklist.findAll({
     where: { taskId: req.params.taskId },
   })

@@ -1,29 +1,33 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../database/mysql')
 
-const Task = sequelize.define('task', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+const Task = sequelize.define(
+  'task',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    title: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      required: true,
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      required: true,
+    },
+    due_date: {
+      type: DataTypes.DATEONLY,
+    },
+    createdBy: {
+      type: DataTypes.STRING(35),
+    },
   },
-  title: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
-    required: true,
-  },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    required: true,
-  },
-  due_date: {
-    type: DataTypes.DATEONLY,
-  },
-  createdBy: {
-    type: DataTypes.STRING(35),
-  },
-})
+  { paranoid: true },
+)
 
 Task.updateTask = async function (body, id) {
   await this.update(body, { where: { id } })

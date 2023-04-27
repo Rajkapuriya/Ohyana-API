@@ -45,7 +45,7 @@ const Attendance = sequelize.define(
       },
     },
   },
-  { timestamps: false },
+  { paranoid: true },
 )
 
 module.exports = { Attendance }

@@ -82,7 +82,7 @@ exports.getInquiryAnalytics = async (req, res) => {
     where: {
       [Op.and]: [
         sequelize.where(
-          sequelize.fn('month', sequelize.col('createdAt')),
+          sequelize.fn('month', sequelize.col('team_point.createdAt')),
           currentMonth,
         ),
       ],
@@ -96,7 +96,7 @@ exports.getInquiryAnalytics = async (req, res) => {
     where: {
       [Op.and]: [
         sequelize.where(
-          sequelize.fn('month', sequelize.col('createdAt')),
+          sequelize.fn('month', sequelize.col('team_point.createdAt')),
           lastMonth,
         ),
       ],
@@ -330,7 +330,11 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
     ],
     where: {
       teamId: req.user.id,
-      ...getWhereConditionPerMonth(req.user, currentMonth, 'createdAt'),
+      ...getWhereConditionPerMonth(
+        req.user,
+        currentMonth,
+        'team_point.createdAt',
+      ),
     },
     include: [{ model: Points }],
   })
@@ -343,7 +347,7 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
     ],
     where: {
       teamId: req.user.id,
-      ...getWhereConditionPerMonth(req.user, lastMonth, 'createdAt'),
+      ...getWhereConditionPerMonth(req.user, lastMonth, 'team_point.createdAt'),
     },
     include: [{ model: Points }],
   })

@@ -21,7 +21,7 @@ const Client_Appointed_Member = sequelize.define(
       },
     },
   },
-  { timestamps: false },
+  { paranoid: true },
 )
 
 module.exports = { Client_Appointed_Member }
