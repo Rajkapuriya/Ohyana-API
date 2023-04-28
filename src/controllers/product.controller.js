@@ -5,16 +5,31 @@ const {
   forbiddenRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants')
+const { MESSAGE, S3 } = require('../constants')
+const { unlinkFile } = require('../utils/common.util')
+const { uploadFileToS3, deleteFileFromS3 } = require('../helpers/s3.helper')
+const { generateS3ConcatString } = require('../utils/s3.util')
 
 exports.createProduct = async (req, res) => {
-  const [, created] = await Product.findOrCreate({
+  const existingProduct = await Product.findOne({
     where: { name: req.body.name, companyId: req.user.companyId },
-    defaults: { ...req.body, companyId: req.user.companyId },
   })
 
-  if (!created)
+  if (existingProduct) {
+    if (req.file) {
+      unlinkFile(req.file.path)
+    }
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
+  }
+
+  let imageUrl = null
+  if (req.file) {
+    const result = await uploadFileToS3(req.file)
+    unlinkFile(req.file.path)
+    imageUrl = result.Key.split('/')[1]
+  }
+
+  await Product.create({ ...req.body, imageUrl, companyId: req.user.companyId })
 
   return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
@@ -24,7 +39,12 @@ exports.getAllProducts = async (req, res) => {
   const size = parseInt(req.query.size) || 20
 
   const products = await Product.findAndCountAll({
-    attributes: ['id', 'name', 'price', 'imageUrl'],
+    attributes: [
+      'id',
+      'name',
+      'price',
+      generateS3ConcatString('imageUrl', S3.PRODUCTS),
+    ],
     where: { companyId: req.user.companyId },
     order: [['id', 'DESC']],
     offset: (currentPage - 1) * size,
@@ -44,7 +64,7 @@ exports.getProductDetail = async (req, res) => {
       'id',
       'name',
       'price',
-      'imageUrl',
+      generateS3ConcatString('imageUrl', S3.PRODUCTS),
       'quantity',
       'weight',
       'materialType',
@@ -72,7 +92,17 @@ exports.updateProduct = async (req, res) => {
   if (existedProduct)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  await Product.update(req.body, { where: { id: req.params.id } })
+  let imageUrl
+  if (req.file) {
+    const result = await uploadFileToS3(req.file)
+    imageUrl = result.Key.split('/')[1]
+    unlinkFile(req.file.path)
+  }
+
+  await Product.update(
+    { ...req.body, imageUrl },
+    { where: { id: req.params.id } },
+  )
 
   return successResponse(
     res,

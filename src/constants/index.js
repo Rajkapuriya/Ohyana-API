@@ -10,4 +10,5 @@ module.exports = {
   ...require('./pjp.constant'),
   ...require('./holiday.constant'),
   ...require('./notification.constant'),
+  ...require('./s3.constant'),
 }

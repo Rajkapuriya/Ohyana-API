@@ -16,7 +16,7 @@ const teamRouter = express.Router()
 
 teamRouter.post(
   '/member',
-  upload.single('image'),
+  upload.single('profile_image'),
   joiValidationMiddleware(teamSchema.teamForm),
   authTokenMiddleware,
   permissionHandleMiddleware(
@@ -42,7 +42,7 @@ teamRouter.get(
 
 teamRouter.put(
   '/member',
-  upload.single('image'),
+  upload.single('profile_image'),
   joiValidationMiddleware(teamSchema.updateTeamMemberDetails),
   authTokenMiddleware,
   permissionHandleMiddleware(
@@ -57,7 +57,7 @@ teamRouter.get('/profile', authTokenMiddleware, teamController.getProfile)
 
 teamRouter.put(
   '/profile',
-  upload.single('image'),
+  upload.single('profile_image'),
   joiValidationMiddleware(teamSchema.updateProfile),
   authTokenMiddleware,
   teamController.updateProfile,

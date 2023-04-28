@@ -9,12 +9,14 @@ const { productSchema } = require('../validators/product.validator')
 const productController = require('../controllers/product.controller')
 
 const express = require('express')
+const { upload } = require('../middleware/multer.middleware')
 const productRouter = express.Router()
 
 // ------------------------------- Product -------------------------------
 
 productRouter.post(
   '/product',
+  upload.single('product_image'),
   joiValidationMiddleware(productSchema.productForm),
   authTokenMiddleware,
   permissionHandleMiddleware(
@@ -39,6 +41,7 @@ productRouter.get(
 
 productRouter.put(
   '/product/:id',
+  upload.single('product_image'),
   joiValidationMiddleware(productSchema.productForm),
   authTokenMiddleware,
   permissionHandleMiddleware(

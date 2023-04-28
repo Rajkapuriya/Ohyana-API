@@ -8,6 +8,7 @@ exports.pjpSchema = {
       longitude: Joi.string(),
       description: Joi.string().required(),
       clientId: Joi.number().required(),
+      teamId: Joi.number(),
     }).required(),
   }).unknown(),
 

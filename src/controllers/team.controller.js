@@ -19,10 +19,11 @@ const {
   badRequestError,
 } = require('../utils/response.util')
 const moment = require('moment')
-const { ATTENDANCE, MESSAGE, EXPENSE } = require('../constants')
+const { ATTENDANCE, MESSAGE, EXPENSE, S3 } = require('../constants')
 const { sendMail, generateToken } = require('../utils/common.util')
 const { SERVER_CONFIG } = require('../config/server.config')
 const { resetPasswordHTML } = require('../utils/email-template.util')
+const { generateS3ConcatString } = require('../utils/s3.util')
 
 exports.addTeamMember = async (req, res) => {
   const { email } = req.body
@@ -40,7 +41,7 @@ exports.addTeamMember = async (req, res) => {
   if (req.file) {
     const result = await uploadFileToS3(req.file)
     unlinkFile(req.file.path)
-    imgUrl = result.Key
+    imgUrl = result.Key.split('/')[1]
   }
 
   const createdTeamMember = await Team.create({
@@ -72,12 +73,19 @@ exports.getAllTeamMembers = async (req, res) => {
     where: { parentId: null },
   })
 
-  const attributes = ['id', 'name', 'email', 'contact_number', 'points']
+  const attributes = [
+    'id',
+    'name',
+    'email',
+    'contact_number',
+    'points',
+    generateS3ConcatString('imgUrl', S3.USERS),
+  ]
   const filterCondition = {}
   const includeModels = []
 
   if (admin === 'true') {
-    attributes.splice(attributes.length - 3, 3)
+    attributes.splice(attributes.length - 4, 4)
     filterCondition.roleId = { [Op.ne]: getAdminRoleId.id }
   } else {
     includeModels.push({ model: Role, paranoid: false, attributes: ['name'] })
@@ -126,6 +134,7 @@ exports.getSingleMember = async (req, res) => {
       'rating',
       'state',
       'jobType',
+      generateS3ConcatString('imgUrl', S3.USERS),
     ],
     where: {
       id: req.params.id,
@@ -168,6 +177,7 @@ exports.getProfile = async (req, res) => {
       'pincode',
       'gender',
       'birthDay',
+      generateS3ConcatString('imgUrl', S3.USERS),
     ],
     where: {
       id: req.user.id,
@@ -201,7 +211,7 @@ exports.updateTeamMemberDetails = async (req, res) => {
 
   if (req.file) {
     const result = await uploadFileToS3(req.file)
-    imgUrl = result.Key
+    imgUrl = result.Key.split('/')[1]
     await deleteFileFromS3(member.imgUrl)
     unlinkFile(req.file.path)
   }
@@ -221,14 +231,9 @@ exports.updateProfile = async (req, res) => {
   const member = await Team.findOne({ where: { id: req.user.id } })
   let imgUrl
 
-  if (req.file === undefined) {
-    if (member.imgUrl) {
-      await deleteFileFromS3(member.imgUrl)
-    }
-    imgUrl = null
-  } else {
+  if (req.file) {
     const result = await uploadFileToS3(req.file)
-    imgUrl = result.Key
+    imgUrl = result.Key.split('/')[1]
     await deleteFileFromS3(member.imgUrl)
     unlinkFile(req.file.path)
   }
@@ -280,7 +285,9 @@ exports.addExpense = async (req, res) => {
   let fileName
 
   if (req.file) {
-    fileName = req.file.filename
+    const result = await uploadFileToS3(req.file)
+    fileName = result.Key.split('/')[1]
+    unlinkFile(req.file.path)
   }
 
   await Team_Expense.create({
@@ -446,7 +453,14 @@ exports.getTeamLeaderBoardDetails = async (req, res) => {
   }
 
   response.memberDetail = await Team.findOne({
-    attributes: ['id', 'name', 'imgUrl', 'contact_number', 'email', 'jobType'],
+    attributes: [
+      'id',
+      'name',
+      'contact_number',
+      'email',
+      'jobType',
+      generateS3ConcatString('imgUrl', S3.USERS),
+    ],
     where: { id },
     include: {
       model: Role,

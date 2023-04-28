@@ -6,6 +6,7 @@ const { mailHelper } = require('../helpers/mail.helper')
 const { EMAIL_CONFIG } = require('../config/mail.config')
 const jwt = require('jsonwebtoken')
 const { SERVER_CONFIG } = require('../config/server.config')
+const fs = require('fs')
 
 async function updateTeamMemberPoint(teamId, pointId) {
   const point = await Points.findOne({ where: { id: pointId } })
@@ -68,10 +69,17 @@ function verifyToken(token, privateKey) {
   })
 }
 
+function unlinkFile(path) {
+  fs.unlink(path, err => {
+    console.log(err)
+  })
+}
+
 module.exports = {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
   sendMail,
   generateToken,
   verifyToken,
+  unlinkFile,
 }

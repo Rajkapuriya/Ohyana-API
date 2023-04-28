@@ -4,7 +4,6 @@ const moment = require('moment')
 const superagent = require('superagent')
 const io = require('../helpers/socket.helper')
 const { uploadFileToS3, getFileFromS3 } = require('../helpers/s3.helper')
-const fs = require('fs')
 // const { setRedisData } = require("../database/redis");
 const {
   YYYY_MM_DDHHMM,
@@ -21,11 +20,12 @@ const {
   internalServerError,
   unauthorisedRequestError,
 } = require('../utils/response.util')
-const { MESSAGE, CLIENT, POINTS, TARGET } = require('../constants')
+const { MESSAGE, CLIENT, POINTS, TARGET, S3 } = require('../constants')
 const { SERVER_CONFIG } = require('../config/server.config')
 const {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
+  unlinkFile,
 } = require('../utils/common.util')
 const async = require('async')
 let date
@@ -46,6 +46,7 @@ const {
   Team,
   Order,
 } = require('../models')
+const { generateS3ConcatString } = require('../utils/s3.util')
 
 exports.addClient = async (req, res) => {
   const { email, contact_number, isInternational } = req.body
@@ -439,8 +440,7 @@ exports.addClientStatus = async (req, res) => {
   if (req.file) {
     const result = await uploadFileToS3(req.file)
     unlinkFile(req.file.path)
-    // audioUrl = result.Key
-    audioUrl = ''
+    audioUrl = result.Key.split('/')[1]
   }
   const newDate = YYYY_MM_DD_HHMMSS()
 
@@ -464,7 +464,7 @@ exports.getAllClientStatus = async (req, res) => {
       'description',
       'date',
       'time',
-      'audioUrl',
+      generateS3ConcatString('audioUrl', S3.CUSTOMERS),
       'followUpType',
     ],
     where: {
@@ -748,10 +748,4 @@ exports.getFileForResponse = async (req, res) => {
       return internalServerError(res, 'Error Reading File')
     })
     .pipe(res)
-}
-
-function unlinkFile(path) {
-  fs.unlink(path, err => {
-    console.log(err)
-  })
 }

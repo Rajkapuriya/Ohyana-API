@@ -78,7 +78,7 @@ clientRouter.get(
 
 clientRouter.post(
   '/businesscard',
-  upload.single('image'),
+  upload.single('customer_image'),
   authTokenMiddleware,
   permissionHandleMiddleware(
     'req.user.role.permission.clientMenu && req.user.clientStageAccess !== null',
@@ -111,7 +111,7 @@ clientRouter.put(
 
 clientRouter.post(
   '/status/client',
-  upload.single('audio'),
+  upload.single('status_audio_file'),
   joiValidationMiddleware(clientSchema.addClientStatus),
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
@@ -140,7 +140,6 @@ clientRouter.patch(
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
   clientController.closeClientInquery,
 )
-// clientRouter.get('/status/audio/:path', clientController.getStatusAudio)
 
 // ------------------------------- Client Reminder Routes -------------------------------
 
