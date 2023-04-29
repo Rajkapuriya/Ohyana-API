@@ -2,6 +2,7 @@ const { Team, Team_Point, Points, Target } = require('../models')
 const { Sequelize, Op } = require('sequelize')
 const { YYYY_MM_DD } = require('./moment.util')
 const { TARGET } = require('../constants')
+const moment = require('moment')
 const { mailHelper } = require('../helpers/mail.helper')
 const { EMAIL_CONFIG } = require('../config/mail.config')
 const jwt = require('jsonwebtoken')
@@ -75,6 +76,26 @@ function unlinkFile(path) {
   })
 }
 
+function getDateRageArray(days, startDate) {
+  const dateRangeArray = [YYYY_MM_DD(startDate)]
+  for (let i = 0; i < days - 1; i++) {
+    dateRangeArray.push(YYYY_MM_DD(moment(dateRangeArray[i]).add(1, 'days')))
+  }
+
+  return dateRangeArray
+}
+
+function getMonthDateRageArray(month) {
+  const monthDateStartDate = moment(month, 'MM').startOf('month')
+  console.log(monthDateStartDate.format('YYYY-MM-DD'))
+  const dateRangeArray = [YYYY_MM_DD(monthDateStartDate)]
+  for (let i = 0; i < monthDateStartDate.daysInMonth() - 1; i++) {
+    dateRangeArray.push(YYYY_MM_DD(moment(dateRangeArray[i]).add(1, 'days')))
+  }
+
+  return dateRangeArray
+}
+
 module.exports = {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
@@ -82,4 +103,6 @@ module.exports = {
   generateToken,
   verifyToken,
   unlinkFile,
+  getDateRageArray,
+  getMonthDateRageArray,
 }
