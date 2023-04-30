@@ -19,6 +19,7 @@ const moment = require('moment')
 const {
   getDateRageArray,
   getMonthDateRageArray,
+  getYearDateRageArray,
 } = require('../utils/common.util')
 
 exports.getProductReport = async (req, res) => {
@@ -57,6 +58,7 @@ exports.getProductReport = async (req, res) => {
         ),
       ],
     }
+    dateRange = getYearDateRageArray(year)
   }
 
   if (comparison && comparison == 'city') {
@@ -116,12 +118,16 @@ exports.getProductReport = async (req, res) => {
 
   dateRange.forEach(date => {
     if (dateWiseProductOrderObject[date]) {
-      productReportData[date] = dateWiseProductOrderObject[date]
+      productReportData[date] = getDateWiseProductArray(
+        dateWiseProductOrderObject[date],
+        products,
+      )
     } else {
-      productReportData[date] = []
+      productReportData[date] = products.map(data => {
+        return { productId: data.id, quantity: 0 }
+      })
     }
   })
-
   const finalResposnse = {
     label: products.map(data => {
       return { id: data.id, name: data.name }
@@ -318,4 +324,20 @@ exports.getTeamReport = async (req, res) => {
     MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
     finalTeamReport,
   )
+}
+
+function getDateWiseProductArray(dateWiseArray, products) {
+  const dateWiseProductArray = []
+  products.forEach(product => {
+    const productObject = dateWiseArray.find(e => e.productId == product.id)
+    if (productObject) {
+      dateWiseProductArray.push(productObject)
+    } else {
+      dateWiseProductArray.push({
+        productId: product.id,
+        quantity: 0,
+      })
+    }
+  })
+  return dateWiseProductArray
 }

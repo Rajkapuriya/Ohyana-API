@@ -157,7 +157,11 @@ exports.getAllClients = async (req, res) => {
         break
 
       case 'business_card':
-        attributes = ['id', 'arrivalDate', 'imageUrl']
+        attributes = [
+          'id',
+          'arrivalDate',
+          generateS3ConcatString('imageUrl', S3.CUSTOMERS),
+        ]
         filterCondition.reference = CLIENT.REFERENCE_TYPE.OTHER
         filterCondition.reference_name = CLIENT.REFERENCE_SUB_TYPE.BUSINESS_CARD
         break
@@ -338,7 +342,7 @@ exports.addBusinessCard = async (req, res) => {
   if (req.file) {
     const result = await uploadFileToS3(req.file)
     unlinkFile(req.file.path)
-    imageUrl = result.Key
+    imageUrl = result.Key.split('/')[1]
   }
   const newDate = YYYY_MM_DD()
 
@@ -356,7 +360,11 @@ exports.addBusinessCard = async (req, res) => {
 
 exports.getBusinessCardDetail = async (req, res) => {
   const businessCardDetail = await Client.findOne({
-    attributes: ['id', 'arrivalDate', 'imageUrl'],
+    attributes: [
+      'id',
+      'arrivalDate',
+      generateS3ConcatString('imageUrl', S3.CUSTOMERS),
+    ],
     where: { id: req.params.id },
     include: [
       {

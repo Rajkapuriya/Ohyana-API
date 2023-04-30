@@ -87,12 +87,23 @@ function getDateRageArray(days, startDate) {
 
 function getMonthDateRageArray(month) {
   const monthDateStartDate = moment(month, 'MM').startOf('month')
-  console.log(monthDateStartDate.format('YYYY-MM-DD'))
   const dateRangeArray = [YYYY_MM_DD(monthDateStartDate)]
   for (let i = 0; i < monthDateStartDate.daysInMonth() - 1; i++) {
     dateRangeArray.push(YYYY_MM_DD(moment(dateRangeArray[i]).add(1, 'days')))
   }
 
+  return dateRangeArray
+}
+
+function getYearDateRageArray(year) {
+  const dateRangeArray = []
+
+  for (let i = 0; i < 365; i++) {
+    const date = moment()
+      .year(year)
+      .dayOfYear(i + 1)
+    dateRangeArray.push(date.format('YYYY-MM-DD'))
+  }
   return dateRangeArray
 }
 
@@ -105,4 +116,5 @@ module.exports = {
   unlinkFile,
   getDateRageArray,
   getMonthDateRageArray,
+  getYearDateRageArray,
 }
