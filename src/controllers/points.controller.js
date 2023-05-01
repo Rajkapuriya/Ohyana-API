@@ -14,8 +14,14 @@ exports.getAllTeamPoints = async (req, res) => {
   if (month && year && month != 0 && year != 0) {
     filterCondition[Op.and] = [
       // { date: date },
-      sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), year),
-      sequelize.where(sequelize.fn('month', sequelize.col('createdAt')), month),
+      sequelize.where(
+        sequelize.fn('year', sequelize.col('team_point.createdAt')),
+        year,
+      ),
+      sequelize.where(
+        sequelize.fn('month', sequelize.col('team_point.createdAt')),
+        month,
+      ),
     ]
   }
 

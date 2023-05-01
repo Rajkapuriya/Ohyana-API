@@ -1,6 +1,6 @@
 const { Team, Team_Point, Points, Target } = require('../models')
 const { Sequelize, Op } = require('sequelize')
-const { YYYY_MM_DD } = require('./moment.util')
+const { YYYY_MM_DD, DD_MMM_YYYY } = require('./moment.util')
 const { TARGET } = require('../constants')
 const moment = require('moment')
 const { mailHelper } = require('../helpers/mail.helper')
@@ -77,9 +77,9 @@ function unlinkFile(path) {
 }
 
 function getDateRageArray(days, startDate) {
-  const dateRangeArray = [YYYY_MM_DD(startDate)]
+  const dateRangeArray = [DD_MMM_YYYY(startDate)]
   for (let i = 0; i < days - 1; i++) {
-    dateRangeArray.push(YYYY_MM_DD(moment(dateRangeArray[i]).add(1, 'days')))
+    dateRangeArray.push(DD_MMM_YYYY(moment(dateRangeArray[i]).add(1, 'days')))
   }
 
   return dateRangeArray
@@ -87,9 +87,9 @@ function getDateRageArray(days, startDate) {
 
 function getMonthDateRageArray(month) {
   const monthDateStartDate = moment(month, 'MM').startOf('month')
-  const dateRangeArray = [YYYY_MM_DD(monthDateStartDate)]
+  const dateRangeArray = [DD_MMM_YYYY(monthDateStartDate)]
   for (let i = 0; i < monthDateStartDate.daysInMonth() - 1; i++) {
-    dateRangeArray.push(YYYY_MM_DD(moment(dateRangeArray[i]).add(1, 'days')))
+    dateRangeArray.push(DD_MMM_YYYY(moment(dateRangeArray[i]).add(1, 'days')))
   }
 
   return dateRangeArray
@@ -98,11 +98,26 @@ function getMonthDateRageArray(month) {
 function getYearDateRageArray(year) {
   const dateRangeArray = []
 
-  for (let i = 0; i < 365; i++) {
-    const date = moment()
-      .year(year)
-      .dayOfYear(i + 1)
-    dateRangeArray.push(date.format('YYYY-MM-DD'))
+  const monthArray = moment.monthsShort()
+  if (moment().format('YYYY') === year) {
+    const monthIndex = monthArray.findIndex(e => e === moment().format('MMM'))
+    monthArray.splice(monthIndex + 1)
+  }
+
+  for (let i = 0; i < monthArray.length; i++) {
+    dateRangeArray.push(
+      moment(`${monthArray[i]}-${year}`, 'MMM-YYYY').format('MMM-YYYY'),
+    )
+  }
+  return dateRangeArray
+}
+
+function getCustomDateRangeArray(startDate, endDate) {
+  const dateRangeArray = []
+
+  while (moment(startDate) <= moment(endDate)) {
+    dateRangeArray.push(startDate)
+    startDate = DD_MMM_YYYY(moment(startDate).add(1, 'days'))
   }
   return dateRangeArray
 }
@@ -117,4 +132,5 @@ module.exports = {
   getDateRageArray,
   getMonthDateRageArray,
   getYearDateRageArray,
+  getCustomDateRangeArray,
 }

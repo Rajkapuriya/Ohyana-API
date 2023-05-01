@@ -23,6 +23,9 @@ function YYYY_MM_DD_HHMMSS(date) {
 function YYYY_MM_DD_HH_MM(date) {
   return getDate(date, 'YYYY-MM-DD_HH_mm')
 }
+function DD_MMM_YYYY(date) {
+  return getDate(date, 'DD-MMM-YYYY')
+}
 
 function getDate(date, format) {
   if (date) {
@@ -36,6 +39,7 @@ module.exports = {
   YYYY_MM_DDHHMM,
   YYYY_MM_DD_HHMM,
   YYYY_MM_DD,
+  DD_MMM_YYYY,
   HH_MM_SS,
   YYYY_MM_DD_HHMMSS,
   YYYY_MM_DD_HH_MM,
