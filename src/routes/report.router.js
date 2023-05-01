@@ -16,6 +16,13 @@ reportRouter.post(
 )
 
 reportRouter.post(
+  '/report/city',
+  joiValidationMiddleware(reportSchema.productReportByCity),
+  authTokenMiddleware,
+  reportController.getProductReportByCity,
+)
+
+reportRouter.post(
   '/report/team',
   joiValidationMiddleware(reportSchema.teamReport),
   authTokenMiddleware,

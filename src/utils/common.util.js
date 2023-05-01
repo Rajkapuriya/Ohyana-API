@@ -77,9 +77,9 @@ function unlinkFile(path) {
 }
 
 function getDateRageArray(days, startDate) {
-  const dateRangeArray = [DD_MMM_YYYY(startDate)]
+  const dateRangeArray = [YYYY_MM_DD(startDate)]
   for (let i = 0; i < days - 1; i++) {
-    dateRangeArray.push(DD_MMM_YYYY(moment(dateRangeArray[i]).add(1, 'days')))
+    dateRangeArray.push(YYYY_MM_DD(moment(dateRangeArray[i]).add(1, 'days')))
   }
 
   return dateRangeArray
@@ -87,9 +87,9 @@ function getDateRageArray(days, startDate) {
 
 function getMonthDateRageArray(month) {
   const monthDateStartDate = moment(month, 'MM').startOf('month')
-  const dateRangeArray = [DD_MMM_YYYY(monthDateStartDate)]
+  const dateRangeArray = [YYYY_MM_DD(monthDateStartDate)]
   for (let i = 0; i < monthDateStartDate.daysInMonth() - 1; i++) {
-    dateRangeArray.push(DD_MMM_YYYY(moment(dateRangeArray[i]).add(1, 'days')))
+    dateRangeArray.push(YYYY_MM_DD(moment(dateRangeArray[i]).add(1, 'days')))
   }
 
   return dateRangeArray
@@ -116,8 +116,8 @@ function getCustomDateRangeArray(startDate, endDate) {
   const dateRangeArray = []
 
   while (moment(startDate) <= moment(endDate)) {
-    dateRangeArray.push(startDate)
-    startDate = DD_MMM_YYYY(moment(startDate).add(1, 'days'))
+    dateRangeArray.push(YYYY_MM_DD(startDate))
+    startDate = YYYY_MM_DD(moment(startDate).add(1, 'days'))
   }
   return dateRangeArray
 }

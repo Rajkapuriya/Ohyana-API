@@ -24,45 +24,13 @@ const {
 } = require('../utils/common.util')
 
 exports.getProductReport = async (req, res) => {
-  const { cities, productIds, period, comparison, dateFrom, dateTo } = req.body
-  const productFilterCondition = {},
-    filterCondition = {}
-  let dateRange = []
-  if (period && period.includes('day')) {
-    // day-7,day-30
-    const days = parseInt(period.split('-')[1])
-    const date = moment().subtract(days, 'days')
-    filterCondition.createdAt = {
-      [Op.gte]: YYYY_MM_DD(date),
-    }
-    dateRange = getDateRageArray(days, date)
-  } else if (period && period.includes('month')) {
-    // month-sepetember
-    const month = moment().month(period.split('-')[1]).format('M')
-    filterCondition.createdAt = {
-      [Op.and]: [
-        sequelize.where(
-          sequelize.fn('month', sequelize.col('createdAt')),
-          month,
-        ),
-      ],
-    }
-    dateRange = getMonthDateRageArray(month)
-  } else if (period && period.includes('year')) {
-    // year-2023
-    const year = period.split('-')[1]
-    filterCondition.createdAt = {
-      [Op.and]: [
-        sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), year),
-      ],
-    }
-    dateRange = getYearDateRageArray(year)
-  } else if (period === 'custom') {
-    filterCondition.createdAt = {
-      [Op.between]: [YYYY_MM_DD(dateFrom), YYYY_MM_DD(dateTo)],
-    }
-    dateRange = getCustomDateRangeArray(dateFrom, dateTo)
-  }
+  const { cities, productIds, period, dateFrom, dateTo } = req.body
+
+  const { filterCondition, dateRange } = generateProductReportFilterCondition(
+    period,
+    dateFrom,
+    dateTo,
+  )
 
   if (productIds && productIds.length) {
     filterCondition.productId = productIds
@@ -72,67 +40,23 @@ exports.getProductReport = async (req, res) => {
     where: { ...filterCondition },
   })
 
-  const productReportData = {}
-  const dateWiseProductOrderObject = {}
-
-  orders.forEach(orderItem => {
-    const orderDate =
-      period && period.includes('year')
-        ? moment(orderItem.createdAt).format('MMM-YYYY')
-        : DD_MMM_YYYY(orderItem.createdAt)
-
-    if (dateWiseProductOrderObject[orderDate]) {
-      dateWiseProductOrderObject[orderDate].push({
-        productId: orderItem.productId,
-        quantity: orderItem.quantity,
-      })
-    } else {
-      dateWiseProductOrderObject[orderDate] = [
-        {
-          productId: orderItem.productId,
-          quantity: orderItem.quantity,
-        },
-      ]
-    }
-  })
-
-  Object.keys(dateWiseProductOrderObject).forEach(date => {
-    const productOrderArray = []
-    dateWiseProductOrderObject[date].forEach(order => {
-      const orderIndex = productOrderArray.findIndex(
-        e => e.productId === order.productId,
-      )
-      if (orderIndex > -1) {
-        productOrderArray[orderIndex].quantity += order.quantity
-      } else {
-        productOrderArray.push({
-          productId: order.productId,
-          quantity: order.quantity,
-        })
-      }
-    })
-
-    dateWiseProductOrderObject[date] = productOrderArray
-  })
+  const dateWiseProductOrderObject = getProductReportDataAndDateWiseOrderObject(
+    orders,
+    period,
+  )
 
   const products = await Product.findAll({
     attributes: ['id', 'name'],
     where: { id: [...new Set(orders.map(o => o.productId))] },
   })
 
-  dateRange.forEach(date => {
-    if (dateWiseProductOrderObject[date]) {
-      productReportData[date] = getDateWiseProductArray(
-        dateWiseProductOrderObject[date],
-        products,
-      )
-    } else {
-      productReportData[date] = products.map(data => {
-        return { productId: data.id, quantity: 0 }
-      })
-    }
-  })
-  const finalResposnse = {
+  const productReportData = getFinalProductReportObject(
+    dateRange,
+    dateWiseProductOrderObject,
+    products,
+  )
+
+  const finalResponse = {
     label: products.map(data => {
       return { id: data.id, name: data.name }
     }),
@@ -142,7 +66,54 @@ exports.getProductReport = async (req, res) => {
   return successResponse(
     res,
     MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
-    finalResposnse,
+    finalResponse,
+  )
+}
+
+exports.getProductReportByCity = async (req, res) => {
+  const { cities, productId, period, dateFrom, dateTo } = req.body
+
+  const { filterCondition, dateRange } = generateProductReportFilterCondition(
+    period,
+    dateFrom,
+    dateTo,
+  )
+
+  if (productId) {
+    filterCondition.productId = productId
+  }
+
+  const orders = await Order_Item.findAll({
+    where: { ...filterCondition },
+  })
+
+  const dateWiseProductOrderObject = getProductReportDataAndDateWiseOrderObject(
+    orders,
+    period,
+  )
+
+  const products = await Product.findAll({
+    attributes: ['id', 'name'],
+    where: { id: [...new Set(orders.map(o => o.productId))] },
+  })
+
+  const productReportData = getFinalProductReportObject(
+    dateRange,
+    dateWiseProductOrderObject,
+    products,
+  )
+
+  const finalResponse = {
+    label: products.map(data => {
+      return { id: data.id, name: data.name }
+    }),
+    data: productReportData,
+  }
+
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    finalResponse,
   )
 }
 
@@ -350,4 +321,116 @@ function getDateWiseProductArray(dateWiseArray, products) {
     }
   })
   return dateWiseProductArray
+}
+
+function generateProductReportFilterCondition(period, dateFrom, dateTo) {
+  const filterCondition = {}
+  let dateRange = []
+  if (period && period.includes('day')) {
+    // day-7,day-30
+    const days = parseInt(period.split('-')[1])
+    const date = moment().subtract(days, 'days')
+    filterCondition.createdAt = {
+      [Op.gte]: YYYY_MM_DD(date),
+    }
+    dateRange = getDateRageArray(days, date)
+  } else if (period && period.includes('month')) {
+    // month-sepetember
+    const month = moment().month(period.split('-')[1]).format('M')
+    filterCondition.createdAt = {
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('createdAt')),
+          month,
+        ),
+      ],
+    }
+    dateRange = getMonthDateRageArray(month)
+  } else if (period && period.includes('year')) {
+    // year-2023
+    const year = period.split('-')[1]
+    filterCondition.createdAt = {
+      [Op.and]: [
+        sequelize.where(sequelize.fn('year', sequelize.col('createdAt')), year),
+      ],
+    }
+    dateRange = getYearDateRageArray(year)
+  } else if (period === 'custom') {
+    filterCondition.createdAt = {
+      [Op.between]: [YYYY_MM_DD(dateFrom), YYYY_MM_DD(dateTo)],
+    }
+    dateRange = getCustomDateRangeArray(moment(dateFrom), moment(dateTo))
+  }
+
+  return {
+    filterCondition,
+    dateRange,
+  }
+}
+
+function getProductReportDataAndDateWiseOrderObject(orders, period) {
+  const dateWiseProductOrderObject = {}
+  orders.forEach(orderItem => {
+    const orderDate =
+      period && period.includes('year')
+        ? moment(orderItem.createdAt).format('MMM-YYYY')
+        : YYYY_MM_DD(orderItem.createdAt)
+
+    if (dateWiseProductOrderObject[orderDate]) {
+      dateWiseProductOrderObject[orderDate].push({
+        productId: orderItem.productId,
+        quantity: orderItem.quantity,
+      })
+    } else {
+      dateWiseProductOrderObject[orderDate] = [
+        {
+          productId: orderItem.productId,
+          quantity: orderItem.quantity,
+        },
+      ]
+    }
+  })
+
+  Object.keys(dateWiseProductOrderObject).forEach(date => {
+    const productOrderArray = []
+    dateWiseProductOrderObject[date].forEach(order => {
+      const orderIndex = productOrderArray.findIndex(
+        e => e.productId === order.productId,
+      )
+      if (orderIndex > -1) {
+        productOrderArray[orderIndex].quantity += order.quantity
+      } else {
+        productOrderArray.push({
+          productId: order.productId,
+          quantity: order.quantity,
+        })
+      }
+    })
+
+    dateWiseProductOrderObject[date] = productOrderArray
+  })
+
+  return dateWiseProductOrderObject
+}
+
+function getFinalProductReportObject(
+  dateRange,
+  dateWiseProductOrderObject,
+  products,
+) {
+  const productReportData = {}
+  dateRange.forEach(date => {
+    if (dateWiseProductOrderObject[date]) {
+      productReportData[date] = getDateWiseProductArray(
+        dateWiseProductOrderObject[date],
+        products,
+      )
+    } else {
+      productReportData[date] = products.map(data => {
+        return { productId: data.id, quantity: 0 }
+      })
+    }
+  })
+
+  return productReportData
 }

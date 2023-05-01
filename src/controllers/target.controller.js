@@ -10,10 +10,10 @@ exports.setTarget = async (req, res) => {
     where: { teamId: req.params.id, state: TARGET.STATE.UPCOMING },
   })
 
-  if (target) {
-    await target.update(req.body)
-    return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
-  }
+  // if (target) {
+  //   await target.update(req.body)
+  //   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
+  // }
 
   await Target.bulkCreate([
     {
@@ -48,7 +48,7 @@ exports.getTargets = async (req, res) => {
   const target = await Target.findAll({
     where: {
       teamId: req.params.id,
-      state: { [Op.not]: TARGET.STATE.UPCOMING },
+      // state: { [Op.not]: TARGET.STATE.UPCOMING },
       ...filterCondition,
     },
   })
