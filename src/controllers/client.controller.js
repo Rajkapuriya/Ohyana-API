@@ -616,6 +616,11 @@ exports.updateReminder = async (req, res) => {
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
+exports.deleteClientReminder = async (req, res) => {
+  await Client_Reminder.destroy({ where: { id: req.params.id } })
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
+}
+
 exports.addClientAppointment = async (req, res) => {
   const {
     description,
@@ -745,6 +750,11 @@ exports.updateAppointment = async (req, res) => {
    */
 
   return successResponse(res, 'Appointment Updated Successfully')
+}
+
+exports.deleteClientAppointment = async (req, res) => {
+  await Client_Appointment.destroy({ where: { id: req.params.id } })
+  return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)
 }
 
 exports.getFileForResponse = async (req, res) => {

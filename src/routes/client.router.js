@@ -166,6 +166,13 @@ clientRouter.put(
   clientController.updateReminder,
 )
 
+clientRouter.delete(
+  '/reminder/client/:id',
+  authTokenMiddleware,
+  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  clientController.deleteClientReminder,
+)
+
 // ------------------------------- Client Appointment Routes -------------------------------
 
 clientRouter.post(
@@ -189,6 +196,13 @@ clientRouter.put(
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
   clientController.updateAppointment,
+)
+
+clientRouter.delete(
+  '/appointment/client/:id',
+  authTokenMiddleware,
+  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  clientController.deleteClientAppointment,
 )
 
 // ------------------------------- Get Files From Server -------------------------------
