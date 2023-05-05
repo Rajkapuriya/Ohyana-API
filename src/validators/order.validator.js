@@ -3,8 +3,9 @@ const Joi = require('joi')
 exports.orderSchema = {
   addtoCart: Joi.object({
     body: Joi.object({
-      productId: Joi.number().required(),
-      quantity: Joi.number().required(),
+      productId: Joi.number(),
+      quantity: Joi.number(),
+      clientId: Joi.number(),
     }).required(),
   }).unknown(),
 

@@ -4,7 +4,7 @@ exports.reportSchema = {
   productReport: Joi.object({
     body: Joi.object({
       period: Joi.string().required(),
-      cities: Joi.string(),
+      city_id: Joi.number(),
       dateFrom: Joi.string(),
       dateTo: Joi.string(),
       productIds: Joi.array(),

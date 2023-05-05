@@ -85,6 +85,12 @@ teamRouter.post(
   teamController.saveLocation,
 )
 
+teamRouter.get(
+  '/location/member',
+  authTokenMiddleware,
+  teamController.getTeamMemberLocation,
+)
+
 // ------------------------------- Expenses -------------------------------
 
 teamRouter.post(

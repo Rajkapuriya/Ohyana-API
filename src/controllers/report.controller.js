@@ -13,6 +13,7 @@ const {
   Team_Point,
   Team_Expense,
   Role,
+  Order,
 } = require('../models')
 const { YYYY_MM_DD, DD_MMM_YYYY } = require('../utils/moment.util')
 const moment = require('moment')
@@ -24,7 +25,7 @@ const {
 } = require('../utils/common.util')
 
 exports.getProductReport = async (req, res) => {
-  const { cities, productIds, period, dateFrom, dateTo } = req.body
+  const { city_id, productIds, period, dateFrom, dateTo } = req.body
 
   const { filterCondition, dateRange } = generateProductReportFilterCondition(
     period,
@@ -36,6 +37,14 @@ exports.getProductReport = async (req, res) => {
     filterCondition.productId = productIds
   }
 
+  if (city_id) {
+    const orderIds = await Order.findAll({
+      attributes: ['id'],
+      where: { city_id },
+    })
+    filterCondition.orderId = orderIds.map(o => o.id)
+  }
+
   const orders = await Order_Item.findAll({
     where: { ...filterCondition },
   })
@@ -43,6 +52,8 @@ exports.getProductReport = async (req, res) => {
   const dateWiseProductOrderObject = getProductReportDataAndDateWiseOrderObject(
     orders,
     period,
+    'productId',
+    'quantity',
   )
 
   const products = await Product.findAll({
@@ -54,6 +65,8 @@ exports.getProductReport = async (req, res) => {
     dateRange,
     dateWiseProductOrderObject,
     products,
+    'productId',
+    'id',
   )
 
   const finalResponse = {
@@ -80,32 +93,43 @@ exports.getProductReportByCity = async (req, res) => {
   )
 
   if (productId) {
-    filterCondition.productId = productId
+    const orderIds = await Order_Item.findAll({
+      attributes: ['id'],
+      where: { productId: productId },
+    })
+    filterCondition.id = orderIds.map(o => o.id)
   }
 
-  const orders = await Order_Item.findAll({
+  if (cities && cities.length > 0) {
+    filterCondition.city_id = cities
+  }
+
+  const orders = await Order.findAll({
+    attributes: ['createdAt', 'total_items', ['city_id', 'cityId'], 'city'],
+    raw: true,
     where: { ...filterCondition },
   })
 
   const dateWiseProductOrderObject = getProductReportDataAndDateWiseOrderObject(
     orders,
     period,
+    'cityId',
+    'total_items',
   )
 
-  const products = await Product.findAll({
-    attributes: ['id', 'name'],
-    where: { id: [...new Set(orders.map(o => o.productId))] },
-  })
+  const cityList = removeDuplicates(orders, 'cityId')
 
   const productReportData = getFinalProductReportObject(
     dateRange,
     dateWiseProductOrderObject,
-    products,
+    cityList,
+    'cityId',
+    'cityId',
   )
 
   const finalResponse = {
-    label: products.map(data => {
-      return { id: data.id, name: data.name }
+    label: cityList.map(data => {
+      return { id: data.cityId, name: data.city }
     }),
     data: productReportData,
   }
@@ -128,14 +152,14 @@ exports.getTeamReport = async (req, res) => {
   let expenseWhereCondition = ''
   const whereParam = comparison == 'expense' ? 'date' : 'createdAt'
 
-  if (period && period.includes('days')) {
+  if (period && period.includes('day')) {
     // days-7,days-30
     const days = parseInt(period.split('-')[1])
     filterSubCondition[whereParam] = {
       [Op.gte]: moment().subtract(days, 'days').format('YYYY-MM-DD'),
     }
 
-    expenseWhereCondition += ` AND te.date >= ${moment()
+    expenseWhereCondition += ` AND DATE(te.date) >= ${moment()
       .subtract(days, 'days')
       .format('YYYY-MM-DD')} `
   } else if (period && period.includes('month')) {
@@ -307,20 +331,29 @@ exports.getTeamReport = async (req, res) => {
   )
 }
 
-function getDateWiseProductArray(dateWiseArray, products) {
+function getDateWiseProductArray(dateWiseArray, products, objectKey, idKey) {
   const dateWiseProductArray = []
   products.forEach(product => {
-    const productObject = dateWiseArray.find(e => e.productId == product.id)
+    const productObject = dateWiseArray.find(
+      e => e[objectKey] == product[idKey],
+    )
     if (productObject) {
       dateWiseProductArray.push(productObject)
     } else {
       dateWiseProductArray.push({
-        productId: product.id,
+        [objectKey]: product[idKey],
         quantity: 0,
       })
     }
   })
   return dateWiseProductArray
+}
+
+function removeDuplicates(arr, objKey) {
+  return arr.filter(
+    (obj, index, self) =>
+      index === self.findIndex(t => t[objKey] === obj[objKey]),
+  )
 }
 
 function generateProductReportFilterCondition(period, dateFrom, dateTo) {
@@ -368,7 +401,12 @@ function generateProductReportFilterCondition(period, dateFrom, dateTo) {
   }
 }
 
-function getProductReportDataAndDateWiseOrderObject(orders, period) {
+function getProductReportDataAndDateWiseOrderObject(
+  orders,
+  period,
+  objectKey,
+  quantityKey,
+) {
   const dateWiseProductOrderObject = {}
   orders.forEach(orderItem => {
     const orderDate =
@@ -378,14 +416,14 @@ function getProductReportDataAndDateWiseOrderObject(orders, period) {
 
     if (dateWiseProductOrderObject[orderDate]) {
       dateWiseProductOrderObject[orderDate].push({
-        productId: orderItem.productId,
-        quantity: orderItem.quantity,
+        [objectKey]: orderItem[objectKey],
+        quantity: orderItem[quantityKey],
       })
     } else {
       dateWiseProductOrderObject[orderDate] = [
         {
-          productId: orderItem.productId,
-          quantity: orderItem.quantity,
+          [objectKey]: orderItem[objectKey],
+          quantity: orderItem[quantityKey],
         },
       ]
     }
@@ -395,13 +433,13 @@ function getProductReportDataAndDateWiseOrderObject(orders, period) {
     const productOrderArray = []
     dateWiseProductOrderObject[date].forEach(order => {
       const orderIndex = productOrderArray.findIndex(
-        e => e.productId === order.productId,
+        e => e[objectKey] === order[objectKey],
       )
       if (orderIndex > -1) {
         productOrderArray[orderIndex].quantity += order.quantity
       } else {
         productOrderArray.push({
-          productId: order.productId,
+          [objectKey]: order[objectKey],
           quantity: order.quantity,
         })
       }
@@ -417,6 +455,8 @@ function getFinalProductReportObject(
   dateRange,
   dateWiseProductOrderObject,
   products,
+  objectKey,
+  idKey,
 ) {
   const productReportData = {}
   dateRange.forEach(date => {
@@ -424,10 +464,12 @@ function getFinalProductReportObject(
       productReportData[date] = getDateWiseProductArray(
         dateWiseProductOrderObject[date],
         products,
+        objectKey,
+        idKey,
       )
     } else {
       productReportData[date] = products.map(data => {
-        return { productId: data.id, quantity: 0 }
+        return { [objectKey]: data[idKey], quantity: 0 }
       })
     }
   })

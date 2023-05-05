@@ -21,7 +21,7 @@ exports.createHoliday = async (req, res) => {
   if (regular) {
     body.type = HOLIDAY.TYPE.REGULAR
     if (isNaN(parseInt(occasion)))
-      return unProcessableEntityRequestError(res, 'Invalide Day')
+      return unProcessableEntityRequestError(res, 'Invalid Day')
     delete body.date
     delete body.duration
   } else {

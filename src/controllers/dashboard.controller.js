@@ -85,6 +85,10 @@ exports.getInquiryAnalytics = async (req, res) => {
           sequelize.fn('month', sequelize.col('team_point.createdAt')),
           currentMonth,
         ),
+        sequelize.where(
+          sequelize.fn('year', sequelize.col('team_point.createdAt')),
+          moment().format('YYYY'),
+        ),
       ],
     },
     include: {
@@ -98,6 +102,10 @@ exports.getInquiryAnalytics = async (req, res) => {
         sequelize.where(
           sequelize.fn('month', sequelize.col('team_point.createdAt')),
           lastMonth,
+        ),
+        sequelize.where(
+          sequelize.fn('year', sequelize.col('team_point.createdAt')),
+          moment().format('YYYY'),
         ),
       ],
     },
@@ -135,12 +143,13 @@ exports.getInquiryAnalytics = async (req, res) => {
   const teamWithPoints = []
   teams.forEach(e => {
     let pointPercentage = 0
-    const crtPoints = lstTeamMemeberPoint.find(ele => ele.teamId === e.id)
-    const lstPoints = crtTeamMemberPoint.find(ele => ele.teamId === e.id)
+    const lstPoints = lstTeamMemeberPoint.find(ele => ele.teamId === e.id)
+    const crtPoints = crtTeamMemberPoint.find(ele => ele.teamId === e.id)
 
     if (crtPoints && lstPoints) {
       pointPercentage =
-        ((crtPoints.points - lstPoints.points) / lstPoints.points) * 100
+        ((crtPoints.points - lstPoints.points) / Math.abs(lstPoints.points)) *
+        100
     }
     teamWithPoints.push({
       id: e.id,
@@ -151,7 +160,7 @@ exports.getInquiryAnalytics = async (req, res) => {
       imgUrl: e.imgUrl,
       attendances:
         e.attendances.length > 0 ? e.attendances[0].attendanceType : '-',
-      pointPercentage: pointPercentage || 0,
+      pointPercentage: parseFloat(pointPercentage).toFixed(2) || 0,
     })
   })
 

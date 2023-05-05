@@ -34,7 +34,16 @@ exports.createPJP = async (req, res) => {
   }
 
   const clientDetail = await Client.findOne({
-    attributes: ['id', 'state', 'city'],
+    attributes: [
+      'state',
+      'city',
+      'city_id',
+      'state_id',
+      'state_iso2',
+      'country',
+      'country_iso2',
+      'country_id',
+    ],
     where: {
       id: clientId,
     },
@@ -48,8 +57,14 @@ exports.createPJP = async (req, res) => {
     description,
     teamId: teamId || req.user.id,
     clientId,
+    state_id: clientDetail.state_id,
     state: clientDetail.state,
+    state_iso2: clientDetail.state_iso2,
+    city_id: clientDetail.city_id,
     city: clientDetail.city,
+    country_id: clientDetail.country_id,
+    country_iso2: clientDetail.country_iso2,
+    country: clientDetail.country,
     companyId: req.user.companyId,
   })
 
@@ -124,8 +139,16 @@ exports.completePJPStatus = async (req, res) => {
 exports.getAllPJP = async (req, res) => {
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
-  const { statusType, date, day, clientId, followUpType, teamId, city, state } =
-    req.query
+  const {
+    statusType,
+    date,
+    day,
+    clientId,
+    followUpType,
+    teamId,
+    city_id,
+    state_id,
+  } = req.query
 
   const filterCondition = {}
   let attributes = ['id', 'date', 'status', 'is_completed']
@@ -152,17 +175,9 @@ exports.getAllPJP = async (req, res) => {
 
   if (date) filterCondition.date = date
 
-  if (city) {
-    filterCondition.city = {
-      [Op.like]: `%${city}%`,
-    }
-  }
+  if (city_id) filterCondition.city_id = city_id
 
-  if (state) {
-    filterCondition.state = {
-      [Op.like]: `%${state}%`,
-    }
-  }
+  if (state_id) filterCondition.state_id = state_id
 
   const pjp = await Pjp.findAndCountAll({
     attributes: attributes,
@@ -204,6 +219,8 @@ exports.getPJPDetail = async (req, res) => {
     attributes: [
       'id',
       'date',
+      'city',
+      'state',
       'status',
       'location',
       'description',
@@ -214,7 +231,7 @@ exports.getPJPDetail = async (req, res) => {
     where: { id: req.params.id },
     include: {
       model: Client,
-      attributes: ['id', 'name', 'contact_number', 'city', 'business', 'state'],
+      attributes: ['id', 'name', 'contact_number', 'business'],
     },
   })
 

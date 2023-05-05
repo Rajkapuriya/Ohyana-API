@@ -13,11 +13,15 @@ exports.clientSchema = {
       contact_number: Joi.string()
         .regex(/[^a-zA-Z!@#$%^&*]/)
         .allow(null, ''),
-      isInternational: Joi.boolean().required(),
       state: Joi.string().required(),
       city: Joi.string().required(),
+      city_id: Joi.number().required(),
+      state_id: Joi.number().required(),
+      state_iso2: Joi.string().required(),
+      country: Joi.string().required(),
+      country_id: Joi.number().required(),
+      country_iso2: Joi.string().required(),
       address: Joi.string().allow(null, ''),
-      countryId: Joi.number().allow(null, ''),
       max_invesment_amount: Joi.number(),
     })
       .or('email', 'contact_number')
@@ -26,14 +30,14 @@ exports.clientSchema = {
 
   clientList: Joi.object({
     query: Joi.object({
-      isInternational: Joi.boolean(),
       stage: Joi.number(),
       tabType: Joi.string(),
       forMobile: Joi.boolean(),
       selection: Joi.boolean(),
       searchQuery: Joi.string(),
-      city: Joi.string(),
-      state: Joi.string(),
+      country_id: Joi.number(),
+      city_id: Joi.number(),
+      state_id: Joi.number(),
       page: Joi.number(),
       size: Joi.number(),
     }).required(),

@@ -4,7 +4,6 @@ db.Client = require('./client.model').Client
 db.Product = require('./product.model').Product
 db.Role = require('./role.model').Role
 db.Team = require('./team.model').Team
-db.Country = require('./country.model').Country
 db.Notification = require('./notification.model').Notification
 db.Client_Status = require('./client-status.model').Client_Status
 db.Client_Appointment = require('./client-appointment.model').Client_Appointment
@@ -42,12 +41,6 @@ db.Team_Location_History =
 
 db.Team.hasMany(db.Client)
 db.Client.belongsTo(db.Team)
-
-db.Country.hasMany(db.Client)
-db.Company.belongsTo(db.Country)
-
-db.Country.hasMany(db.Company)
-db.Client.belongsTo(db.Country)
 
 // Client Status
 db.Client.hasMany(db.Client_Status)
@@ -118,6 +111,8 @@ db.Team.hasMany(db.Cart)
 // Client Order Added By Team Member
 db.Client.hasMany(db.Order)
 db.Order.belongsTo(db.Client)
+db.Client.hasMany(db.Cart)
+db.Cart.belongsTo(db.Client)
 db.Team.hasMany(db.Order)
 db.Order.belongsTo(db.Team)
 

@@ -27,7 +27,25 @@ const Pjp = sequelize.define(
     city: {
       type: DataTypes.STRING(20),
     },
+    city_id: {
+      type: DataTypes.NUMBER,
+    },
     state: {
+      type: DataTypes.STRING(20),
+    },
+    state_id: {
+      type: DataTypes.NUMBER,
+    },
+    state_iso2: {
+      type: DataTypes.STRING(5),
+    },
+    country_id: {
+      type: DataTypes.NUMBER,
+    },
+    country_iso2: {
+      type: DataTypes.STRING(5),
+    },
+    country: {
       type: DataTypes.STRING(20),
     },
     status: {

@@ -20,7 +20,7 @@ orderRouter.post(
 )
 
 orderRouter.get(
-  '/cart/items',
+  '/cart/items/:id',
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
   orderController.getAllCartItem,

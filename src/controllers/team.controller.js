@@ -24,6 +24,7 @@ const { sendMail, generateToken } = require('../utils/common.util')
 const { SERVER_CONFIG } = require('../config/server.config')
 const { resetPasswordHTML } = require('../utils/email-template.util')
 const { generateS3ConcatString } = require('../utils/s3.util')
+const { YYYY_MM_DD } = require('../utils/moment.util')
 
 exports.addTeamMember = async (req, res) => {
   const { email } = req.body
@@ -132,6 +133,8 @@ exports.getSingleMember = async (req, res) => {
       'gender',
       'birthDay',
       'rating',
+      'state_id',
+      'state_iso2',
       'state',
       'jobType',
       generateS3ConcatString('imgUrl', S3.USERS),
@@ -172,6 +175,8 @@ exports.getProfile = async (req, res) => {
       'name',
       'email',
       'contact_number',
+      'state_id',
+      'state_iso2',
       'city',
       'state',
       'pincode',
@@ -279,6 +284,24 @@ exports.saveLocation = async (req, res) => {
   })
 
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
+}
+
+exports.getTeamMemberLocation = async (req, res) => {
+  const memberLocations = await Team_Location_History.findAll({
+    attributes: ['teamId', 'latitude', 'longitude'],
+    where: {
+      teamId: req.user.id,
+      date: YYYY_MM_DD(),
+    },
+  })
+
+  if (!memberLocations.length) return notFoundError(res)
+
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    memberLocations,
+  )
 }
 
 exports.addExpense = async (req, res) => {

@@ -1,7 +1,7 @@
 const { Op } = require('sequelize')
 const sequelize = require('../database/mysql')
 const moment = require('moment')
-const superagent = require('superagent')
+const axios = require('axios')
 const io = require('../helpers/socket.helper')
 const { uploadFileToS3, getFileFromS3 } = require('../helpers/s3.helper')
 // const { setRedisData } = require("../database/redis");
@@ -40,7 +40,6 @@ const {
   Client_Stage_History,
   Role,
   Product,
-  Country,
   Company,
   PJP,
   Team,
@@ -49,7 +48,7 @@ const {
 const { generateS3ConcatString } = require('../utils/s3.util')
 
 exports.addClient = async (req, res) => {
-  const { email, contact_number, isInternational } = req.body
+  const { email, contact_number } = req.body
 
   const clientFindOneCondition = [{ email }, { contact_number }]
 
@@ -71,7 +70,6 @@ exports.addClient = async (req, res) => {
     where: { [Op.or]: clientFindOneCondition },
     defaults: {
       ...req.body,
-      isInternational: isInternational,
       arrivalDate: newDate.split(' ')[0],
       arrivalTime: newDate.split(' ')[1],
       stage: CLIENT.STAGE.INTIATE,
@@ -104,7 +102,7 @@ exports.addClient = async (req, res) => {
 }
 
 exports.getAllClients = async (req, res) => {
-  const { isInternational, stage, tabType, searchQuery, city, state } =
+  const { stage, tabType, searchQuery, city_id, state_id, country_id } =
     req.query
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
@@ -121,9 +119,6 @@ exports.getAllClients = async (req, res) => {
     'createdAt',
   ]
   const filterCondition = {}
-
-  if (isInternational)
-    filterCondition.isInternational = isInternational === 'true'
 
   if (tabType) {
     switch (tabType) {
@@ -174,17 +169,11 @@ exports.getAllClients = async (req, res) => {
     }
   }
 
-  if (city) {
-    filterCondition.city = {
-      [Op.like]: `%${city}%`,
-    }
-  }
+  if (city_id) filterCondition.city_id = city_id
 
-  if (state) {
-    filterCondition.state = {
-      [Op.like]: `%${state}%`,
-    }
-  }
+  if (state_id) filterCondition.state_id = state_id
+
+  if (country_id) filterCondition.country_id = country_id
 
   if (req.user.role.permission.clientStageAccess !== null) {
     if (stage) {
@@ -250,13 +239,9 @@ exports.getAllClients = async (req, res) => {
 
 exports.getClientProfile = async (req, res) => {
   const client = await Client.findOne({
-    attributes: { exclude: ['createdAt', 'updatedAt', 'countryId'] },
+    attributes: { exclude: ['createdAt', 'updatedAt', 'country_id'] },
     where: { id: req.params.id },
     include: [
-      {
-        model: Country,
-        attributes: ['id', 'name'],
-      },
       {
         model: Team,
         attributes: ['id', 'name'],
@@ -278,7 +263,7 @@ exports.takeClient = async (req, res) => {
   let updatedClient
 
   const client = await Client.findOne({
-    attributes: { exclude: ['createdAt', 'updatedAt', 'countryId'] },
+    attributes: ['id'],
     where: { id: req.params.id },
   })
 
@@ -296,7 +281,7 @@ exports.takeClient = async (req, res) => {
 }
 
 exports.updateClient = async (req, res) => {
-  const { email, contact_number, client_type, memberId } = req.body
+  const { email, contact_number, memberId } = req.body
 
   const clientFindOneCondition = [{ email }, { contact_number }]
 
@@ -322,7 +307,6 @@ exports.updateClient = async (req, res) => {
   await Client.update(
     {
       ...req.body,
-      isInternational: client_type,
       teamId: memberId,
     },
     { where: { id: req.params.id } },

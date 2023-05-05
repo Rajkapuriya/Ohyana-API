@@ -25,6 +25,5 @@ router.use(require('./expense.router'))
 router.use(require('./points.router'))
 router.use(require('./dashboard.router'))
 router.use(require('./report.router'))
-router.use(require('./search.router'))
 
 module.exports = router

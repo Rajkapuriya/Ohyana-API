@@ -15,7 +15,7 @@ const { Op } = require('sequelize')
 const sequelize = require('../database/mysql')
 
 exports.addToCart = async (req, res) => {
-  const { productId, quantity } = req.body
+  const { productId, quantity, clientId } = req.body
 
   const alreadyInCart = await Cart.findOne({
     where: { productId, teamId: req.user.id },
@@ -25,7 +25,7 @@ exports.addToCart = async (req, res) => {
     //     { where: whereClause, transaction: t })
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
   } else {
-    await Cart.create({ productId, teamId: req.user.id, quantity: quantity })
+    await Cart.create({ productId, teamId: req.user.id, clientId })
     return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
   }
 }
@@ -39,8 +39,8 @@ exports.updateCartProductQuatity = async (req, res) => {
 
 exports.getAllCartItem = async (req, res) => {
   const cart = await Cart.findAll({
-    attributes: ['id', 'quantity'],
-    where: { teamId: req.user.id },
+    attributes: ['id', 'createdAt'],
+    where: { teamId: req.user.id, clientId: req.params.id },
     include: [
       {
         model: Product,
@@ -84,6 +84,24 @@ exports.placeOrder = async (req, res) => {
     }
   })
 
+  const clientDetail = await Client.findOne({
+    attributes: [
+      'state',
+      'city',
+      'city_id',
+      'state_id',
+      'state_iso2',
+      'country',
+      'country_iso2',
+      'country_id',
+    ],
+    where: {
+      id: clientId,
+    },
+  })
+
+  if (!clientDetail) return notFoundError(res)
+
   const order = await Order.create({
     date: YYYY_MM_DD(),
     total_items: totalItems,
@@ -91,6 +109,14 @@ exports.placeOrder = async (req, res) => {
     orderTrackingStatus: ORDERS.TRACKING_STATUS.PENDING,
     paymentStatus: ORDERS.PAYMENT_STATUS.PENDING,
     clientId,
+    state_id: clientDetail.state_id,
+    state: clientDetail.state,
+    state_iso2: clientDetail.state_iso2,
+    city_id: clientDetail.city_id,
+    city: clientDetail.city,
+    country_id: clientDetail.country_id,
+    country_iso2: clientDetail.country_iso2,
+    country: clientDetail.country,
     teamId: req.user.id,
   })
 

@@ -1,4 +1,4 @@
-const { Company, Country } = require('../models')
+const { Company } = require('../models')
 const {
   successResponse,
   badRequestError,
@@ -17,9 +17,8 @@ exports.updateCompanyProfile = async (req, res) => {
 
 exports.getCompanyProfile = async (req, res) => {
   const company = await Company.findOne({
-    attributes: { exclude: ['createdAt', 'updatedAt', 'countryId'] },
+    attributes: { exclude: ['createdAt', 'updatedAt', 'country_id'] },
     where: { id: req.user.companyId },
-    include: [{ model: Country, attributes: ['name'] }],
   })
 
   if (!company) return notFoundError(res)
