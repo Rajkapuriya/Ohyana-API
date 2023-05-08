@@ -108,7 +108,13 @@ exports.getAllTeamMembers = async (req, res) => {
 
     if (teamType) filterCondition.jobType = teamType
 
-    if (attendanceType) includeModels[1].where.attendanceType = attendanceType
+    if (attendanceType) {
+      const teamIds = await Attendance.findAll({
+        attributes: ['teamId'],
+        where: { date: moment(), attendanceType },
+      })
+      filterCondition.id = teamIds.map(e => e.teamId)
+    }
   }
 
   const team = await Team.findAll({
