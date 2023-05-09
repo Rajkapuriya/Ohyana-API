@@ -239,7 +239,7 @@ exports.getAllClients = async (req, res) => {
 
 exports.getClientProfile = async (req, res) => {
   const client = await Client.findOne({
-    attributes: { exclude: ['createdAt', 'updatedAt', 'country_id'] },
+    attributes: { exclude: ['createdAt', 'updatedAt'] },
     where: { id: req.params.id },
     include: [
       {
