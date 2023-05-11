@@ -37,26 +37,31 @@ exports.createNotification = async (req, res) => {
 }
 
 exports.getAllNotification = async (req, res) => {
+  const { sent } = req.query
   const filterCondition = {}
 
-  if (req.query.sent === 'true') {
+  const currentPage = parseInt(req.query.page) || 1
+  const size = parseInt(req.query.size) || 20
+
+  if (sent === 'true') {
     filterCondition.teamId = req.user.id
     filterCondition.senderType = NOTIFICATION.SENDER_TYPE.INDIVIDUAL
   }
 
-  const notifications = await Notification.findAll({
+  const notifications = await Notification.findAndCountAll({
     attributes: {
       exclude: ['updatedAt', 'senderType', 'roleId'],
     },
     where: { ...filterCondition },
     order: [['id', 'DESC']],
+    offset: (currentPage - 1) * size,
+    limit: size,
   })
 
   if (notifications.length === 0) return notFoundError(res)
 
-  return successResponse(
-    res,
-    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
-    notifications,
-  )
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
+    totalPage: notifications.count,
+    notifications: notifications.rows,
+  })
 }
