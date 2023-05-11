@@ -1,7 +1,11 @@
 const { Target } = require('../models')
 const { Op } = require('sequelize')
 const moment = require('moment')
-const { successResponse, notFoundError } = require('../utils/response.util')
+const {
+  successResponse,
+  notFoundError,
+  badRequestError,
+} = require('../utils/response.util')
 const { MESSAGE, TARGET } = require('../constants')
 const sequelize = require('../database/mysql')
 
@@ -29,6 +33,22 @@ exports.setTarget = async (req, res) => {
       teamId: req.params.id,
     },
   ])
+
+  // const existedTarget = await Target.findOne({
+  //   where: { teamId: req.params.id, startDate, endDate },
+  // })
+
+  // if (existedTarget)
+  //   return badRequestError(res, 'Target Already Assigned for this time period')
+
+  // await Target.create({
+  //   ...req.body,
+  //   startDate: moment(),
+  //   endDate: moment().add(req.body.period, 'days'),
+  //   state: TARGET.STATE.CURRENT,
+  //   teamId: req.params.id,
+  // })
+
   return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 

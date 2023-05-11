@@ -114,6 +114,18 @@ exports.getInquiryAnalytics = async (req, res) => {
     },
   })
 
+  const starPerformerList = await Team.findAll({
+    attributes: ['id', 'name', 'imgUrl'],
+    where: {
+      isCurrentMonthStarPerformer: 1,
+    },
+    include: {
+      model: Role,
+      attributes: ['name'],
+      where: { parentId: { [Op.ne]: null } },
+    },
+  })
+
   const lstTeamMemeberPoint = [],
     crtTeamMemberPoint = []
   crtMonthPoints.forEach(e => {
@@ -283,6 +295,7 @@ exports.getInquiryAnalytics = async (req, res) => {
       },
       orderData: currentMonthOrders.rows,
       // teams,
+      starPerformerList,
       teamWithPoints,
     },
   }

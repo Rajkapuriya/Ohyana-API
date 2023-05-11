@@ -224,7 +224,7 @@ async function sendNotification(now, type, Model, include) {
             ? [
                 {
                   name: 'View Profile',
-                  functionName: `handleView('/clientprofile/${element.client.id}')`,
+                  path: `/clientprofile/${element.client.id}`,
                 },
               ]
             : null,

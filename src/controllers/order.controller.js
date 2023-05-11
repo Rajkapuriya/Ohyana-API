@@ -25,7 +25,7 @@ exports.addToCart = async (req, res) => {
     //     { where: whereClause, transaction: t })
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
   } else {
-    await Cart.create({ productId, teamId: req.user.id, clientId })
+    await Cart.create({ productId, teamId: req.user.id, clientId, quantity: 1 })
     return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
   }
 }
@@ -39,12 +39,12 @@ exports.updateCartProductQuatity = async (req, res) => {
 
 exports.getAllCartItem = async (req, res) => {
   const cart = await Cart.findAll({
-    attributes: ['id', 'createdAt'],
+    attributes: ['id', 'quantity', 'createdAt'],
     where: { teamId: req.user.id, clientId: req.params.id },
     include: [
       {
         model: Product,
-        attributes: ['imageUrl', 'name', 'price'],
+        attributes: ['id', 'imageUrl', 'name', 'price'],
       },
     ],
   })

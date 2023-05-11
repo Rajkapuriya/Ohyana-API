@@ -44,24 +44,12 @@ exports.getAllNotification = async (req, res) => {
     filterCondition.senderType = NOTIFICATION.SENDER_TYPE.INDIVIDUAL
   }
 
-  let notifications = await Notification.findAll({
+  const notifications = await Notification.findAll({
     attributes: {
       exclude: ['updatedAt', 'senderType', 'roleId'],
     },
-    where: { companyId: req.user.companyId, ...filterCondition },
+    where: { ...filterCondition },
     order: [['id', 'DESC']],
-  })
-
-  notifications = notifications.map(e => {
-    return {
-      id: e.id,
-      heading: e.heading,
-      attechment: e.attechment,
-      description: e.description,
-      type: e.type,
-      createdAt: e.createdAt,
-      button: JSON.parse(e.button),
-    }
   })
 
   if (notifications.length === 0) return notFoundError(res)

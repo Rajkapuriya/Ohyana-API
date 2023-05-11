@@ -14,6 +14,8 @@ exports.notificationSchema = {
   notifications: Joi.object({
     query: Joi.object({
       sent: Joi.boolean(),
+      page: Joi.number(),
+      size: Joi.number(),
     }).required(),
   }).unknown(),
 }
