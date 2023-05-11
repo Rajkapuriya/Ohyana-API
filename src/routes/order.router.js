@@ -26,6 +26,13 @@ orderRouter.get(
   orderController.getAllCartItem,
 )
 
+orderRouter.delete(
+  '/cart/items/:id',
+  authTokenMiddleware,
+  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  orderController.deleteCartItem,
+)
+
 orderRouter.post(
   '/product-list',
   joiValidationMiddleware(orderSchema.productListById),
