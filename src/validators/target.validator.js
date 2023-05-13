@@ -4,8 +4,9 @@ exports.targetSchema = {
   targetForm: Joi.object({
     body: Joi.object({
       type: Joi.number().valid(0, 1).required(),
-      period: Joi.number().required(),
       target: Joi.number().required(),
+      startDate: Joi.string().required(),
+      endDate: Joi.string().required(),
     }).required(),
   }).unknown(),
 

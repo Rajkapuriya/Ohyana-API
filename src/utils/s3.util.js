@@ -13,6 +13,8 @@ function generateS3KeyPath(file, key) {
     key = `${S3.USERS.substring(1)}/expense-${file.filename}`
   } else if (file.fieldname === 'customer_image') {
     key = `${S3.CUSTOMERS.substring(1)}/customer-${file.filename}`
+  } else if (file.fieldname === 'logo_image') {
+    key = `${S3.COMPANY_LOGO.substring(1)}/logo-${file.filename}`
   }
 
   return key

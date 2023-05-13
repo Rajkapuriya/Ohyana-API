@@ -223,7 +223,9 @@ exports.updateTeamMemberDetails = async (req, res) => {
   if (req.file) {
     const result = await uploadFileToS3(req.file)
     imgUrl = result.Key.split('/')[1]
-    await deleteFileFromS3(member.imgUrl)
+    if (member.imgUrl) {
+      await deleteFileFromS3(member.imgUrl)
+    }
     unlinkFile(req.file.path)
   }
 
@@ -245,7 +247,9 @@ exports.updateProfile = async (req, res) => {
   if (req.file) {
     const result = await uploadFileToS3(req.file)
     imgUrl = result.Key.split('/')[1]
-    await deleteFileFromS3(member.imgUrl)
+    if (member.imgUrl) {
+      await deleteFileFromS3(member.imgUrl)
+    }
     unlinkFile(req.file.path)
   }
 
@@ -293,11 +297,13 @@ exports.saveLocation = async (req, res) => {
 }
 
 exports.getTeamMemberLocation = async (req, res) => {
+  console.log(req.query.teamId)
+
   const memberLocations = await Team_Location_History.findAll({
     attributes: ['teamId', 'latitude', 'longitude'],
     where: {
-      teamId: req.user.id,
-      date: YYYY_MM_DD(),
+      teamId: req.query.teamId ?? req.user.id,
+      // date: YYYY_MM_DD(),
     },
   })
 

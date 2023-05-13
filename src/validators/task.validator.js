@@ -5,6 +5,7 @@ exports.taskSchema = {
     body: Joi.object({
       title: Joi.string().min(2).required(),
       description: Joi.string().min(2).required(),
+      teamId: Joi.number(),
       due_date: Joi.string().required(),
     }).required(),
   }).unknown(),

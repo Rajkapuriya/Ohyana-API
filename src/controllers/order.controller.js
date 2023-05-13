@@ -5,7 +5,7 @@ const {
   forbiddenRequestError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE, ORDERS, POINTS, TARGET } = require('../constants')
+const { MESSAGE, ORDERS, POINTS, TARGET, S3 } = require('../constants')
 const { YYYY_MM_DD } = require('../utils/moment.util')
 const {
   updateTeamMemberPoint,
@@ -13,6 +13,9 @@ const {
 } = require('../utils/common.util')
 const { Op } = require('sequelize')
 const sequelize = require('../database/mysql')
+const { generateS3ConcatString } = require('../utils/s3.util')
+const moment = require('moment')
+const { S3_CONFIG } = require('../config/s3.config')
 
 exports.addToCart = async (req, res) => {
   const { productId, quantity, clientId } = req.body
@@ -44,7 +47,12 @@ exports.getAllCartItem = async (req, res) => {
     include: [
       {
         model: Product,
-        attributes: ['id', 'imageUrl', 'name', 'price'],
+        attributes: [
+          'id',
+          generateS3ConcatString('imageUrl', S3.PRODUCTS),
+          'name',
+          'price',
+        ],
       },
     ],
   })
@@ -68,7 +76,12 @@ exports.deleteCartItem = async (req, res) => {
 
 exports.getProductListFromIds = async (req, res) => {
   const prdouct = await Product.findAll({
-    attributes: ['id', 'imageUrl', 'name', 'price'],
+    attributes: [
+      'id',
+      generateS3ConcatString('imageUrl', S3.PRODUCTS),
+      'name',
+      'price',
+    ],
     where: { id: req.body.productIds },
   })
 
@@ -248,7 +261,20 @@ exports.getAllItemsPerOrder = async (req, res) => {
           {
             model: Product,
             paranoid: false,
-            attributes: ['id', 'imageUrl', 'name', 'price'],
+            attributes: [
+              'id',
+              [
+                sequelize.fn(
+                  'CONCAT',
+                  S3_CONFIG.AWS_S3_URL + S3.PRODUCTS,
+                  '/',
+                  sequelize.col('order_items.product.imageUrl'),
+                ),
+                'productImage',
+              ],
+              'name',
+              'price',
+            ],
           },
         ],
       },
@@ -297,19 +323,21 @@ exports.updateOrderTrackingStatus = async (req, res) => {
 
   if (!order) return notFoundError(res)
 
-  if (
-    order.orderTrackingStatus == ORDERS.TRACKING_STATUS.DISPATCH &&
-    status == ORDERS.TRACKING_STATUS.PENDING
-  )
-    return forbiddenRequestError(res, 'Order is already dispatched')
+  const updateBody = { orderTrackingStatus: status }
 
-  const updateOrder = await order.update({
-    orderTrackingStatus: status,
-  })
+  if (status === ORDERS.TRACKING_STATUS.DISPATCH) {
+    updateBody.dispatch_date = moment()
+  } else if (status === ORDERS.TRACKING_STATUS.DELIVERED) {
+    updateBody.delivered_date == moment()
+  }
+
+  const updateOrder = await order.update(updateBody)
 
   return successResponse(res, 'Status Updated', {
     order: {
       status: updateOrder.orderTrackingStatus,
+      dispatch_date: updateBody.dispatch_date,
+      delivered_date: updateBody.delivered_date,
     },
   })
 }

@@ -185,31 +185,6 @@ async function sendNotification(now, type, Model, include) {
     },
     include: include,
   })
-  // notification.forEach(element => {
-  //   let toEmail
-  //   if (element.teams && element.teams.length > 0) {
-  //     toEmail = element.teams.map(e => e.email)
-  //   } else {
-  //     toEmail = element.team.email
-  //   }
-  //   io.getIO()
-  //     .to(toEmail)
-  //     .emit('notification', {
-  //       type: type,
-  //       data: {
-  //         heading: `Reminder For ${
-  //           type === 'Appointemnt' ? element.heading : element.client.name
-  //         }`,
-  //         description: element.description,
-  //       },
-  //     })
-  // })
-
-  // sendMail(
-  //   'rajkapuriya03@gmail.com',
-  //   'Auto Generated Message From Admin',
-  //   forgottenClientHTML(requestedClient),
-  // )
 
   if (notification.length > 0) {
     const savedNotifications = notification.map(element => {
@@ -244,12 +219,13 @@ new CronJob(
   '0 20 * * *',
   async () => {
     // 0 20 * * *
-    const currentTime = HH_MM_SS()
-    const currentDate = YYYY_MM_DD()
     const yesterday = YYYY_MM_DD(moment().subtract(1, 'day'))
 
     const teamWithTarget = await Team.findAll({
       attributes: ['id', 'name', 'companyId'],
+      where: {
+        endDate: yesterday,
+      },
       include: [
         {
           model: Target,
@@ -264,36 +240,22 @@ new CronJob(
     async.each(
       teamWithTarget,
       async function (item, callback) {
-        const upcomingTarget = {
-          type: item.targets.find(e => e.state === TARGET.STATE.UPCOMING).type,
-          period: item.targets.find(e => e.state === TARGET.STATE.UPCOMING)
-            .period,
-          target: item.targets.find(e => e.state === TARGET.STATE.UPCOMING)
-            .target,
-        }
+        Target.update(
+          { state: TARGET.STATE.PAST },
+          { where: { teamId: item.id, state: TARGET.STATE.CURRENT } },
+        )
 
-        if (
-          item.targets.find(e => e.state === TARGET.STATE.CURRENT).endDate ===
-          yesterday
-        ) {
-          Target.update(
-            { state: TARGET.STATE.PAST },
-            { where: { teamId: item.id, state: TARGET.STATE.CURRENT } },
-          )
-            .then(() => {
-              Target.create({
-                type: upcomingTarget.type,
-                period: upcomingTarget.period,
-                target: upcomingTarget.target,
-                startDate: moment(),
-                endDate: moment().add(upcomingTarget.period, 'days'),
-                state: TARGET.STATE.CURRENT,
-                teamId: item.id,
-              })
-            })
-            .catch(e => {
-              console.log(e)
-            })
+        const achievedTarget = item.targets.achieve
+        const assignedTarget = item.targets.target
+        if (achievedTarget < assignedTarget) {
+          // 5 for target not achieved
+          await updateTeamMemberPoint(item.id, POINTS.TYPE.TARGET_NOT_ACHEIVE)
+        } else if (achievedTarget > assignedTarget) {
+          // 8 for extra target achieved
+          await updateTeamMemberPoint(item.id, POINTS.TYPE.EXTRA_TARGET_ACHEIVE)
+        } else if (achievedTarget === assignedTarget) {
+          // 9 for target achieved
+          await updateTeamMemberPoint(item.id, POINTS.TYPE.TARGET_ACHEIVE)
         }
       },
       async function (err) {
@@ -310,41 +272,41 @@ new CronJob(
   '0 0 28-31 * *',
   async () => {
     // 0 0 28-31 * *
-    const targets = await Target.findAll({
-      where: {
-        state: { [Op.not]: TARGET.STATE.UPCOMING },
-        [Op.and]: [
-          // { date: date },
-          sequelize.where(
-            sequelize.fn('month', sequelize.col('endDate')),
-            moment().month() + 1, // Add 1 since month() returns a zero-based index
-          ),
-        ],
-      },
-    })
+    // const targets = await Target.findAll({
+    //   where: {
+    //     state: { [Op.not]: TARGET.STATE.UPCOMING },
+    //     [Op.and]: [
+    //       // { date: date },
+    //       sequelize.where(
+    //         sequelize.fn('month', sequelize.col('endDate')),
+    //         moment().month() + 1, // Add 1 since month() returns a zero-based index
+    //       ),
+    //     ],
+    //   },
+    // })
 
-    for (let i = 0; i < targets.length; i++) {
-      const achievedTarget = targets[i].achieve || 0
-      if (achievedTarget < targets[i].target) {
-        // 5 for target not achieved
-        await updateTeamMemberPoint(
-          targets[i].teamId,
-          POINTS.TYPE.TARGET_NOT_ACHEIVE,
-        )
-      } else if (achievedTarget > targets[i].target) {
-        // 8 for extra target achieved
-        await updateTeamMemberPoint(
-          targets[i].teamId,
-          POINTS.TYPE.EXTRA_TARGET_ACHEIVE,
-        )
-      } else if (achievedTarget === targets[i].target) {
-        // 9 for target achieved
-        await updateTeamMemberPoint(
-          targets[i].teamId,
-          POINTS.TYPE.TARGET_ACHEIVE,
-        )
-      }
-    }
+    // for (let i = 0; i < targets.length; i++) {
+    //   const achievedTarget = targets[i].achieve || 0
+    //   if (achievedTarget < targets[i].target) {
+    //     // 5 for target not achieved
+    //     await updateTeamMemberPoint(
+    //       targets[i].teamId,
+    //       POINTS.TYPE.TARGET_NOT_ACHEIVE,
+    //     )
+    //   } else if (achievedTarget > targets[i].target) {
+    //     // 8 for extra target achieved
+    //     await updateTeamMemberPoint(
+    //       targets[i].teamId,
+    //       POINTS.TYPE.EXTRA_TARGET_ACHEIVE,
+    //     )
+    //   } else if (achievedTarget === targets[i].target) {
+    //     // 9 for target achieved
+    //     await updateTeamMemberPoint(
+    //       targets[i].teamId,
+    //       POINTS.TYPE.TARGET_ACHEIVE,
+    //     )
+    //   }
+    // }
 
     const teamWithPoint = await Team.findAll({
       attributes: ['id', 'points', 'roleId'],

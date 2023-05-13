@@ -16,6 +16,7 @@ const clientRouter = express.Router()
 
 clientRouter.post(
   '/client',
+  upload.single('customer_image'),
   joiValidationMiddleware(clientSchema.clientForm),
   authTokenMiddleware,
   permissionHandleMiddleware(
@@ -41,6 +42,7 @@ clientRouter.get(
 
 clientRouter.put(
   '/client/:id',
+  upload.single('customer_image'),
   joiValidationMiddleware(clientSchema.clientForm),
   authTokenMiddleware,
   permissionHandleMiddleware(

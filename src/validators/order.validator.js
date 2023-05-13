@@ -20,7 +20,7 @@ exports.orderSchema = {
 
   orderTrackingStatus: Joi.object({
     body: Joi.object({
-      status: Joi.string().valid('PENDING', 'DISPATCH').required(),
+      status: Joi.string().valid('DELIVERED', 'DISPATCH').required(),
     }).required(),
   }).unknown(),
 

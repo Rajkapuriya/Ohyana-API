@@ -46,10 +46,16 @@ const Order = sequelize.define(
       type: DataTypes.STRING(15),
       allowNull: false,
       required: true,
-      comment: 'PENDING , DISPATCH , SHIPPING , DELIEVERED',
+      comment: 'PENDING , DISPATCH , SHIPPING , DELIVERED',
       validate: {
-        isIn: [['PENDING', 'DISPATCH', 'SHIPPING', 'DELIEVERED']],
+        isIn: [['PENDING', 'DISPATCH', 'SHIPPING', 'DELIVERED']],
       },
+    },
+    dispatch_date: {
+      type: DataTypes.DATE,
+    },
+    delivered_date: {
+      type: DataTypes.DATE,
     },
     paymentStatus: {
       type: DataTypes.STRING(10),

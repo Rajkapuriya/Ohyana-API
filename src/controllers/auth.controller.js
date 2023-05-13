@@ -11,9 +11,10 @@ const {
   requestTimeOutError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE } = require('../constants')
+const { MESSAGE, S3 } = require('../constants')
 const { badRequestError } = require('../utils/response.util')
 const { sendMail, generateToken, verifyToken } = require('../utils/common.util')
+const { generateS3ConcatString } = require('../utils/s3.util')
 
 let otpArray = []
 
@@ -109,6 +110,12 @@ exports.login = async (req, res) => {
   const { email, password } = req.body
 
   const teamMember = await Team.findOne({
+    attributes: [
+      'id',
+      'password',
+      'roleId',
+      generateS3ConcatString('imgUrl', S3.USERS),
+    ],
     where: { email },
     include: [
       {
@@ -137,6 +144,7 @@ exports.login = async (req, res) => {
   return successResponse(res, 'login successfully', {
     token,
     permissions: teamMember.role.permission,
+    userImageUrl: teamMember.imgUrl,
   })
 }
 

@@ -66,6 +66,14 @@ exports.addClient = async (req, res) => {
 
   const newDate = YYYY_MM_DD_HHMMSS()
 
+  let imageUrl
+
+  if (req.file) {
+    const result = await uploadFileToS3(req.file)
+    unlinkFile(req.file.path)
+    imageUrl = result.Key.split('/')[1]
+  }
+
   const [client, created] = await Client.findOrCreate({
     where: { [Op.or]: clientFindOneCondition },
     defaults: {
@@ -73,6 +81,7 @@ exports.addClient = async (req, res) => {
       arrivalDate: newDate.split(' ')[0],
       arrivalTime: newDate.split(' ')[1],
       stage: CLIENT.STAGE.INTIATE,
+      imageUrl,
       companyId: req.user.companyId,
     },
   })
@@ -113,6 +122,7 @@ exports.getAllClients = async (req, res) => {
     'email',
     'business',
     'contact_number',
+    generateS3ConcatString('imageUrl', S3.CUSTOMERS),
     'teamId',
     'state',
     'city',
@@ -239,7 +249,10 @@ exports.getAllClients = async (req, res) => {
 
 exports.getClientProfile = async (req, res) => {
   const client = await Client.findOne({
-    attributes: { exclude: ['createdAt', 'updatedAt'] },
+    attributes: {
+      exclude: ['createdAt', 'updatedAt'],
+      include: [generateS3ConcatString('imageUrl', S3.CUSTOMERS)],
+    },
     where: { id: req.params.id },
     include: [
       {
@@ -304,10 +317,21 @@ exports.updateClient = async (req, res) => {
   if (existedClient)
     return badRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
+  let imageUrl
+  if (req.file) {
+    const result = await uploadFileToS3(req.file)
+    imageUrl = result.Key.split('/')[1]
+    // if (member.imageUrl) {
+    //   await deleteFileFromS3(member.imageUrl)
+    // }
+    unlinkFile(req.file.path)
+  }
+
   await Client.update(
     {
       ...req.body,
       teamId: memberId,
+      imageUrl,
     },
     { where: { id: req.params.id } },
   )
