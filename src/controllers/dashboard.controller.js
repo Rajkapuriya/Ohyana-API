@@ -14,8 +14,9 @@ const {
   Checklist,
 } = require('../models')
 const { successResponse } = require('../utils/response.util')
-const { MESSAGE, CLIENT, ORDERS, TARGET } = require('../constants')
+const { MESSAGE, CLIENT, ORDERS, TARGET, S3 } = require('../constants')
 const { YYYY_MM_DD } = require('../utils/moment.util')
+const { generateS3ConcatString } = require('../utils/s3.util')
 
 exports.getInquiryAnalytics = async (req, res) => {
   let response = {}
@@ -115,7 +116,7 @@ exports.getInquiryAnalytics = async (req, res) => {
   })
 
   const starPerformerList = await Team.findAll({
-    attributes: ['id', 'name', 'imgUrl'],
+    attributes: ['id', 'name', generateS3ConcatString('imgUrl', S3.USERS)],
     where: {
       isCurrentMonthStarPerformer: 1,
     },
@@ -378,10 +379,9 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
     attributes: ['id', 'title', 'due_date', 'description', 'createdBy'],
     where: {
       teamId: req.user.id,
-      due_date: {
-        [Op.gte]: YYYY_MM_DD(),
-      },
     },
+    order: [['id', 'DESC']],
+    limit: 1,
     include: [
       {
         model: Checklist,
@@ -391,7 +391,7 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
   })
 
   const starPerformerList = await Team.findAll({
-    attributes: ['id', 'name', 'imgUrl'],
+    attributes: ['id', 'name', generateS3ConcatString('imgUrl', S3.USERS)],
     where: {
       isCurrentMonthStarPerformer: 1,
     },
