@@ -375,13 +375,13 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
     include: [{ model: Points }],
   })
 
-  const tasks = await Task.findOne({
-    attributes: ['id', 'title', 'due_date', 'description', 'createdBy'],
+  const tasks = await Task.findAll({
+    attributes: ['id', 'title', 'due_date', 'createdBy'],
     where: {
       teamId: req.user.id,
     },
     order: [['id', 'DESC']],
-    limit: 1,
+    limit: 4,
     include: [
       {
         model: Checklist,
@@ -389,6 +389,20 @@ exports.getSalesTeamInquiryAnalytics = async (req, res) => {
       },
     ],
   })
+
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].checklists.length > 0) {
+      const completed = tasks[i].checklists.filter(c => c.done == true).length
+      const total = tasks[i].checklists.length
+      tasks[i].dataValues.completed = completed
+      tasks[i].dataValues.total = total
+    } else {
+      tasks[i].dataValues.completed = 0
+      tasks[i].dataValues.total = 0
+    }
+
+    delete tasks[i].dataValues.checklists
+  }
 
   const starPerformerList = await Team.findAll({
     attributes: ['id', 'name', generateS3ConcatString('imgUrl', S3.USERS)],

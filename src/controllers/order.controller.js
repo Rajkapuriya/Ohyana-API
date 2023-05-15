@@ -160,6 +160,9 @@ exports.placeOrder = async (req, res) => {
     updateTeamMemberPoint(req.user.id, POINTS.TYPE.ORDER_TAKING)
     // 1 = take order
     updateTeamMemberTarget(req.user.id, TARGET.TYPE.TAKE_ORDER)
+
+    // Truncate Cart as per clientId
+    Cart.destroy({ where: { clientId }, force: true })
   }
   if (order) {
     return successResponse(res, 'Order Placed Successfully')

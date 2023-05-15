@@ -223,15 +223,13 @@ new CronJob(
 
     const teamWithTarget = await Team.findAll({
       attributes: ['id', 'name', 'companyId'],
-      where: {
-        endDate: yesterday,
-      },
       include: [
         {
           model: Target,
           attributes: { exclude: ['createdAt', 'updatedAt', 'teamId'] },
           where: {
             state: { [Op.not]: TARGET.STATE.PAST },
+            endDate: yesterday,
           },
         },
       ],
