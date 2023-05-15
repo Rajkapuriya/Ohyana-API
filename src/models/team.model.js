@@ -32,19 +32,19 @@ const Team = sequelize.define(
       type: DataTypes.STRING(20),
     },
     city_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     state: {
       type: DataTypes.STRING(20),
     },
     state_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     state_iso2: {
       type: DataTypes.STRING(5),
     },
     country_id: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
     },
     country_iso2: {
       type: DataTypes.STRING(5),
