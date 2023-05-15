@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: sefl-hosted
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
