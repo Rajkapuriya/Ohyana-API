@@ -1,5 +1,5 @@
 const { Team, Role, Permission, Company } = require('../models')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const { forgotPasswordHTML } = require('../utils/email-template.util')
 const sequelize = require('../database/mysql')
 const { ENCRYP_CONFIG } = require('../config/encryp.config')
