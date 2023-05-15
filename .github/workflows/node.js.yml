@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: |
-          npm i
+          npm install --production
           touch .env
           echo PORT=${{ secrets.PORT }} >> .env
           echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
@@ -52,5 +52,6 @@ jobs:
           echo AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }} >> .env
           echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env
           echo AWS_S3_URL=${{ secrets.AWS_S3_URL }} >> .env
-          mkdir /src/uploads
+          cd /src
+          mkdir uploads
           pm2 restart 1
