@@ -53,3 +53,4 @@ jobs:
           echo AWS_REGION=${{ secrets.AWS_REGION }} >> .env
           echo AWS_S3_URL=${{ secrets.AWS_S3_URL }} >> .env
           mkdir -p src/uploads
+          pm2 restart 0
