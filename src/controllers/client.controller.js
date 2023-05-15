@@ -4,7 +4,6 @@ const moment = require('moment')
 const axios = require('axios')
 const io = require('../helpers/socket.helper')
 const { uploadFileToS3, getFileFromS3 } = require('../helpers/s3.helper')
-// const { setRedisData } = require("../database/redis");
 const {
   YYYY_MM_DDHHMM,
   YYYY_MM_DD_HHMM,
@@ -551,12 +550,6 @@ exports.addClientReminder = async (req, res) => {
     clientId: clientId,
   })
 
-  /*
-   *   if (clientReminder) {
-   *     // const now = YYYY_MM_DD_HHMM(`${date} ${time}`)
-   *     // await setRedisData(`${now}_ClientReminder`, clientReminder.id);
-   *   }
-   */
   return successResponse(res, 'Reminder Scheduled Successfully')
 }
 
@@ -612,15 +605,6 @@ exports.updateReminder = async (req, res) => {
     time,
   })
 
-  /*
-   * if (updatedReminder) {
-   *     const now = YYYY_MM_DD_HHMM(
-   *         `${updatedReminder.date} ${updatedReminder.time}`,
-   *     )
-   *     // await setRedisData(`${now}_ClientReminder`, updatedReminder.id);
-   * }
-   */
-
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }
 
@@ -662,13 +646,6 @@ exports.addClientAppointment = async (req, res) => {
 
     return clientAppointment
   })
-
-  /*
-   * if (result) {
-   *     const now = YYYY_MM_DDHHMM(`${date} ${time}`)
-   *     // await setRedisData(`${now}_ClientAppointment`, result.id);
-   * }
-   */
 
   return successResponse(res, 'Appointment Scheduled Successfully')
 }
@@ -749,13 +726,6 @@ exports.updateAppointment = async (req, res) => {
 
     return updatedAppointment
   })
-
-  /*
-   * if (result) {
-   *     const now = YYYY_MM_DD_HHMM(`${result.date} ${result.time}`)
-   *     // await setRedisData(`${now}_ClientAppointment`, result.id);
-   * }
-   */
 
   return successResponse(res, 'Appointment Updated Successfully')
 }

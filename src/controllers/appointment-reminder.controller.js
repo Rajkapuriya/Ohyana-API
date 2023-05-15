@@ -1,5 +1,4 @@
 const { Appointment_Reminder } = require('../models')
-// const { setRedisData } = require('../database/redis')
 const {
   unProcessableEntityRequestError,
   successResponse,
@@ -19,12 +18,6 @@ exports.createAppointmentReminder = async (req, res) => {
     teamId: req.user.id,
     companyId: req.user.companyId,
   })
-  /*
-   * if (appointed_reminder) {
-   *   const now = YYYY_MM_DD_HHMM(`${req.body.date} ${req.body.time}`)
-   *   // await setRedisData(`${now}_APPOINTMENT`, appointed_reminder.id)
-   * }
-   */
   return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
 
@@ -72,15 +65,6 @@ exports.updateAppointmentReminder = async (req, res) => {
     date,
     time,
   })
-
-  /*
-   * if (updatedAppointmentReminder) {
-   *   const now = YYYY_MM_DD_HHMM(
-   *     `${updatedAppointmentReminder.date} ${updatedAppointmentReminder.time}`,
-   *   )
-   *   // await setRedisData(`${now}_APPOINTMENT`, updatedAppointmentReminder.id)
-   * }
-   */
 
   return successResponse(
     res,

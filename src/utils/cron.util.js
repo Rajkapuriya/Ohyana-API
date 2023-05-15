@@ -29,7 +29,6 @@ const {
   YYYY_MM_DD_HH_MM,
 } = require('./moment.util')
 const io = require('../helpers/socket.helper')
-// const redis = require('../database/redis')
 const CronJob = require('cron').CronJob
 // var exec = require('child_process').exec
 const fs = require('fs')
