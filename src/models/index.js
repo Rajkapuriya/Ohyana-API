@@ -130,16 +130,16 @@ db.Task.hasMany(db.Checklist)
 db.Team.hasMany(db.Target)
 db.Target.belongsTo(db.Team)
 
-// Expense of Team Members
-db.Team.hasMany(db.Team_Expense)
-db.Team_Expense.belongsTo(db.Team)
+// // Expense of Team Members
+// db.Team.hasMany(db.Team_Expense)
+// db.Team_Expense.belongsTo(db.Team)
 
-// Expense of Team Members
-db.Team_Expense.hasMany(db.Expense)
-db.Expense.belongsTo(db.Team_Expense)
+// // Expense of Team Members
+// db.Team_Expense.hasMany(db.Expense)
+// db.Expense.belongsTo(db.Team_Expense)
 
-// db.Team.belongsToMany(db.Expense, { through: db.Team_Expense })
-// db.Expense.belongsToMany(db.Team, { through: db.Team_Expense })
+db.Team.belongsToMany(db.Expense, { through: db.Team_Expense })
+db.Expense.belongsToMany(db.Team, { through: db.Team_Expense })
 
 // Points of team members
 db.Points.hasMany(db.Team_Point)

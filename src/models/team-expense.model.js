@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../database/mysql')
+const { Expense } = require('./expense.model')
+const { Team } = require('./team.model')
 
 const Team_Expense = sequelize.define(
   'team_expense',
@@ -12,17 +14,9 @@ const Team_Expense = sequelize.define(
     date: {
       type: DataTypes.DATEONLY,
     },
-    // type: {
-    //     type: DataTypes.STRING,
-    //     validate: {
-    //         isIn: [['FOOD','TRAVEL','OTHER']],
-    //     }
-    // },
-
     amount: {
       type: DataTypes.INTEGER,
     },
-
     approvalAmount: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
@@ -52,6 +46,20 @@ const Team_Expense = sequelize.define(
     },
     file: {
       type: DataTypes.STRING(80),
+    },
+    teamId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Team,
+        key: 'id',
+      },
+    },
+    expenseId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Expense,
+        key: 'id',
+      },
     },
   },
   { paranoid: true },
