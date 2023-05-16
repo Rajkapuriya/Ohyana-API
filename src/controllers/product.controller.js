@@ -1,4 +1,4 @@
-const { Product } = require('../models')
+const { Product, Cart } = require('../models')
 const { Op } = require('sequelize')
 const {
   successResponse,
@@ -50,6 +50,24 @@ exports.getAllProducts = async (req, res) => {
     offset: (currentPage - 1) * size,
     limit: size,
   })
+
+  if (req.query.cart === 'true' && req.query.clientId) {
+    const cartIdList = await Cart.findAll({
+      attributes: ['productId', 'id'],
+      where: { clientId: req.query.clientId },
+    })
+
+    for (let i = 0; i < products.rows.length; i++) {
+      const isProductExists = cartIdList.find(
+        c => c.productId === products.rows[i].id,
+      )
+      products.rows[i].dataValues.inCart = isProductExists ? true : false
+      console.log()
+      products.rows[i].dataValues.cartId = isProductExists
+        ? isProductExists.id
+        : null
+    }
+  }
 
   const data = { totalPage: products.count, products: products.rows }
 

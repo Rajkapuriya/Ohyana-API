@@ -27,6 +27,7 @@ productRouter.post(
 
 productRouter.get(
   '/product',
+  joiValidationMiddleware(productSchema.productList),
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.viewProduct'),
   productController.getAllProducts,

@@ -138,8 +138,8 @@ db.Target.belongsTo(db.Team)
 // db.Team_Expense.hasMany(db.Expense)
 // db.Expense.belongsTo(db.Team_Expense)
 
-db.Team.belongsToMany(db.Expense, { through: db.Team_Expense })
-db.Expense.belongsToMany(db.Team, { through: db.Team_Expense })
+// db.Team.belongsToMany(db.Expense, { through: db.Team_Expense })
+// db.Expense.belongsToMany(db.Team, { through: db.Team_Expense })
 
 // Points of team members
 db.Points.hasMany(db.Team_Point)

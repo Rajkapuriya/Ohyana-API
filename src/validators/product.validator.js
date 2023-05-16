@@ -13,6 +13,15 @@ exports.productSchema = {
     }).required(),
   }).unknown(),
 
+  productList: Joi.object({
+    query: Joi.object({
+      page: Joi.number(),
+      size: Joi.number(),
+      cart: Joi.boolean(),
+      clientId: Joi.number(),
+    }).required(),
+  }).unknown(),
+
   updateQuatity: Joi.object({
     body: Joi.object({
       quantity: Joi.number().required(),

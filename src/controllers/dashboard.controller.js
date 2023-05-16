@@ -54,6 +54,7 @@ exports.getInquiryAnalytics = async (req, res) => {
   const userAttendance = await Attendance.findOne({
     attributes: ['checkIn', 'checkOut', 'breakIn', 'breakOut'],
     where: {
+      date: YYYY_MM_DD(),
       teamId: req.user.id,
     },
   })
