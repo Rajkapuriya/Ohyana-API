@@ -36,6 +36,7 @@ db.Role_Expense_Permissions =
   require('./role-expense-permissions.model').Role_Expense_Permissions
 db.Team_Location_History =
   require('./team-location-history.model').Team_Location_History
+db.Role_Permissions = require('./role-permission.model').Role_Permissions
 
 // -------- DB Relationships --------
 
@@ -72,9 +73,6 @@ db.Product.belongsToMany(db.Client, { through: db.Client_Product })
 
 db.Role.hasMany(db.Team)
 db.Team.belongsTo(db.Role)
-
-// Team Role And Their Permissions
-db.Role.hasOne(db.Permission)
 
 // Notification as per User
 db.Team.hasMany(db.Notification)
@@ -163,6 +161,9 @@ db.Client_Stage_History.belongsTo(db.Team)
  */
 db.Role.belongsToMany(db.Expense, { through: db.Role_Expense_Permissions })
 db.Expense.belongsToMany(db.Role, { through: db.Role_Expense_Permissions })
+
+// Role Permissions
+db.Role.hasOne(db.Role_Permissions)
 
 // Team Member Location History
 db.Team.hasMany(db.Team_Location_History)

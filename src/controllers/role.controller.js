@@ -4,6 +4,7 @@ const {
   Permission,
   Role_Expense_Permissions,
   Expense,
+  Role_Permissions,
 } = require('../models')
 const { Op } = require('sequelize')
 const sequelize = require('../database/mysql')
@@ -70,7 +71,6 @@ exports.getSingleRoles = async (req, res) => {
 
   const role = await Role.findOne({
     where: { id: roleId },
-    include: [{ model: Permission }],
   })
 
   if (!role) return notFoundError(res)
@@ -129,10 +129,17 @@ exports.deleteRole = async (req, res) => {
 exports.getPermissions = async (req, res) => {
   const { id } = req.params
 
+  const permissionString = await Role_Permissions.findOne({
+    attributes: ['permissions'],
+    where: { roleId: id },
+  })
+
   const [permission, expensePermissions, expensePolicies] = await Promise.all([
-    Permission.findOne({
-      attributes: { exclude: ['createdAt', 'updatedAt', 'roleId'] },
-      where: { roleId: id },
+    Permission.findAll({
+      attributes: ['name'],
+      where: {
+        id: permissionString.permissions.split(','),
+      },
     }),
     Role_Expense_Permissions.findAll({
       attributes: ['expenseId', 'amount'],
@@ -144,14 +151,14 @@ exports.getPermissions = async (req, res) => {
   ])
 
   return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
-    permissions: permission,
+    permissions: permission.map(p => p.name),
     expensePermissions,
     expensePolicies,
   })
 }
 
 exports.updateRolePermissions = async (req, res) => {
-  const { roleId } = req.body
+  const { roleId, permissions } = req.body
 
   const adminRoleDetail = await Role.findOne({
     attributes: ['parentId'],
@@ -160,7 +167,15 @@ exports.updateRolePermissions = async (req, res) => {
 
   if (!adminRoleDetail.parentId) return forbiddenRequestError(res)
 
-  await Permission.update({ roleId, ...req.body }, { where: { roleId } })
+  const permissionsIds = await Permission.findAll({
+    attributes: ['id'],
+    where: { name: permissions },
+  })
+
+  await Role_Permissions.update(
+    { permissions: permissionsIds.map(p => p.id).toString() },
+    { where: { roleId } },
+  )
 
   return successResponse(res, 'Permission Updated Successfully')
 }

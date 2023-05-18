@@ -1,4 +1,11 @@
-const { Team, Team_Point, Points, Target } = require('../models')
+const {
+  Team,
+  Team_Point,
+  Points,
+  Target,
+  Permission,
+  Role_Permissions,
+} = require('../models')
 const { Sequelize, Op } = require('sequelize')
 const { YYYY_MM_DD, DD_MMM_YYYY } = require('./moment.util')
 const { TARGET } = require('../constants')
@@ -8,6 +15,7 @@ const { EMAIL_CONFIG } = require('../config/mail.config')
 const jwt = require('jsonwebtoken')
 const { SERVER_CONFIG } = require('../config/server.config')
 const fs = require('fs')
+const sequelize = require('../database/mysql')
 
 async function updateTeamMemberPoint(teamId, pointId) {
   const point = await Points.findOne({ where: { id: pointId } })
@@ -122,6 +130,28 @@ function getCustomDateRangeArray(startDate, endDate) {
   return dateRangeArray
 }
 
+async function checkUserPermission(user, permissions) {
+  const getPermissionStringList = await Permission.findAll({
+    attributes: ['id'],
+    where: { name: permissions },
+  })
+
+  const findInSetArray = []
+
+  getPermissionStringList.map(p => {
+    findInSetArray.push(
+      sequelize.literal(`FIND_IN_SET(${p.id}, permissions) > 0`),
+    )
+  })
+
+  const userPermission = await Role_Permissions.findOne({
+    attributes: ['id'],
+    where: { roleId: user.role.id, [Op.and]: findInSetArray },
+  })
+
+  return !user.role.parentId || userPermission ? true : false
+}
+
 module.exports = {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
@@ -133,4 +163,5 @@ module.exports = {
   getMonthDateRageArray,
   getYearDateRageArray,
   getCustomDateRangeArray,
+  checkUserPermission,
 }

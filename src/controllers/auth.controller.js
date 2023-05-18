@@ -1,4 +1,10 @@
-const { Team, Role, Permission, Company } = require('../models')
+const {
+  Team,
+  Role,
+  Permission,
+  Company,
+  Role_Permissions,
+} = require('../models')
 const bcrypt = require('bcryptjs')
 const { forgotPasswordHTML } = require('../utils/email-template.util')
 const sequelize = require('../database/mysql')
@@ -41,9 +47,6 @@ exports.register = async (req, res) => {
       },
       { transaction: t },
     )
-
-    await Permission.create({ teamId: team.id }, { transaction: t })
-
     return team
   })
 
@@ -120,10 +123,10 @@ exports.login = async (req, res) => {
     include: [
       {
         model: Role,
-        attributes: ['name', 'id'],
+        attributes: ['name', 'id', 'parentId'],
         include: {
-          model: Permission,
-          attributes: { exclude: ['createdAt', 'updatedAt', 'id', 'teamId'] },
+          model: Role_Permissions,
+          attributes: ['permissions'],
         },
       },
     ],
@@ -141,9 +144,22 @@ exports.login = async (req, res) => {
     true,
   )
 
+  let permissionStringArray = []
+  if (teamMember.role.role_permission || !teamMember.role.parentId) {
+    const rolePermissionStringArray = await Permission.findAll({
+      attributes: ['name'],
+      where: teamMember.role.parentId
+        ? {
+            id: teamMember.role.role_permission.permissions.split(','),
+          }
+        : {},
+    })
+    permissionStringArray = rolePermissionStringArray.map(e => e.name)
+  }
+
   return successResponse(res, 'login successfully', {
     token,
-    permissions: teamMember.role.permission,
+    permissions: permissionStringArray,
     userImageUrl: teamMember.imgUrl,
   })
 }

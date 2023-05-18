@@ -9,6 +9,7 @@ const { orderSchema } = require('../validators/order.validator')
 const orderController = require('../controllers/order.controller')
 
 const express = require('express')
+const { TEAM } = require('../constants')
 const orderRouter = express.Router()
 
 orderRouter.post(
@@ -53,7 +54,10 @@ orderRouter.post(
   '/placeorder',
   joiValidationMiddleware(orderSchema.placeOrder),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([
+    TEAM.PERMISSIONS.PLACE_ORDER,
+    TEAM.PERMISSIONS.VIEW_CLIENT,
+  ]),
   orderController.placeOrder,
 )
 
@@ -62,6 +66,10 @@ orderRouter.patch(
   joiValidationMiddleware(orderSchema.paymentStatus),
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([
+    TEAM.PERMISSIONS.UPDATE_ORDER_PAYMENT_STATUS,
+    TEAM.PERMISSIONS.VIEW_CLIENT,
+  ]),
   orderController.updatePaymentStatus,
 )
 
@@ -70,6 +78,10 @@ orderRouter.patch(
   joiValidationMiddleware(orderSchema.orderTrackingStatus),
   authTokenMiddleware,
   permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([
+    TEAM.PERMISSIONS.UPDATE_ORDER_DELIVERY_STATUS,
+    TEAM.PERMISSIONS.VIEW_CLIENT,
+  ]),
   orderController.updateOrderTrackingStatus,
 )
 
@@ -77,14 +89,14 @@ orderRouter.get(
   '/orders',
   joiValidationMiddleware(orderSchema.orderList),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_ORDERS]),
   orderController.getAllOrderList,
 )
 
 orderRouter.get(
   '/orderitems/:orderId',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_ORDERS]),
   orderController.getAllItemsPerOrder,
 )
 

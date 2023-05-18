@@ -10,6 +10,7 @@ const productController = require('../controllers/product.controller')
 
 const express = require('express')
 const { upload } = require('../middleware/multer.middleware')
+const { TEAM } = require('../constants')
 const productRouter = express.Router()
 
 // ------------------------------- Product -------------------------------
@@ -19,9 +20,7 @@ productRouter.post(
   upload.single('product_image'),
   joiValidationMiddleware(productSchema.productForm),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editProduct',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_PRODUCT]),
   productController.createProduct,
 )
 
@@ -29,14 +28,14 @@ productRouter.get(
   '/product',
   joiValidationMiddleware(productSchema.productList),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.viewProduct'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_PRODUCT]),
   productController.getAllProducts,
 )
 
 productRouter.get(
   '/product/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.viewProduct'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_PRODUCT]),
   productController.getProductDetail,
 )
 
@@ -45,9 +44,7 @@ productRouter.put(
   upload.single('product_image'),
   joiValidationMiddleware(productSchema.productForm),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editProduct',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_PRODUCT]),
   productController.updateProduct,
 )
 
@@ -55,18 +52,14 @@ productRouter.patch(
   '/product/:id',
   joiValidationMiddleware(productSchema.updateQuatity),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editProduct',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_PRODUCT]),
   productController.updateProductQuantity,
 )
 
 productRouter.delete(
   '/product/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.deleteProduct',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.DELETE_PRODUCT]),
   productController.deleteProduct,
 )
 

@@ -10,6 +10,7 @@ const { teamSchema } = require('../validators/team.validator')
 const teamController = require('../controllers/team.controller')
 
 const express = require('express')
+const { TEAM } = require('../constants')
 const teamRouter = express.Router()
 
 // ------------------------------- Team Members -------------------------------
@@ -19,9 +20,7 @@ teamRouter.post(
   upload.single('profile_image'),
   joiValidationMiddleware(teamSchema.teamForm),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.staffMenu && req.user.role.permission.editStaff',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_STAFF]),
   teamController.addTeamMember,
 )
 
@@ -29,14 +28,14 @@ teamRouter.get(
   '/member',
   joiValidationMiddleware(teamSchema.teamMemberList),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.staffMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_STAFF]),
   teamController.getAllTeamMembers,
 )
 
 teamRouter.get(
   '/member/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.staffMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_STAFF]),
   teamController.getSingleMember,
 )
 
@@ -45,9 +44,7 @@ teamRouter.put(
   upload.single('profile_image'),
   joiValidationMiddleware(teamSchema.updateTeamMemberDetails),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.staffMenu && req.user.role.permission.editStaff',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_STAFF]),
   teamController.updateTeamMemberDetails,
 )
 
@@ -73,6 +70,7 @@ teamRouter.put(
 teamRouter.get(
   '/team/leaderboard/:id',
   authTokenMiddleware,
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_STAFF]),
   teamController.getTeamLeaderBoardDetails,
 )
 
@@ -112,6 +110,7 @@ teamRouter.patch(
   '/team/approve/expense',
   joiValidationMiddleware(teamSchema.approveExpense),
   authTokenMiddleware,
+  permissionHandleMiddleware([TEAM.PERMISSIONS.UPDATE_EXPENSE_APPROVAL_STATUS]),
   teamController.approveExpense,
 )
 
@@ -119,6 +118,7 @@ teamRouter.patch(
   '/team/approve/expense/payment',
   joiValidationMiddleware(teamSchema.approveExpensePayment),
   authTokenMiddleware,
+  permissionHandleMiddleware([TEAM.PERMISSIONS.UPDATE_EXPENSE_PAYMENT_STATUS]),
   teamController.approveExpensePayment,
 )
 

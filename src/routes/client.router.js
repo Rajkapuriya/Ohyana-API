@@ -10,6 +10,8 @@ const { clientSchema } = require('../validators/client.validator')
 const clientController = require('../controllers/client.controller')
 
 const express = require('express')
+const { TEAM } = require('../constants')
+const { Team } = require('../models')
 const clientRouter = express.Router()
 
 // ------------------------------- Client -------------------------------
@@ -19,16 +21,14 @@ clientRouter.post(
   upload.single('customer_image'),
   joiValidationMiddleware(clientSchema.clientForm),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.editClient && req.user.role.permission.clientMenu',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_CLIENT]),
   clientController.addClient,
 )
 
 clientRouter.get(
   '/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.getClientProfile,
 )
 
@@ -36,7 +36,7 @@ clientRouter.get(
   '/clients',
   joiValidationMiddleware(clientSchema.clientList),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.getAllClients,
 )
 
@@ -45,25 +45,21 @@ clientRouter.put(
   upload.single('customer_image'),
   joiValidationMiddleware(clientSchema.clientForm),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.clientMenu && req.user.role.permission.editClient',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_CLIENT]),
   clientController.updateClient,
 )
 
 clientRouter.delete(
   '/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.clientMenu && req.user.role.permission.deleteClient',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.DELETE_CLIENT]),
   clientController.deleteClient,
 )
 
 clientRouter.put(
   '/take/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.takeClient,
 )
 
@@ -72,9 +68,7 @@ clientRouter.put(
 clientRouter.get(
   '/businesscard/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.clientMenu && req.user.clientStageAccess !== null',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.getBusinessCardDetail,
 )
 
@@ -82,18 +76,14 @@ clientRouter.post(
   '/businesscard',
   upload.single('customer_image'),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.clientMenu && req.user.clientStageAccess !== null',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.ADD_BUSINESS_CARD]),
   clientController.addBusinessCard,
 )
 
 clientRouter.delete(
   '/businesscard/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.clientMenu && req.user.clientStageAccess !== null',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.DELETE_CLIENT]),
   clientController.deleteBusinessCard,
 )
 
@@ -103,9 +93,7 @@ clientRouter.put(
   '/stage/client/:id',
   joiValidationMiddleware(clientSchema.stage),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.clientMenu && req.user.clientStageAccess !== null',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.updateClientStage,
 )
 
@@ -116,14 +104,14 @@ clientRouter.post(
   upload.single('status_audio_file'),
   joiValidationMiddleware(clientSchema.addClientStatus),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.addClientStatus,
 )
 
 clientRouter.get(
   '/status/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.getAllClientStatus,
 )
 
@@ -131,7 +119,7 @@ clientRouter.put(
   '/status/client',
   joiValidationMiddleware(clientSchema.updatedClientStatus),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.updateStatus,
 )
 
@@ -139,7 +127,7 @@ clientRouter.patch(
   '/client/status/closed',
   joiValidationMiddleware(clientSchema.closeClientInquiry),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.closeClientInquery,
 )
 
@@ -149,14 +137,14 @@ clientRouter.post(
   '/reminder/client',
   joiValidationMiddleware(clientSchema.addClientReminder),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.addClientReminder,
 )
 
 clientRouter.get(
   '/reminder/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.getAllClientReminder,
 )
 
@@ -164,14 +152,14 @@ clientRouter.put(
   '/reminder/client',
   joiValidationMiddleware(clientSchema.updateClientReminder),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.updateReminder,
 )
 
 clientRouter.delete(
   '/reminder/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.deleteClientReminder,
 )
 
@@ -181,14 +169,14 @@ clientRouter.post(
   '/appointment/client',
   joiValidationMiddleware(clientSchema.addClientAppointment),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.addClientAppointment,
 )
 
 clientRouter.get(
   '/appointment/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.getAllClientAppointment,
 )
 
@@ -196,14 +184,14 @@ clientRouter.put(
   '/appointment/client',
   joiValidationMiddleware(clientSchema.updatedClientAppointment),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.updateAppointment,
 )
 
 clientRouter.delete(
   '/appointment/client/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_CLIENT]),
   clientController.deleteClientAppointment,
 )
 

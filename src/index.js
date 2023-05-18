@@ -31,7 +31,7 @@ app.use((err, req, res, next) => {
 
   io.getIO().emit('reJoin', { message: 'Rejoin The Room' })
 
-  if (SERVER_CONFIG.NODE_ENV === 'development' && err.statusCode !== 401) {
+  if (SERVER_CONFIG.NODE_ENV === 'development') {
     errorBody = {
       message: err.message,
       data: err.stack,

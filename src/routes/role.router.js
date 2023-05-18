@@ -9,6 +9,7 @@ const { roleSchema } = require('../validators/role.validator')
 const roleController = require('../controllers/role.controller')
 
 const express = require('express')
+const { TEAM } = require('../constants')
 const roleRouter = express.Router()
 
 // ------------------------------- Role -------------------------------
@@ -17,9 +18,7 @@ roleRouter.post(
   '/role',
   joiValidationMiddleware(roleSchema.roleForm),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]),
   roleController.createRole,
 )
 
@@ -27,9 +26,7 @@ roleRouter.get(
   '/role',
   joiValidationMiddleware(roleSchema.roleList),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.viewRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_ROLE]),
   roleController.getAllRoles,
 )
 
@@ -37,9 +34,7 @@ roleRouter.put(
   '/clockin-out',
   joiValidationMiddleware(roleSchema.updateClockInClockOut),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.viewRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]),
   roleController.updateClockInOutTime,
 )
 
@@ -47,9 +42,7 @@ roleRouter.get(
   '/role/detail',
   joiValidationMiddleware(roleSchema.getSingleRoles),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.viewRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]), // Edit Role Permission Because if user has permission of edit role that he/she can access this route
   roleController.getSingleRoles,
 )
 
@@ -57,27 +50,14 @@ roleRouter.put(
   '/role/:id',
   joiValidationMiddleware(roleSchema.updateRoleForm),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]),
   roleController.updateRole,
 )
 
 roleRouter.delete(
   '/role/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
-  ),
-  roleController.deleteRole,
-)
-
-roleRouter.delete(
-  '/role/:id',
-  authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.DELETE_ROLE]),
   roleController.deleteRole,
 )
 
@@ -86,9 +66,7 @@ roleRouter.delete(
 roleRouter.get(
   '/permissions/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]),
   roleController.getPermissions,
 )
 
@@ -96,9 +74,7 @@ roleRouter.put(
   '/permissions',
   joiValidationMiddleware(roleSchema.rolePermissions),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]),
   roleController.updateRolePermissions,
 )
 
@@ -106,9 +82,7 @@ roleRouter.put(
   '/expense/permissions',
   joiValidationMiddleware(roleSchema.updateExpensePermissions),
   authTokenMiddleware,
-  permissionHandleMiddleware(
-    'req.user.role.permission.settingMenu && req.user.role.permission.editRole',
-  ),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]),
   roleController.updateExpensePermissions,
 )
 
