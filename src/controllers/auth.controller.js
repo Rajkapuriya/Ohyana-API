@@ -123,7 +123,7 @@ exports.login = async (req, res) => {
     include: [
       {
         model: Role,
-        attributes: ['name', 'id', 'parentId'],
+        attributes: ['name', 'id', 'parentId', 'clientStageAccess'],
         include: {
           model: Role_Permissions,
           attributes: ['permissions'],
@@ -160,6 +160,7 @@ exports.login = async (req, res) => {
   return successResponse(res, 'login successfully', {
     token,
     permissions: permissionStringArray,
+    clientStageAccess: teamMember.role.clientStageAccess,
     userImageUrl: teamMember.imgUrl,
   })
 }
