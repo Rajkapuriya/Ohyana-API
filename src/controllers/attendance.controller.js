@@ -22,6 +22,9 @@ exports.updateAttendance = async (req, res) => {
     where: {
       date: currentDate,
       teamId: req.user.id,
+      attendanceType: {
+        [Op.or]: [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE],
+      },
     },
   })
 
@@ -48,26 +51,17 @@ exports.updateAttendance = async (req, res) => {
   } else {
     let updateObject
 
+    if (!existingPresentOfToday || !existingPresentOfToday.checkIn)
+      return badRequestError(res)
+
     if (
-      [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE].includes(
-        existingPresentOfToday.attendanceType,
-      ) &&
-      existingPresentOfToday &&
-      existingPresentOfToday.checkIn &&
       !existingPresentOfToday.breakIn &&
       !existingPresentOfToday.checkOut &&
       breakIn &&
       breakIn === 'true'
     ) {
       updateObject = { breakIn: currentTime }
-    }
-
-    if (
-      [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE].includes(
-        existingPresentOfToday.attendanceType,
-      ) &&
-      existingPresentOfToday &&
-      existingPresentOfToday.checkIn &&
+    } else if (
       existingPresentOfToday.breakIn &&
       !existingPresentOfToday.breakOut &&
       !existingPresentOfToday.checkOut &&
@@ -75,14 +69,7 @@ exports.updateAttendance = async (req, res) => {
       breakOut === 'true'
     ) {
       updateObject = { breakOut: currentTime }
-    }
-
-    if (
-      [ATTENDANCE.TYPE.PRESENT, ATTENDANCE.TYPE.LATE].includes(
-        existingPresentOfToday.attendanceType,
-      ) &&
-      existingPresentOfToday &&
-      existingPresentOfToday.checkIn &&
+    } else if (
       !existingPresentOfToday.checkOut &&
       checkOut &&
       checkOut === 'true'
