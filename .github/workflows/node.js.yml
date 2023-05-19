@@ -10,8 +10,8 @@ on:
     branches: ['dev']
 
 jobs:
-  build:
-    if: github.event.pull_request.merged == true
+  build-on-merge:
+    if: startsWith(github.event.head_commit.message, 'Merge pull request'):
     runs-on: self-hosted
 
     strategy:
