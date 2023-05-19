@@ -12,7 +12,6 @@ on:
 jobs:
   build-on-merge:
     if: startsWith(github.event.head_commit.message, 'Merge pull request')
-  build:
     runs-on: self-hosted
 
     strategy:
