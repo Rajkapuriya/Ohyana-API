@@ -40,7 +40,9 @@ exports.updateAttendance = async (req, res) => {
         pointId = POINTS.TYPE.LATE
       }
       await updateTeamMemberPoint(req.user.id, pointId)
-      return successResponse(res, 'CheckIn Successfully')
+      return successResponse(res, 'CheckIn Successfully', {
+        checkIn: currentTime,
+      })
     }
     return forbiddenRequestError(res, 'Already CheckIn')
   } else {
@@ -102,7 +104,11 @@ exports.updateAttendance = async (req, res) => {
       await Attendance.update(updateObject, {
         where: { date: currentDate, teamId: req.user.id },
       })
-      return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
+      return successResponse(
+        res,
+        MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
+        updateObject,
+      )
     }
 
     return badRequestError(res)
