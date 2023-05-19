@@ -255,6 +255,8 @@ exports.getAllItemsPerOrder = async (req, res) => {
       'orderTrackingStatus',
       'paymentStatus',
       'paymentMethod',
+      'dispatch_date',
+      'delivered_date',
     ],
     where: { id: req.params.orderId },
     include: [
