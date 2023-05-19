@@ -1,7 +1,6 @@
 const {
   Client_Reminder,
   Client_Appointment,
-  Client_Status,
   Appointment_Reminder,
   Client,
   Role,
@@ -13,27 +12,13 @@ const {
   Task,
   Team_Leave,
   Checklist,
-  Team_Point,
-  Points,
 } = require('../models')
 const moment = require('moment')
 const { Op, QueryTypes } = require('sequelize')
-const {
-  clientReminderHTML,
-  forgottenClientHTML,
-} = require('./email-template.util')
-const {
-  YYYY_MM_DD,
-  HH_MM_SS,
-  YYYY_MM_DDHHMM,
-  YYYY_MM_DD_HH_MM,
-} = require('./moment.util')
-const io = require('../helpers/socket.helper')
+const { YYYY_MM_DD, HH_MM_SS, YYYY_MM_DDHHMM } = require('./moment.util')
 const CronJob = require('cron').CronJob
-// var exec = require('child_process').exec
-const fs = require('fs')
 const async = require('async')
-const { updateTeamMemberPoint, sendMail } = require('./common.util')
+const { updateTeamMemberPoint } = require('./common.util')
 const sequelize = require('../database/mysql')
 const {
   ATTENDANCE,
@@ -268,43 +253,6 @@ new CronJob(
 new CronJob(
   '0 0 28-31 * *',
   async () => {
-    // 0 0 28-31 * *
-    // const targets = await Target.findAll({
-    //   where: {
-    //     state: { [Op.not]: TARGET.STATE.UPCOMING },
-    //     [Op.and]: [
-    //       // { date: date },
-    //       sequelize.where(
-    //         sequelize.fn('month', sequelize.col('endDate')),
-    //         moment().month() + 1, // Add 1 since month() returns a zero-based index
-    //       ),
-    //     ],
-    //   },
-    // })
-
-    // for (let i = 0; i < targets.length; i++) {
-    //   const achievedTarget = targets[i].achieve || 0
-    //   if (achievedTarget < targets[i].target) {
-    //     // 5 for target not achieved
-    //     await updateTeamMemberPoint(
-    //       targets[i].teamId,
-    //       POINTS.TYPE.TARGET_NOT_ACHEIVE,
-    //     )
-    //   } else if (achievedTarget > targets[i].target) {
-    //     // 8 for extra target achieved
-    //     await updateTeamMemberPoint(
-    //       targets[i].teamId,
-    //       POINTS.TYPE.EXTRA_TARGET_ACHEIVE,
-    //     )
-    //   } else if (achievedTarget === targets[i].target) {
-    //     // 9 for target achieved
-    //     await updateTeamMemberPoint(
-    //       targets[i].teamId,
-    //       POINTS.TYPE.TARGET_ACHEIVE,
-    //     )
-    //   }
-    // }
-
     const teamWithPoint = await Team.findAll({
       attributes: ['id', 'points', 'roleId'],
       where: {
@@ -376,23 +324,3 @@ new CronJob(
   true,
   'Asia/Kolkata',
 )
-// new CronJob('*/5 * * * *', async () => {
-//     console.log('backup taken')
-//     const now = moment().format('YYYY-MM-DD_HH_mm')
-//     const dbName = 'ohyana';
-//     const dbUser = 'root';
-//     const dbPass = ' ';
-//     const backupFile = `F:\\_Project\\Ohyana\\Backup\\ohyana_db_backup_${now}.sql`;
-//     // const command = `mysqldump -u ${dbUser} -p${dbPass} ${dbName} > ${backupFile}`;
-//     const command = `mysqldump -u ${dbUser} ${dbName} > ${backupFile}`; // for root user only
-//     console.log(command)
-//     exec(command, (error, stdout, stderr) => {
-//         if (error) {
-//             console.error(`exec error: ${error}`);
-//             return;
-//         }
-
-//         console.log(`stdout: ${stdout}`);
-//         console.error(`stderr: ${stderr}`);
-//     });
-// }, null, true, 'Asia/Kolkata')
