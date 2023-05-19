@@ -171,7 +171,7 @@ exports.getTeamReport = async (req, res) => {
         month,
       ),
     ]
-    expenseWhereCondition += ` AND MONTH(te.date) >= ${month} `
+    expenseWhereCondition += ` AND MONTH(te.date) = ${month} `
   } else if (period && period.includes('year')) {
     // year-2023
     const year = period.split('-')[1]
@@ -181,7 +181,7 @@ exports.getTeamReport = async (req, res) => {
         year,
       ),
     ]
-    expenseWhereCondition += ` AND YEAR(te.date) >= ${year} `
+    expenseWhereCondition += ` AND YEAR(te.date) = ${year} `
   } else if (period === 'custom') {
     filterSubCondition[whereParam] = {
       [Op.between]: [YYYY_MM_DD(dateFrom), YYYY_MM_DD(dateTo)],
