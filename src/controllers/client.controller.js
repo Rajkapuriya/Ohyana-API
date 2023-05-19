@@ -1,12 +1,8 @@
 const { Op } = require('sequelize')
 const sequelize = require('../database/mysql')
-const moment = require('moment')
-const axios = require('axios')
-const io = require('../helpers/socket.helper')
 const { uploadFileToS3, getFileFromS3 } = require('../helpers/s3.helper')
 const {
   YYYY_MM_DDHHMM,
-  YYYY_MM_DD_HHMM,
   YYYY_MM_DD,
   YYYY_MM_DD_HHMMSS,
 } = require('../utils/moment.util')
@@ -20,14 +16,11 @@ const {
   unauthorisedRequestError,
 } = require('../utils/response.util')
 const { MESSAGE, CLIENT, POINTS, TARGET, S3 } = require('../constants')
-const { SERVER_CONFIG } = require('../config/server.config')
 const {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
   unlinkFile,
 } = require('../utils/common.util')
-const async = require('async')
-let date
 
 const {
   Client,
@@ -35,12 +28,8 @@ const {
   Client_Appointment,
   Client_Reminder,
   Client_Appointed_Member,
-  Client_Product,
   Client_Stage_History,
   Role,
-  Product,
-  Company,
-  PJP,
   Team,
   Order,
 } = require('../models')
@@ -73,7 +62,7 @@ exports.addClient = async (req, res) => {
     imageUrl = result.Key.split('/')[1]
   }
 
-  const [client, created] = await Client.findOrCreate({
+  const [, created] = await Client.findOrCreate({
     where: { [Op.or]: clientFindOneCondition },
     defaults: {
       ...req.body,
