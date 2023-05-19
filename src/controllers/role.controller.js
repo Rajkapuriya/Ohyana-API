@@ -200,3 +200,10 @@ exports.updateExpensePermissions = async (req, res) => {
 
   return successResponse(res, 'Expense Permission Updated Successfully')
 }
+
+exports.updateClientStageAccessPermission = async (req, res) => {
+  const { roleId, stage } = req.body
+
+  await Role.update({ clientStageAccess: stage }, { where: { id: roleId } })
+  return successResponse(res, 'Permission Updated Successfully')
+}

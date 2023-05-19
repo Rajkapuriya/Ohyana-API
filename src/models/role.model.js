@@ -23,6 +23,10 @@ const Role = sequelize.define(
     clockOut: {
       type: DataTypes.TIME,
     },
+    clientStageAccess: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
   },
   { paranoid: true },
 )

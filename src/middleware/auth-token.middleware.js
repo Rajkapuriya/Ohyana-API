@@ -21,7 +21,13 @@ async function authTokenMiddleware(req, res, next) {
       include: [
         {
           model: Role,
-          attributes: ['id', 'name', 'clockIn', 'parentId'],
+          attributes: [
+            'id',
+            'name',
+            'clockIn',
+            'parentId',
+            'clientStageAccess',
+          ],
         },
       ],
     })

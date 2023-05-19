@@ -79,6 +79,14 @@ roleRouter.put(
 )
 
 roleRouter.put(
+  '/stage/permissions',
+  joiValidationMiddleware(roleSchema.updateStageAccessPermission),
+  authTokenMiddleware,
+  permissionHandleMiddleware([TEAM.PERMISSIONS.EDIT_ROLE]),
+  roleController.updateClientStageAccessPermission,
+)
+
+roleRouter.put(
   '/expense/permissions',
   joiValidationMiddleware(roleSchema.updateExpensePermissions),
   authTokenMiddleware,

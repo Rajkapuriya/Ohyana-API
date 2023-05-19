@@ -184,14 +184,14 @@ exports.getAllClients = async (req, res) => {
 
   if (country_id) filterCondition.country_id = country_id
 
-  if (req.user.role.permission.clientStageAccess !== null) {
+  if (req.user.role.clientStageAccess !== null) {
     if (stage) {
-      if (stage > req.user.role.permission.clientStageAccess)
+      if (stage > req.user.role.clientStageAccess)
         return forbiddenRequestError(res, 'Invalid Stage Access')
       filterCondition.stage = stage
     } else {
       const array = []
-      for (let i = 0; i < req.user.role.permission.clientStageAccess + 1; i++) {
+      for (let i = 0; i < req.user.role.clientStageAccess + 1; i++) {
         array.push(i)
       }
       filterCondition.stage = {
@@ -263,8 +263,8 @@ exports.getClientProfile = async (req, res) => {
 
   if (
     !client ||
-    req.user.role.permission.clientStageAccess === null ||
-    client.stage > req.user.role.permission.clientStageAccess
+    req.user.role.clientStageAccess === null ||
+    client.stage > req.user.role.clientStageAccess
   )
     return forbiddenRequestError(res, 'Invalid Stage Access')
 
@@ -393,8 +393,8 @@ exports.deleteBusinessCard = async (req, res) => {
 
   // if (
   //   !client ||
-  //   req.user.role.permission.clientStageAccess === null ||
-  //   client.stage > req.user.role.permission.clientStageAccess
+  //   req.user.role.clientStageAccess === null ||
+  //   client.stage > req.user.role.clientStageAccess
   // )
   //   return forbiddenRequestError(res, 'Invalid Stage Access')
 

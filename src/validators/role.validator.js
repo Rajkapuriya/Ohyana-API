@@ -51,4 +51,11 @@ exports.roleSchema = {
       expensePolicies: Joi.array().required(),
     }).required(),
   }).unknown(),
+
+  updateStageAccessPermission: Joi.object({
+    body: Joi.object({
+      roleId: Joi.number().required(),
+      stage: Joi.number().required(),
+    }).required(),
+  }).unknown(),
 }
