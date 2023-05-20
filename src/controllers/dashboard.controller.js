@@ -60,7 +60,13 @@ exports.getInquiryAnalytics = async (req, res) => {
   })
 
   const teams = await Team.findAll({
-    attributes: ['id', 'name', 'points', 'jobType', 'imgUrl'],
+    attributes: [
+      'id',
+      'name',
+      'points',
+      'jobType',
+      generateS3ConcatString('imgUrl', S3.USERS),
+    ],
     where: {
       companyId: req.user.companyId,
     },
