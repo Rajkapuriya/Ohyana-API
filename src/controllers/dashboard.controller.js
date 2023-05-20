@@ -260,6 +260,7 @@ exports.getInquiryAnalytics = async (req, res) => {
   const percentageIndiaMart =
     ((crtMonIndiaMart - lstMonIndiaMart) / lstMonIndiaMart) * 100
   const percentageOther = ((crtMonOther - lstMonOther) / lstMonOther) * 100
+  const percentageWeb = ((crtMonWeb - lstMonWeb) / lstMonWeb) * 100
 
   response = {
     data: {
@@ -276,6 +277,7 @@ exports.getInquiryAnalytics = async (req, res) => {
           ? percentageIndiaMart
           : 0,
         percentageOther: isFinite(percentageOther) ? percentageOther : 0,
+        percentageWeb: isFinite(percentageWeb) ? percentageWeb : 0,
       },
       sales: {
         total,
