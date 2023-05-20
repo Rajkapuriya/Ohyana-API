@@ -458,7 +458,7 @@ exports.getExpenseDetails = async (req, res) => {
   return successResponse(
     res,
     MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
-    expenses,
+    expenses[0],
   )
 }
 
