@@ -336,7 +336,7 @@ exports.addExpense = async (req, res) => {
   return successResponse(res, 'Expense Added Successfully')
 }
 
-exports.getExpense = async (req, res) => {
+exports.getExpenseList = async (req, res) => {
   const { month, year, teamId } = req.query
 
   let whereCondition = 'te.teamId = :teamId'
@@ -349,7 +349,13 @@ exports.getExpense = async (req, res) => {
     sequelize.query(
       `
         SELECT 
-            *,
+            te.date,
+            e.name,
+            te.amount,
+            te.approvalAmount,
+            te.payment_status,
+            te.file,
+            te.status,
             te.id as id
         FROM
             team_expenses AS te
@@ -372,7 +378,9 @@ exports.getExpense = async (req, res) => {
     sequelize.query(
       `
         SELECT 
-            *
+          payment_status,
+          status,
+          amount
         FROM
             team_expenses AS te
         INNER JOIN 
@@ -419,6 +427,38 @@ exports.getExpense = async (req, res) => {
     res,
     MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
     response,
+  )
+}
+
+exports.getExpenseDetails = async (req, res) => {
+  const expenses = await sequelize.query(
+    `
+      SELECT 
+          *,
+          te.id as id
+      FROM
+          team_expenses AS te
+      INNER JOIN 
+          expenses AS e
+      ON
+          te.expenseId = e.id
+      WHERE
+          te.id = :id
+      `,
+    {
+      replacements: {
+        id: req.params.id,
+      },
+      type: QueryTypes.SELECT,
+    },
+  )
+
+  if (!expenses) return notFoundError(res)
+
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    expenses,
   )
 }
 
