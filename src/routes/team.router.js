@@ -103,7 +103,13 @@ teamRouter.get(
   '/team/expense',
   joiValidationMiddleware(teamSchema.getExpense),
   authTokenMiddleware,
-  teamController.getExpense,
+  teamController.getExpenseList,
+)
+
+teamRouter.get(
+  '/team/expense/:id',
+  authTokenMiddleware,
+  teamController.getExpenseDetails,
 )
 
 teamRouter.patch(
