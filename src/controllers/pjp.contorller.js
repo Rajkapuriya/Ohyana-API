@@ -125,10 +125,10 @@ exports.completePJPStatus = async (req, res) => {
     {
       finish_description: description,
       is_completed: true,
-      location: {
-        type: 'Point',
-        coordinates: [latitude, longitude],
-      },
+      // location: {
+      //   type: 'Point',
+      //   coordinates: [latitude, longitude],
+      // },
     },
     { where: { id: pjpId } },
   )
