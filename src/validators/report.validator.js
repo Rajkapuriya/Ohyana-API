@@ -33,7 +33,7 @@ exports.reportSchema = {
     }).required(),
   }).unknown(),
 
-  customerReport: Joi.object({
+  productReportByCustomer: Joi.object({
     body: Joi.object({
       period: Joi.string().required(),
       clientId: Joi.number(),

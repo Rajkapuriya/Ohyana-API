@@ -331,7 +331,7 @@ exports.getTeamReport = async (req, res) => {
   )
 }
 
-exports.getCustomerReport = async (req, res) => {
+exports.getProductReportByCustomer = async (req, res) => {
   const { clientId, productIds, period, dateFrom, dateTo } = req.body
 
   const { filterCondition, dateRange } = generateProductReportFilterCondition(

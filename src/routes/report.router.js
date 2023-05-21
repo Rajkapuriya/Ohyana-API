@@ -38,10 +38,10 @@ reportRouter.post(
 
 reportRouter.post(
   '/report/customers',
-  joiValidationMiddleware(reportSchema.customerReport),
+  joiValidationMiddleware(reportSchema.productReportByCustomer),
   authTokenMiddleware,
   permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_REPORT]),
-  reportController.getCustomerReport,
+  reportController.getProductReportByCustomer,
 )
 
 module.exports = reportRouter
