@@ -69,13 +69,6 @@ exports.getAllCartItem = async (req, res) => {
   return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, cart)
 }
 
-exports.updateCartProductQuatity = async (req, res) => {
-  const { productId, quantity, cartId } = req.body
-
-  await Cart.update({ quantity }, { where: { productId, id: cartId } })
-  return successResponse(res, 'Quantity updated Successfully')
-}
-
 exports.deleteCartItem = async (req, res) => {
   await Cart.destroy({ where: { id: req.params.id }, force: true })
   return successResponse(res, MESSAGE.COMMON.RECORD_DELETED_SUCCESSFULLY)

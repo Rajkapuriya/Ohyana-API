@@ -178,16 +178,10 @@ exports.getAllAttendancePerUser = async (req, res) => {
     }),
   ])
 
-  attendancePerUser.rows = attendancePerUser.rows.map(e => {
+  attendancePerUser.rows = attendancePerUser.rows.map(attendance => {
     return {
-      id: e.id,
-      date: e.date,
-      checkIn: e.checkIn,
-      checkOut: e.checkOut,
-      breakIn: e.breakIn,
-      breakOut: e.breakOut,
-      totalHours: Math.floor(e.totalHours / 60),
-      attendanceType: e.attendanceType,
+      ...attendance,
+      totalHours: Math.floor(attendance.totalHours / 60),
     }
   })
 
