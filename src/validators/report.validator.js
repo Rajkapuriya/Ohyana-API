@@ -32,4 +32,14 @@ exports.reportSchema = {
       teamIds: Joi.array(),
     }).required(),
   }).unknown(),
+
+  customerReport: Joi.object({
+    body: Joi.object({
+      period: Joi.string().required(),
+      clientId: Joi.number(),
+      productIds: Joi.array(),
+      dateFrom: Joi.string(),
+      dateTo: Joi.string(),
+    }).required(),
+  }).unknown(),
 }

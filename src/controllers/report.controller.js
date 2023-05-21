@@ -331,6 +331,65 @@ exports.getTeamReport = async (req, res) => {
   )
 }
 
+exports.getCustomerReport = async (req, res) => {
+  const { clientId, productIds, period, dateFrom, dateTo } = req.body
+
+  const { filterCondition, dateRange } = generateProductReportFilterCondition(
+    period,
+    dateFrom,
+    dateTo,
+  )
+
+  if (productIds && productIds.length) {
+    filterCondition.productId = productIds
+  }
+
+  if (clientId) {
+    const orderIds = await Order.findAll({
+      attributes: ['id'],
+      where: { clientId },
+    })
+    filterCondition.orderId = orderIds.map(o => o.id)
+  }
+
+  const orders = await Order_Item.findAll({
+    where: { ...filterCondition },
+  })
+
+  const dateWiseProductOrderObject = getProductReportDataAndDateWiseOrderObject(
+    orders,
+    period,
+    'productId',
+    'quantity',
+  )
+
+  const products = await Product.findAll({
+    attributes: ['id', 'name'],
+    where: { id: [...new Set(orders.map(o => o.productId))] },
+  })
+
+  const productReportData = getFinalProductReportObject(
+    dateRange,
+    dateWiseProductOrderObject,
+    products,
+    'productId',
+    'id',
+  )
+
+  const finalResponse = {
+    label: products.map(data => {
+      return { id: data.id, name: data.name }
+    }),
+    data: productReportData,
+  }
+
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    finalResponse,
+  )
+}
+
 function getDateWiseProductArray(dateWiseArray, products, objectKey, idKey) {
   const dateWiseProductArray = []
   products.forEach(product => {
