@@ -45,33 +45,29 @@ exports.updateLeaveType = async (req, res) => {
 
   const leave = await Leave.findOne({ where: { id: req.params.id } })
 
-  await sequelize.transaction(async t => {
-    const whereClause = { leaveId: req.params.id }
+  const whereClause = { leaveId: req.params.id }
 
-    const [oldLeaveData, updatedLeaveData] = await Promise.all([
-      Leave.findOne({ where: { id: req.params.id }, transaction: t }),
-      leave.update({ type, duration }),
-    ])
+  const [oldLeaveData, updatedLeaveData] = await Promise.all([
+    Leave.findOne({ where: { id: req.params.id } }),
+    leave.update({ type, duration }),
+  ])
 
-    const rdc = updatedLeaveData.duration - oldLeaveData.duration // rdc = Calculation of updated days minus old remaining days
+  const rdc = updatedLeaveData.duration - oldLeaveData.duration // rdc = Calculation of updated days minus old remaining days
 
-    if (rdc < 0) {
-      whereClause.remainDays = { [Op.ne]: 0 }
-    }
+  if (rdc < 0) {
+    whereClause.remainDays = { [Op.ne]: 0 }
+  }
 
-    if (updatedLeaveData) {
-      await Team_Leave.update(
-        {
-          remainDays: Sequelize.literal(
-            `case when remainDays + ${rdc} < 0 then 0 else remainDays + ${rdc} end`,
-          ),
-        },
-        { where: whereClause, transaction: t },
-      )
-    }
-
-    return updatedLeaveData
-  })
+  if (updatedLeaveData) {
+    await Team_Leave.update(
+      {
+        remainDays: Sequelize.literal(
+          `case when remainDays + ${rdc} < 0 then 0 else remainDays + ${rdc} end`,
+        ),
+      },
+      { where: whereClause },
+    )
+  }
 
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
 }

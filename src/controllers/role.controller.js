@@ -27,20 +27,15 @@ exports.createRole = async (req, res) => {
   if (existedRole)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  await sequelize.transaction(async t => {
-    const role = await Role.create(
-      {
-        name,
-        description,
-        clockIn,
-        companyId: req.user.companyId,
-        parentId,
-      },
-      { transaction: t },
-    )
-
-    await Permission.create({ roleId: role.id }, { transaction: t })
+  const role = await Role.create({
+    name,
+    description,
+    clockIn,
+    companyId: req.user.companyId,
+    parentId,
   })
+
+  await Role_Permissions.create({ roleId: role.id })
 
   return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
 }
