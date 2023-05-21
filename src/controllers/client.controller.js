@@ -616,25 +616,18 @@ exports.addClientAppointment = async (req, res) => {
     return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
-  await sequelize.transaction(async t => {
-    const clientAppointment = await Client_Appointment.create(
-      {
-        date,
-        time,
-        description,
-        appointment_unit,
-        teamId: req.user.id,
-        memberName: req.user.name,
-        memberRole: req.user.role.name,
-        clientId: clientId,
-      },
-      { transaction: t },
-    )
-
-    await clientAppointment.addTeams(appointed_member, { transaction: t })
-
-    return clientAppointment
+  const clientAppointment = await Client_Appointment.create({
+    date,
+    time,
+    description,
+    appointment_unit,
+    teamId: req.user.id,
+    memberName: req.user.name,
+    memberRole: req.user.role.name,
+    clientId: clientId,
   })
+
+  await clientAppointment.addTeams(appointed_member)
 
   return successResponse(res, 'Appointment Scheduled Successfully')
 }
@@ -696,25 +689,22 @@ exports.updateAppointment = async (req, res) => {
   if (client_appointment.isScheduled)
     return forbiddenRequestError(res, 'Appointment Is Already Scheduled')
 
-  await sequelize.transaction(async t => {
-    const updatedAppointment = await client_appointment.update(
-      { description, date, time, appointment_unit },
-      { transaction: t },
-    )
-
-    if (appointed_member.length > 0) {
-      await Promise.all([
-        Client_Appointed_Member.destroy({
-          where: { clientAppointmentId: updatedAppointment.id },
-          force: true,
-          transaction: t,
-        }),
-        updatedAppointment.addTeams(appointed_member, { transaction: t }),
-      ])
-    }
-
-    return updatedAppointment
+  const updatedAppointment = await client_appointment.update({
+    description,
+    date,
+    time,
+    appointment_unit,
   })
+
+  if (appointed_member.length > 0) {
+    await Promise.all([
+      Client_Appointed_Member.destroy({
+        where: { clientAppointmentId: updatedAppointment.id },
+        force: true,
+      }),
+      updatedAppointment.addTeams(appointed_member),
+    ])
+  }
 
   return successResponse(res, 'Appointment Updated Successfully')
 }

@@ -24,8 +24,6 @@ exports.addToCart = async (req, res) => {
     where: { productId, teamId: req.user.id },
   })
   if (alreadyInCart) {
-    // await alreadyInCart.update({ quantity: Sequelize.literal(`case when ${quantity} < 0 then 0 else remainDays + ${rdc} end`) },
-    //     { where: whereClause, transaction: t })
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
   } else {
     const cart = await Cart.create({

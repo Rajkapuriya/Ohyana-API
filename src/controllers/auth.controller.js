@@ -17,7 +17,7 @@ const {
   requestTimeOutError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE, S3 } = require('../constants')
+const { MESSAGE, S3, CLIENT } = require('../constants')
 const { badRequestError } = require('../utils/response.util')
 const { sendMail, generateToken, verifyToken } = require('../utils/common.util')
 const { generateS3ConcatString } = require('../utils/s3.util')
@@ -26,28 +26,27 @@ let otpArray = []
 
 exports.register = async (req, res) => {
   const { name, companyName, contact_number, email, password } = req.body
-  await sequelize.transaction(async t => {
-    const company = await Company.create(
-      {
-        name: companyName,
-      },
-      { transaction: t },
-    )
 
-    const hashPassword = await bcrypt.hash(password, ENCRYP_CONFIG.HASH_SALT)
+  const company = await Company.create({
+    name: companyName,
+  })
 
-    const team = await Team.create(
-      {
-        name,
-        email,
-        password: hashPassword,
-        contact_number,
-        companyId: company.id,
-        roleId: 1,
-      },
-      { transaction: t },
-    )
-    return team
+  const hashPassword = await bcrypt.hash(password, ENCRYP_CONFIG.HASH_SALT)
+
+  const role = await Role.create({
+    name: 'Admin',
+    description: 'Can Manage All Things',
+    companyId: company.id,
+    clientStageAccess: CLIENT.STAGE.CLOSED,
+  })
+
+  await Team.create({
+    name,
+    email,
+    password: hashPassword,
+    contact_number,
+    companyId: company.id,
+    roleId: role.id,
   })
 
   successResponse(res, 'Registered Successfully')
@@ -145,7 +144,12 @@ exports.login = async (req, res) => {
   )
 
   let permissionStringArray = []
-  if (teamMember.role.role_permission || !teamMember.role.parentId) {
+
+  if (
+    (teamMember.role.role_permission &&
+      teamMember.role.role_permission.permissions) ||
+    !teamMember.role.parentId
+  ) {
     const rolePermissionStringArray = await Permission.findAll({
       attributes: ['name'],
       where: teamMember.role.parentId
