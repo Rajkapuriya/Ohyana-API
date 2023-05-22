@@ -16,21 +16,21 @@ orderRouter.post(
   '/addtocart',
   joiValidationMiddleware(orderSchema.addtoCart),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.PLACE_ORDER]),
   orderController.addToCart,
 )
 
 orderRouter.get(
   '/cart/items/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.VIEW_ORDERS]),
   orderController.getAllCartItem,
 )
 
 orderRouter.delete(
   '/cart/items/:id',
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.PLACE_ORDER]),
   orderController.deleteCartItem,
 )
 
@@ -38,7 +38,7 @@ orderRouter.post(
   '/product-list',
   joiValidationMiddleware(orderSchema.productListById),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.PLACE_ORDER]),
   orderController.getProductListFromIds,
 )
 
@@ -46,7 +46,7 @@ orderRouter.patch(
   '/cart/product/quantity',
   joiValidationMiddleware(orderSchema.updateCartProductQuatity),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
+  permissionHandleMiddleware([TEAM.PERMISSIONS.PLACE_ORDER]),
   orderController.updateCartProductQuatity,
 )
 
@@ -65,7 +65,6 @@ orderRouter.patch(
   '/payment/:orderId',
   joiValidationMiddleware(orderSchema.paymentStatus),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
   permissionHandleMiddleware([
     TEAM.PERMISSIONS.UPDATE_ORDER_PAYMENT_STATUS,
     TEAM.PERMISSIONS.VIEW_CLIENT,
@@ -77,7 +76,6 @@ orderRouter.patch(
   '/delivery/:orderId',
   joiValidationMiddleware(orderSchema.orderTrackingStatus),
   authTokenMiddleware,
-  permissionHandleMiddleware('req.user.role.permission.clientMenu'),
   permissionHandleMiddleware([
     TEAM.PERMISSIONS.UPDATE_ORDER_DELIVERY_STATUS,
     TEAM.PERMISSIONS.VIEW_CLIENT,
