@@ -333,7 +333,7 @@ exports.updateOrderTrackingStatus = async (req, res) => {
   if (status === ORDERS.TRACKING_STATUS.DISPATCH) {
     updateBody.dispatch_date = moment()
   } else if (status === ORDERS.TRACKING_STATUS.DELIVERED) {
-    updateBody.delivered_date == moment()
+    updateBody.delivered_date = moment()
   }
 
   const updateOrder = await order.update(updateBody)
