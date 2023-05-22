@@ -32,8 +32,25 @@ exports.getInquiryAnalytics = async (req, res) => {
   })
 
   const currentMonthOrders = await Order.findAndCountAll({
+    attributes: [
+      'id',
+      'date',
+      'order_total',
+      'orderTrackingStatus',
+      'paymentMethod',
+      'paymentStatus',
+    ],
     where: {
-      ...getWhereConditionPerMonth(req.user, currentMonth, 'date'),
+      [Op.and]: [
+        sequelize.where(
+          sequelize.fn('month', sequelize.col('date')),
+          currentMonth,
+        ),
+        sequelize.where(
+          sequelize.fn('year', sequelize.col('date')),
+          moment().format('YYYY'),
+        ),
+      ],
       paymentStatus: ORDERS.PAYMENT_STATUS.CONFIRMED,
     },
     include: {
