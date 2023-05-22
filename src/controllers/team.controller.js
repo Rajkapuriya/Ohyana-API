@@ -49,6 +49,7 @@ exports.addTeamMember = async (req, res) => {
     ...req.body,
     imgUrl: imgUrl,
     companyId: req.user.companyId,
+    isEmailVerified: true,
   })
 
   if (createdTeamMember) {

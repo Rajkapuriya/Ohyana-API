@@ -47,6 +47,7 @@ exports.register = async (req, res) => {
     contact_number,
     companyId: company.id,
     roleId: role.id,
+    isEmailVerified: true,
   })
 
   successResponse(res, 'Registered Successfully')
@@ -55,12 +56,12 @@ exports.register = async (req, res) => {
 exports.sendVerificationEmail = async (req, res) => {
   const { email } = req.body
 
-  const teamMember = await Team.findOne({ email })
+  // const teamMember = await Team.findOne({ email })
 
-  if (!teamMember) return badRequestError(res, MESSAGE.AUTH.INVALID_EMAIL)
+  // if (!teamMember) return badRequestError(res, MESSAGE.AUTH.INVALID_EMAIL)
 
-  if (teamMember.isEmailVerified)
-    return badRequestError(res, MESSAGE.AUTH.EMAIL_ALREADY_VERIFIED)
+  // if (teamMember.isEmailVerified)
+  //   return badRequestError(res, MESSAGE.AUTH.EMAIL_ALREADY_VERIFIED)
 
   let otp = generateOTP()
   const currentDate = new Date()
@@ -85,9 +86,9 @@ exports.verifyEmail = async (req, res) => {
   const currentDate = new Date()
   const numberWithOtp = otpArray.find(e => e.email === email)
 
-  const teamMember = await Team.findOne({ email })
+  // const teamMember = await Team.findOne({ email })
 
-  if (!teamMember) return badRequestError(res, MESSAGE.AUTH.INVALID_EMAIL)
+  // if (!teamMember) return badRequestError(res, MESSAGE.AUTH.INVALID_EMAIL)
 
   if (numberWithOtp == undefined) return requestTimeOutError(res, 'OTP EXPIRED')
 
@@ -101,7 +102,7 @@ exports.verifyEmail = async (req, res) => {
 
   if (email == numberWithOtp.email && otp == numberWithOtp.otp) {
     otpArray = otpArray.filter(e => e.email !== email)
-    teamMember.update({ isEmailVerified: true })
+    // teamMember.update({ isEmailVerified: true })
     return successResponse(res, 'OTP Verified Successfully')
   } else {
     return unProcessableEntityRequestError(res, 'OTP Incorrect')
