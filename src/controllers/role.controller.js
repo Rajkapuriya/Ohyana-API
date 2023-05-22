@@ -129,13 +129,18 @@ exports.getPermissions = async (req, res) => {
     where: { roleId: id },
   })
 
-  const [permission, expensePermissions, expensePolicies] = await Promise.all([
-    Permission.findAll({
+  let permission = []
+
+  if (permissionString && permissionString.permissions) {
+    permission = await Permission.findAll({
       attributes: ['name'],
       where: {
         id: permissionString.permissions.split(','),
       },
-    }),
+    })
+  }
+
+  const [expensePermissions, expensePolicies] = await Promise.all([
     Role_Expense_Permissions.findAll({
       attributes: ['expenseId', 'amount'],
       where: { roleId: id, status: 'active' },
