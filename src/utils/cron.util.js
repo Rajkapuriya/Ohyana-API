@@ -17,7 +17,6 @@ const moment = require('moment')
 const { Op, QueryTypes } = require('sequelize')
 const { YYYY_MM_DD, HH_MM_SS, YYYY_MM_DDHHMM } = require('./moment.util')
 const CronJob = require('cron').CronJob
-const async = require('async')
 const { updateTeamMemberPoint } = require('./common.util')
 const sequelize = require('../database/mysql')
 const {
@@ -43,57 +42,51 @@ new CronJob(
       ],
     })
 
-    async.each(
-      teamWithRole,
-      async function (item, callback) {
-        if (
-          item.role.clockIn &&
-          item.role.parentId &&
-          currentTime > item.role.clockIn
-        ) {
-          Promise.all([
-            Attendance.findOne({
-              where: { date: currentDate, teamId: item.id },
-            }),
-            Team_Leave.findOne({
-              where: { date: currentDate, teamId: item.id },
-              status: ATTENDANCE.LEAVE_TYPE.APPROVED,
-            }),
-            Holiday.findAll({
-              where: { type: HOLIDAY.TYPE.REGULAR, companyId: item.companyId },
-            }),
-          ]).then(result => {
-            const attendance = result[0]
-            const teamLeave = result[1]
-            const holidays = result[2]
-            if (
-              !holidays
-                .map(e => e.occasion)
-                .includes(new Date().getDay().toString())
-            ) {
-              if (attendance === null && teamLeave === null) {
-                Attendance.create({
-                  attendanceType: ATTENDANCE.TYPE.ABSENT,
-                  companyId: item.companyId,
-                  teamId: item.id,
-                })
-                updateTeamMemberPoint(item.id, POINTS.TYPE.ABSENT)
-              } else if (teamLeave !== null && !attendance) {
-                Attendance.create({
-                  attendanceType: ATTENDANCE.TYPE.LEAVE,
-                  companyId: item.companyId,
-                  teamId: item.id,
-                })
-                updateTeamMemberPoint(item.id, POINTS.TYPE.LEAVE)
-              }
+    for (const team of teamWithRole) {
+      if (
+        team.role.clockIn &&
+        team.role.parentId &&
+        currentTime > team.role.clockIn
+      ) {
+        Promise.all([
+          Attendance.findOne({
+            where: { date: currentDate, teamId: team.id },
+          }),
+          Team_Leave.findOne({
+            where: { date: currentDate, teamId: team.id },
+            status: ATTENDANCE.LEAVE_TYPE.APPROVED,
+          }),
+          Holiday.findAll({
+            where: { type: HOLIDAY.TYPE.REGULAR, companyId: team.companyId },
+          }),
+        ]).then(result => {
+          const attendance = result[0]
+          const teamLeave = result[1]
+          const holidays = result[2]
+          if (
+            !holidays
+              .map(e => e.occasion)
+              .includes(new Date().getDay().toString())
+          ) {
+            if (attendance === null && teamLeave === null) {
+              Attendance.create({
+                attendanceType: ATTENDANCE.TYPE.ABSENT,
+                companyId: team.companyId,
+                teamId: team.id,
+              })
+              updateTeamMemberPoint(team.id, POINTS.TYPE.ABSENT)
+            } else if (teamLeave !== null && !attendance) {
+              Attendance.create({
+                attendanceType: ATTENDANCE.TYPE.LEAVE,
+                companyId: team.companyId,
+                teamId: team.id,
+              })
+              updateTeamMemberPoint(team.id, POINTS.TYPE.LEAVE)
             }
-          })
-        }
-      },
-      async function (err) {
-        if (err) console.log(err)
-      },
-    )
+          }
+        })
+      }
+    }
 
     const allTasks = await Task.findAll({
       where: {
@@ -219,31 +212,37 @@ new CronJob(
       ],
     })
 
-    async.each(
-      teamWithTarget,
-      async function (item, callback) {
-        Target.update(
-          { state: TARGET.STATE.PAST },
-          { where: { teamId: item.id, state: TARGET.STATE.CURRENT } },
-        )
+    for (const teamTarget of teamWithTarget) {
+      Target.update(
+        { state: TARGET.STATE.PAST },
+        {
+          where: {
+            teamId: teamTarget.id,
+            state: TARGET.STATE.CURRENT,
+            endDate: yesterday,
+          },
+        },
+      )
 
-        const achievedTarget = item.targets.achieve
-        const assignedTarget = item.targets.target
-        if (achievedTarget < assignedTarget) {
-          // 5 for target not achieved
-          await updateTeamMemberPoint(item.id, POINTS.TYPE.TARGET_NOT_ACHEIVE)
-        } else if (achievedTarget > assignedTarget) {
-          // 8 for extra target achieved
-          await updateTeamMemberPoint(item.id, POINTS.TYPE.EXTRA_TARGET_ACHEIVE)
-        } else if (achievedTarget === assignedTarget) {
-          // 9 for target achieved
-          await updateTeamMemberPoint(item.id, POINTS.TYPE.TARGET_ACHEIVE)
-        }
-      },
-      async function (err) {
-        if (err) console.log(err)
-      },
-    )
+      const achievedTarget = teamTarget.targets.achieve
+      const assignedTarget = teamTarget.targets.target
+      if (achievedTarget < assignedTarget) {
+        // 5 for target not achieved
+        await updateTeamMemberPoint(
+          teamTarget.id,
+          POINTS.TYPE.TARGET_NOT_ACHEIVE,
+        )
+      } else if (achievedTarget > assignedTarget) {
+        // 8 for extra target achieved
+        await updateTeamMemberPoint(
+          teamTarget.id,
+          POINTS.TYPE.EXTRA_TARGET_ACHEIVE,
+        )
+      } else if (achievedTarget === assignedTarget) {
+        // 9 for target achieved
+        await updateTeamMemberPoint(teamTarget.id, POINTS.TYPE.TARGET_ACHEIVE)
+      }
+    }
   },
   null,
   true,

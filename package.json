@@ -19,7 +19,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "async": "^3.2.4",
     "aws-sdk": "^2.1353.0",
     "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
