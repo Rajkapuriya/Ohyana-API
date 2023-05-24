@@ -1,7 +1,6 @@
 const {
   Client_Reminder,
   Client_Appointment,
-  Appointment_Reminder,
   Client,
   Role,
   Team,
@@ -116,12 +115,6 @@ new CronJob(
   async () => {
     const now = YYYY_MM_DDHHMM()
     try {
-      sendNotification(now, 'Appointemnt', Appointment_Reminder, [
-        {
-          model: Team,
-          attributes: ['id', 'name', 'email'],
-        },
-      ])
       sendNotification(now, 'ClientReminder', Client_Reminder, [
         {
           model: Client,
