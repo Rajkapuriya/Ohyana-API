@@ -18,10 +18,10 @@ const moment = require('moment')
 const { S3_CONFIG } = require('../config/s3.config')
 
 exports.addToCart = async (req, res) => {
-  const { productId, quantity, clientId } = req.body
+  const { productId, clientId } = req.body
 
   const alreadyInCart = await Cart.findOne({
-    where: { productId, teamId: req.user.id },
+    where: { productId, teamId: req.user.id, clientId },
   })
   if (alreadyInCart) {
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
