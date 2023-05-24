@@ -205,7 +205,7 @@ new CronJob(
           model: Target,
           attributes: { exclude: ['createdAt', 'updatedAt', 'teamId'] },
           where: {
-            state: { [Op.not]: TARGET.STATE.PAST },
+            state: TARGET.STATE.CURRENT,
             endDate: yesterday,
           },
         },
@@ -217,12 +217,21 @@ new CronJob(
         { state: TARGET.STATE.PAST },
         {
           where: {
-            teamId: teamTarget.id,
-            state: TARGET.STATE.CURRENT,
-            endDate: yesterday,
+            id: teamTarget.targets.id,
           },
         },
       )
+
+      const upcomingTarget = await Target.findOne({
+        where: { state: TARGET.STATE.UPCOMING, teamId: teamTarget.id },
+      })
+
+      if (upcomingTarget) {
+        Target.update(
+          { state: TARGET.STATE.CURRENT },
+          { where: { id: upcomingTarget.id } },
+        )
+      }
 
       const achievedTarget = teamTarget.targets.achieve
       const assignedTarget = teamTarget.targets.target
