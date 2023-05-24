@@ -1,4 +1,3 @@
-const Joi = require('joi')
 const sequelize = require('../database/mysql')
 const { DataTypes } = require('sequelize')
 

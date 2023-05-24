@@ -3,7 +3,8 @@
 		"_postman_id": "c3fc31e0-94cb-4e09-a89a-d7b23e86e7af",
 		"name": "Ohyana",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "13975886"
+		"_exporter_id": "13975886",
+		"_collection_link": "https://universal-zodiac-442173.postman.co/workspace/New-Team-Workspace~de4a4ffc-51a9-4d86-8d31-950c7d687116/collection/14654209-c3fc31e0-94cb-4e09-a89a-d7b23e86e7af?action=share&creator=13975886&source=collection_link"
 	},
 	"item": [
 		{
@@ -492,6 +493,43 @@
 					"response": []
 				},
 				{
+					"name": "Update Client Stage Access Permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"stage\": 3,\r\n    \"roleId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stage/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stage",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get Permissions",
 					"request": {
 						"auth": {
@@ -540,13 +578,29 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Bagasse Plates Making Machine\",\r\n    \"price\": 50,\r\n    \"quantity\": 50,\r\n    \"weight\": \"25Kg\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Balaji Waferes",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "500",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "product_image",
+									"type": "file",
+									"src": "/Users/jenishsmacbook/Downloads/balaji_chaat_chaska_m.jpg"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{baseUrl}}/product",
@@ -555,6 +609,60 @@
 							],
 							"path": [
 								"product"
+							]
+						},
+						"description": "StartFragment\n\n Extra Fields in body   \n\n\"materialType\": \"\",    \"skuId\": \"\",    \"description\":\"\"\n\nEndFragment"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Tomato Ketchup",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "500",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "50",
+									"type": "text"
+								},
+								{
+									"key": "product_image",
+									"type": "file",
+									"src": "/Users/jenishsmacbook/Downloads/WhatsApp Image 2023-05-11 at 7.59.14 PM.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product/19",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"19"
 							]
 						},
 						"description": "StartFragment\n\n Extra Fields in body   \n\n\"materialType\": \"\",    \"skuId\": \"\",    \"description\":\"\"\n\nEndFragment"
@@ -583,6 +691,34 @@
 							],
 							"path": [
 								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Product Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product/19",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"19"
 							]
 						}
 					},
@@ -619,43 +755,6 @@
 							],
 							"path": [
 								"product-list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Products",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Bagasse Plates Making Machine\",\r\n    \"price\": 50,\r\n    \"quantity\": 50,\r\n    \"weight\": \"25Kg\",\r\n    \"materialType\": null,\r\n    \"skuId\": \"null\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/product/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"product",
-								"1"
 							]
 						}
 					},
@@ -1071,13 +1170,34 @@
 								"method": "POST",
 								"header": [],
 								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"date\": \"2023-10-05\",\r\n    \"expenseId\": 1,\r\n    \"amount\": 100,\r\n    \"expense_description\": \"Lorem ipsum\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "date",
+											"value": "2023-10-05",
+											"type": "text"
+										},
+										{
+											"key": "expenseId",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "amount",
+											"value": "300",
+											"type": "text"
+										},
+										{
+											"key": "expense_description",
+											"value": "LOrem Ipsum",
+											"type": "text"
+										},
+										{
+											"key": "expense_file",
+											"type": "file",
+											"src": []
 										}
-									}
+									]
 								},
 								"url": {
 									"raw": "{{baseUrl}}/team/expense",
@@ -1136,6 +1256,36 @@
 											"value": "2022",
 											"disabled": true
 										}
+									]
+								},
+								"description": "Here in query params me=true for my expense and teamId={Id} for another team member"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Expense Details",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/team/expense/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"team",
+										"expense",
+										"1"
 									]
 								},
 								"description": "Here in query params me=true for my expense and teamId={Id} for another team member"
@@ -1294,7 +1444,7 @@
 									"type": "text"
 								},
 								{
-									"key": "image",
+									"key": "profile_image",
 									"type": "file",
 									"src": "/C:/Users/jenis/Downloads/Screenshot 2023-01-12 122458.png"
 								},
@@ -1432,6 +1582,34 @@
 					"response": []
 				},
 				{
+					"name": "Get Team Member Location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/location/member",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"location",
+								"member"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update Member",
 					"request": {
 						"auth": {
@@ -1535,7 +1713,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/member?searchQuery=abc&teamType&attendanceType",
+							"raw": "{{baseUrl}}/member?roleId=2",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1550,8 +1728,7 @@
 								},
 								{
 									"key": "roleId",
-									"value": "3",
-									"disabled": true
+									"value": "2"
 								},
 								{
 									"key": "admin",
@@ -1560,17 +1737,26 @@
 								},
 								{
 									"key": "searchQuery",
-									"value": "abc"
+									"value": "abc",
+									"disabled": true
 								},
 								{
 									"key": "teamType",
 									"value": null,
-									"description": "FIELD , OFFICE"
+									"description": "FIELD , OFFICE",
+									"disabled": true
+								},
+								{
+									"key": "teamType",
+									"value": null,
+									"description": "FIELD , OFFICE",
+									"disabled": true
 								},
 								{
 									"key": "attendanceType",
 									"value": null,
-									"description": "A,L,P,LT"
+									"description": "A,L,P,LT",
+									"disabled": true
 								}
 							]
 						}
@@ -1666,7 +1852,7 @@
 									"type": "text"
 								},
 								{
-									"key": "image",
+									"key": "profile_image",
 									"type": "file",
 									"src": "/C:/Users/DELL/Downloads/main slider.png"
 								},
@@ -2000,7 +2186,7 @@
 											"type": "text"
 										},
 										{
-											"key": "audio",
+											"key": "status_audio_file",
 											"type": "file",
 											"src": "/C:/Users/DELL/Downloads/edb956a7-9fe7-4458-83cc-95b9788be0f0.mp3"
 										},
@@ -2012,7 +2198,7 @@
 										{
 											"key": "followUpType",
 											"value": "WHATSAPP",
-											"description": "FIELD, CALL, WHATSAPP, EMAIL",
+											"description": "FIELD, CALL, WHATSAPP, EMAIL,OTHER",
 											"type": "text"
 										}
 									]
@@ -2218,6 +2404,35 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "Delete Client Appointment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/appointment/client/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"appointment",
+										"client",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -2241,7 +2456,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"description\" : \"today call\",\r\n    \"date\" : \"2022-07-02\",\r\n    \"time\" : \"14:49:17\",\r\n    \"clientId\" : 388 \r\n}",
+									"raw": "{\r\n    \"description\" : \"today call\",\r\n    \"date\" : \"2023-07-02\",\r\n    \"time\" : \"14:49:17\",\r\n    \"clientId\" : 129 \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2277,14 +2492,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/reminder/client/2",
+									"raw": "{{baseUrl}}/reminder/client/129",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"reminder",
 										"client",
-										"2"
+										"129"
 									]
 								}
 							},
@@ -2307,7 +2522,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"description\" : \"today call\",\r\n    \"date\" : \"2022-07-02\",\r\n    \"time\" : \"14:49:17\",\r\n    \"clientId\" : 388 \r\n}",
+									"raw": "{\r\n    \"description\" : \"today call\",\r\n    \"date\" : \"2022-07-02\",\r\n    \"time\" : \"14:49:17\",\r\n    \"reminderId\" : 388 \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2322,6 +2537,35 @@
 									"path": [
 										"reminder",
 										"client"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Client Reminder",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/reminder/client/1",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reminder",
+										"client",
+										"1"
 									]
 								}
 							},
@@ -2351,9 +2595,9 @@
 									"mode": "formdata",
 									"formdata": [
 										{
-											"key": "image",
+											"key": "customer_image",
 											"type": "file",
-											"src": "/C:/Users/jenis/OneDrive/Documents/1.png"
+											"src": "/Users/jenishsmacbook/Downloads/modern-clean-professional-business-card-template_501970-93.avif"
 										}
 									]
 								},
@@ -2385,13 +2629,40 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/businesscard/130",
+									"raw": "{{baseUrl}}/businesscard/137",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"businesscard",
-										"130"
+										"137"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Business Card List",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{auth_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/businesscard",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"businesscard"
 									]
 								}
 							},
@@ -2444,7 +2715,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"RDJ19\",\r\n    \"reference\": \"OTHER\",\r\n    \"reference_name\": \"Other\",\r\n    \"business\": \"Avengers Association\",\r\n    \"contact_number\": \"+91-95117566026\",\r\n    \"isInternational\": \"true\",\r\n    \"countryId\": 2,\r\n    \"city\": \"Rajkot\",\r\n    \"state\": \"Gujarat\",\r\n    \"address\": \"RK Empire 250,150 Feer Ring Road Rajkot\",\r\n    \"max_invesment_amount\": 100\r\n}",
+							"raw": "{\r\n    \"name\": \"RDJ19\",\r\n    \"reference\": \"OTHER\",\r\n    \"reference_name\": \"Other\",\r\n    \"business\": \"Avengers Association\",\r\n    \"contact_number\": \"+91-95117566026\",\r\n    \"state\": \"Gujarat\",\r\n    \"city\": \"Rajkot\",\r\n    \"city_id\": \"1234\",\r\n    \"state_id\": \"8943\",\r\n    \"state_iso2\": \"GJ\",\r\n    \"country\": \"India\",\r\n    \"country_id\": \"8530\",\r\n    \"country_iso2\": \"IN\",\r\n    \"address\": \"RK Empire 250,150 Feer Ring Road Rajkot\",\r\n    \"max_invesment_amount\": 100\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2558,7 +2829,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/clients?tabType=existing",
+							"raw": "{{baseUrl}}/clients?tabType=business_card",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2572,28 +2843,13 @@
 									"disabled": true
 								},
 								{
-									"key": "pjp",
-									"value": "true",
-									"disabled": true
-								},
-								{
-									"key": "businessCard",
-									"value": "true",
-									"disabled": true
-								},
-								{
-									"key": "forMobile",
-									"value": "true",
-									"disabled": true
-								},
-								{
 									"key": "teamId",
 									"value": "",
 									"disabled": true
 								},
 								{
 									"key": "tabType",
-									"value": "existing"
+									"value": "business_card"
 								}
 							]
 						}
@@ -2760,145 +3016,6 @@
 			]
 		},
 		{
-			"name": "Appointment or Reminder",
-			"item": [
-				{
-					"name": "Create Appointment or Reminder",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"heading\": \"heading\",\r\n    \"description\": \"description\",\r\n    \"date\": \"2023-01-26\",\r\n    \"time\": \"15:50:17\",\r\n    \"type\": \"APPOINTMENT\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/appointment-reminder",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"appointment-reminder"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Appointment or Reminder",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/appointment-reminder?type=APPOINTMENT",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"appointment-reminder"
-							],
-							"query": [
-								{
-									"key": "type",
-									"value": "APPOINTMENT"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Appointment or Reminder",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"heading\": \"heading\",\r\n    \"description\": \"description\",\r\n    \"date\": \"2022-07-26\",\r\n    \"time\": \"15:50:17\",\r\n    \"type\": \"APPOINTMENT\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/appointment-reminder/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"appointment-reminder",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Appointment or Reminder",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/appointment-reminder/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"appointment-reminder",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Notifications",
 			"item": [
 				{
@@ -2953,7 +3070,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/notification?sent=true",
+							"raw": "{{baseUrl}}/notification",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -2963,7 +3080,8 @@
 							"query": [
 								{
 									"key": "sent",
-									"value": "true"
+									"value": "true",
+									"disabled": true
 								}
 							]
 						},
@@ -2992,13 +3110,51 @@
 						"method": "PUT",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Groupon\",\r\n    \"crmKey\": \"dfadfsfaf\",\r\n    \"email\": \"info@groupon.com\",\r\n    \"city\": \"Rajkot\",\r\n    \"state\": \"Gujarat\",\r\n    \"GSTIN\": \"24ABCXESCEDSS\",\r\n    \"countryId\": 99,\r\n    \"businessType\": \"Food\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Groupon",
+									"type": "text"
+								},
+								{
+									"key": "crmKey",
+									"value": "dfadfsfaf",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "info@groupon.com",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Rajkot",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "state",
+									"value": "Gujarat",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "GSTIN",
+									"value": "24ABCXESCEDSS",
+									"type": "text"
+								},
+								{
+									"key": "businessType",
+									"value": "Food",
+									"type": "text"
+								},
+								{
+									"key": "logo_image",
+									"type": "file",
+									"src": "/Users/jenishsmacbook/Downloads/WhatsApp Image 2023-05-11 at 7.57.36 PM.jpeg"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{baseUrl}}/company",
@@ -3450,7 +3606,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/pjp?teamId=2",
+							"raw": "{{baseUrl}}/pjp?teamId=2&page=1&size=20",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -3486,6 +3642,14 @@
 									"key": "clientId",
 									"value": "109",
 									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "20"
 								}
 							]
 						}
@@ -3752,7 +3916,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productId\" : 4,\r\n    \"quantity\" : 5\r\n}",
+							"raw": "{\r\n    \"productId\" : 4,\r\n    \"clientId\" : 109\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -3802,6 +3966,35 @@
 							],
 							"path": [
 								"placeorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cart Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cart/items/6",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart",
+								"items",
+								"6"
 							]
 						}
 					},
@@ -3897,20 +4090,21 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/cart/items",
+							"raw": "{{baseUrl}}/cart/items/129",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"cart",
-								"items"
+								"items",
+								"129"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get Order List Per Client",
+					"name": "Get Order List",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -3945,11 +4139,13 @@
 								{
 									"key": "clientId",
 									"value": "9",
+									"description": "If user pass then only shows client's orders",
 									"disabled": true
 								},
 								{
 									"key": "searchQuery",
 									"value": "Riyan",
+									"description": " ",
 									"disabled": true
 								},
 								{
@@ -4416,7 +4612,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"type\" : \"Generate Lead\",\r\n    \"period\": 7,\r\n    \"target\" : 100\r\n}",
+							"raw": "{\r\n    \"type\" : \"Generate Lead\",\r\n    \"startDate\" : \"2023-05-11\",\r\n    \"endDate\" : \"2023-05-21\",\r\n    \"target\" : 100\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4802,7 +4998,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/holiday?type=occasional",
+							"raw": "{{baseUrl}}/holiday",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -4812,7 +5008,8 @@
 							"query": [
 								{
 									"key": "type",
-									"value": "occasional"
+									"value": "occasional",
+									"disabled": true
 								}
 							]
 						},
@@ -4956,9 +5153,6 @@
 			"item": [
 				{
 					"name": "Get Product Report",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -4970,11 +5164,11 @@
 								}
 							]
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"productIds\" : [1,2],\r\n    \"cities\" : \"Rajkot\"\r\n}",
+							"raw": "{\r\n    \"period\":\"day-7\",\r\n    \"dateFrom\" : \"2023-04-25\",\r\n    \"dateTo\": \"2023-04-30\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4982,25 +5176,218 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/report/product?period=year-2022&comparison=city",
+							"raw": "{{baseUrl}}/report/product",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"report",
 								"product"
-							],
-							"query": [
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Product Report",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"productIds\" : [1,2],\r\n    \"cities\" : [\"Rajkot\"],\r\n    \"period\":\"day-90\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/report/product",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"report",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
 								{
-									"key": "period",
-									"value": "year-2022",
-									"description": "For Days : days-7,days-30\nFor Month :  month-sepetember\nFor Year :  year-2023"
+									"key": "X-Powered-By",
+									"value": "Express"
 								},
 								{
-									"key": "comparison",
-									"value": "city",
-									"description": "city or product"
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "392"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"188-A6MAUsvuyookjPsep2DuyO1/HRU\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 29 Apr 2023 17:08:00 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
 								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Record found successfully!\",\n    \"success\": true,\n    \"data\": [\n        {\n            \"id\": 10,\n            \"name\": \"vsvsdv\",\n            \"orders\": [\n                {\n                    \"id\": 7,\n                    \"date\": \"2023-02-14\",\n                    \"quantity\": 1\n                }\n            ]\n        },\n        {\n            \"id\": 14,\n            \"name\": \"vsv\",\n            \"orders\": [\n                {\n                    \"id\": 9,\n                    \"date\": \"2023-03-19\",\n                    \"quantity\": 5\n                },\n                {\n                    \"id\": 35,\n                    \"date\": \"2023-03-28\",\n                    \"quantity\": 2\n                }\n            ]\n        },\n        {\n            \"id\": 15,\n            \"name\": \"Balaji Rumbles\",\n            \"orders\": [\n                {\n                    \"id\": 8,\n                    \"date\": \"2023-02-14\",\n                    \"quantity\": 1\n                },\n                {\n                    \"id\": 34,\n                    \"date\": \"2023-03-28\",\n                    \"quantity\": 2\n                }\n            ]\n        }\n    ]\n}"
+						},
+						{
+							"name": "Get Product Report",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"productIds\" : [1,2],\r\n    \"cities\" : [\"Rajkot\"],\r\n    \"period\":\"month-march\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/report/product",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"report",
+										"product"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "3255"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"cb7-PMz0qFs1ypSWT6/g6U/yXTiLMak\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 30 Apr 2023 09:41:21 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Record found successfully!\",\n    \"success\": true,\n    \"data\": {\n        \"label\": [\n            {\n                \"id\": 10,\n                \"name\": \"Crunchecks\"\n            },\n            {\n                \"id\": 14,\n                \"name\": \"Chat Chaska\"\n            },\n            {\n                \"id\": 15,\n                \"name\": \"Balaji Rumbles\"\n            }\n        ],\n        \"data\": {\n            \"2023-03-01\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-02\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-03\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-04\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-05\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-06\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-07\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-08\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-09\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-10\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-11\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-12\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-13\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-14\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-15\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-16\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-17\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-18\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-19\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 10\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 5\n                }\n            ],\n            \"2023-03-20\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-21\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-22\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-23\": [\n                {\n                    \"productId\": 14,\n                    \"quantity\": 5\n                }\n            ],\n            \"2023-03-24\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-25\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 10\n                }\n            ],\n            \"2023-03-26\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-27\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-28\": [\n                {\n                    \"productId\": 14,\n                    \"quantity\": 4\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 2\n                }\n            ],\n            \"2023-03-29\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-30\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ],\n            \"2023-03-31\": [\n                {\n                    \"productId\": 10,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 14,\n                    \"quantity\": 0\n                },\n                {\n                    \"productId\": 15,\n                    \"quantity\": 0\n                }\n            ]\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Product Report By Customer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"period\":\"day-90\",\r\n    \"clientId\" : 138,\r\n    \"productIds\" : [14]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/report/customers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"report",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product Report By City",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cities\" : [131958],\r\n    \"period\":\"day-7\",\r\n    \"dateFrom\" : \"2023-04-25\",\r\n    \"dateTo\": \"2023-04-30\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/report/city",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"report",
+								"city"
 							]
 						}
 					},
@@ -5019,12 +5406,21 @@
 								}
 							]
 						},
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comparison\": \"expense\",\n    \"period\": \"day-7\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{baseUrl}}/report/team?comparison=expense&period=days-140",
+							"raw": "{{liveUrl}}/report/team?comparison=expense&period=days-140",
 							"host": [
-								"{{baseUrl}}"
+								"{{liveUrl}}"
 							],
 							"path": [
 								"report",
@@ -5317,6 +5713,60 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "County State City API",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-CSCAPI-KEY",
+						"value": "cGFlMjZsWkJoUktMNEdTRXJKaUZ3SDFad3R2U0JiaFEwR0JEUXRKNg==",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.countrystatecity.in/v1/countries/IN/states/GJ/cities",
+					"protocol": "https",
+					"host": [
+						"api",
+						"countrystatecity",
+						"in"
+					],
+					"path": [
+						"v1",
+						"countries",
+						"IN",
+						"states",
+						"GJ",
+						"cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.countrystatecity.in/v1/countries/IN/cities",
+					"protocol": "https",
+					"host": [
+						"api",
+						"countrystatecity",
+						"in"
+					],
+					"path": [
+						"v1",
+						"countries",
+						"IN",
+						"cities"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -5342,12 +5792,17 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://192.168.1.65:9009",
+			"value": "http://13.200.28.46",
 			"type": "string"
 		},
 		{
 			"key": "auth_token",
 			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6MSwiaWF0IjoxNjYxMTU5OTk0fQ._I5XpjvE2l08beDj76QG8_ni9XZkGY7PVFLr4sSg1_Q",
+			"type": "string"
+		},
+		{
+			"key": "liveUrl",
+			"value": "http://13.200.28.46",
 			"type": "string"
 		}
 	]

@@ -8,8 +8,6 @@ db.Notification = require('./notification.model').Notification
 db.Client_Status = require('./client-status.model').Client_Status
 db.Client_Appointment = require('./client-appointment.model').Client_Appointment
 db.Client_Reminder = require('./client-reminder.model').Client_Reminder
-db.Appointment_Reminder =
-  require('./appointment-reminder.model').Appointment_Reminder
 db.Permission = require('./permission.model').Permission
 db.Company = require('./company.model').Company
 db.Attendance = require('./attendance.model').Attendance
@@ -66,10 +64,6 @@ db.Team.belongsTo(db.Role)
 // Notification as per User
 db.Team.hasMany(db.Notification)
 db.Notification.belongsTo(db.Team)
-
-// Appointment as per User
-db.Team.hasMany(db.Appointment_Reminder)
-db.Appointment_Reminder.belongsTo(db.Team)
 
 // Attendance as per Team Member
 db.Team.hasMany(db.Attendance)
@@ -166,9 +160,6 @@ db.Client.belongsTo(db.Company)
 
 db.Company.hasMany(db.Team)
 db.Team.belongsTo(db.Company)
-
-db.Company.hasMany(db.Appointment_Reminder)
-db.Appointment_Reminder.belongsTo(db.Company)
 
 db.Company.hasMany(db.Role)
 db.Role.belongsTo(db.Company)
