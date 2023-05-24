@@ -27,6 +27,10 @@ let otpArray = []
 exports.register = async (req, res) => {
   const { name, companyName, contact_number, email, password } = req.body
 
+  const alreadyRegisteredUser = await Team.findOne({ where: { email } })
+  if (alreadyRegisteredUser)
+    throw badRequestError(MESSAGE.AUTH.ACCOUNT_ALREADY_EXISTS)
+
   const company = await Company.create({
     name: companyName,
   })
