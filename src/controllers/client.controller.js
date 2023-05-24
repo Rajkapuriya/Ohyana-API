@@ -27,7 +27,6 @@ const {
   Client_Status,
   Client_Appointment,
   Client_Reminder,
-  Client_Appointed_Member,
   Client_Stage_History,
   Role,
   Team,
@@ -616,33 +615,29 @@ exports.addClientAppointment = async (req, res) => {
     return unProcessableEntityRequestError(res, MESSAGE.COMMON.INVALID_TIME)
   }
 
-  const clientAppointment = await Client_Appointment.create({
+  await Client_Appointment.create({
     date,
     time,
     description,
     appointment_unit,
     teamId: req.user.id,
-    memberName: req.user.name,
-    memberRole: req.user.role.name,
     clientId: clientId,
+    appointed_members_ids: appointed_member.toString(),
   })
-
-  await clientAppointment.addTeams(appointed_member)
 
   return successResponse(res, 'Appointment Scheduled Successfully')
 }
 
 exports.getAllClientAppointment = async (req, res) => {
-  const clientAppointment = await Client_Appointment.findAll({
+  const clientAppointmentList = await Client_Appointment.findAll({
     attributes: [
       'id',
-      'memberName',
-      'memberRole',
       'description',
       'date',
       'time',
       'appointment_unit',
       'isScheduled',
+      'appointed_members_ids',
     ],
     where: {
       clientId: req.params.id,
@@ -652,19 +647,38 @@ exports.getAllClientAppointment = async (req, res) => {
       {
         model: Team,
         attributes: ['id', 'name'],
-        through: {
-          attributes: [],
+        include: {
+          model: Role,
+          attributes: ['name'],
         },
       },
     ],
   })
 
-  if (clientAppointment.length === 0) return notFoundError(res)
+  for (const clientAppointment of clientAppointmentList) {
+    if (clientAppointment.appointed_members_ids) {
+      const appointedMembers = await Team.findAll({
+        attributes: ['id', 'name'],
+        where: {
+          id: clientAppointment.appointed_members_ids.split(','),
+        },
+      })
+      clientAppointment.dataValues.appointedMembers = appointedMembers.map(
+        e => {
+          return { id: e.id, name: e.name }
+        },
+      )
+    }
+
+    delete clientAppointment.dataValues.appointed_members_ids
+  }
+
+  if (clientAppointmentList.length === 0) return notFoundError(res)
 
   return successResponse(
     res,
     MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
-    clientAppointment,
+    clientAppointmentList,
   )
 }
 
@@ -689,22 +703,13 @@ exports.updateAppointment = async (req, res) => {
   if (client_appointment.isScheduled)
     return forbiddenRequestError(res, 'Appointment Is Already Scheduled')
 
-  const updatedAppointment = await client_appointment.update({
+  await client_appointment.update({
     description,
     date,
     time,
     appointment_unit,
+    appointed_members_ids: appointed_member.toString(),
   })
-
-  if (appointed_member.length > 0) {
-    await Promise.all([
-      Client_Appointed_Member.destroy({
-        where: { clientAppointmentId: updatedAppointment.id },
-        force: true,
-      }),
-      updatedAppointment.addTeams(appointed_member),
-    ])
-  }
 
   return successResponse(res, 'Appointment Updated Successfully')
 }
