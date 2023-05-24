@@ -45,9 +45,16 @@ exports.setTarget = async (req, res) => {
   if (existedTarget)
     return badRequestError(res, 'Target Already Assigned for this time period')
 
+  const currentTargetCount = await Target.count({
+    where: { state: TARGET.STATE.CURRENT },
+  })
+
   await Target.create({
     ...req.body,
-    state: TARGET.STATE.CURRENT,
+    state:
+      currentTargetCount.count > 0
+        ? TARGET.STATE.UPCOMING
+        : TARGET.STATE.CURRENT,
     teamId: req.params.id,
   })
 
