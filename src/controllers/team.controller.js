@@ -36,7 +36,7 @@ exports.addTeamMember = async (req, res) => {
     if (req.file) {
       unlinkFile(req.file.path)
     }
-    return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
+    return forbiddenRequestError(res, MESSAGE.AUTH.ACCOUNT_ALREADY_EXISTS)
   }
 
   if (req.file) {

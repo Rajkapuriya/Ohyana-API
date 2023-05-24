@@ -13,5 +13,6 @@ exports.MESSAGE = {
     INVALID_EMAIL: 'Invalid username or password!',
     EMAIL_ALREADY_VERIFIED: 'Your email address already verified!',
     EMAIL_NOT_VERIFIED: 'Please verify your email address!',
+    ACCOUNT_ALREADY_EXISTS: 'Account Already Exists With This Email Address!',
   },
 }
