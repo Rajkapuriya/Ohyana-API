@@ -8,9 +8,6 @@ db.Notification = require('./notification.model').Notification
 db.Client_Status = require('./client-status.model').Client_Status
 db.Client_Appointment = require('./client-appointment.model').Client_Appointment
 db.Client_Reminder = require('./client-reminder.model').Client_Reminder
-db.Client_Appointed_Member =
-  require('./client-appointed-member.model').Client_Appointed_Member
-db.Client_Product = require('./client-product.model').Client_Product
 db.Appointment_Reminder =
   require('./appointment-reminder.model').Appointment_Reminder
 db.Permission = require('./permission.model').Permission
@@ -59,17 +56,9 @@ db.Client_Reminder.belongsTo(db.Team)
 db.Client.hasMany(db.Client_Appointment)
 db.Client_Appointment.belongsTo(db.Client)
 
-// For appointed member only
-db.Client_Appointment.belongsToMany(db.Team, {
-  through: db.Client_Appointed_Member,
-})
-db.Team.belongsToMany(db.Client_Appointment, {
-  through: db.Client_Appointed_Member,
-})
-
-// Client Have Many queries for Product and Product related to many clients
-db.Client.belongsToMany(db.Product, { through: db.Client_Product })
-db.Product.belongsToMany(db.Client, { through: db.Client_Product })
+// Team Member Who Create Appointment With Client
+db.Team.hasMany(db.Client_Appointment)
+db.Client_Appointment.belongsTo(db.Team)
 
 db.Role.hasMany(db.Team)
 db.Team.belongsTo(db.Role)

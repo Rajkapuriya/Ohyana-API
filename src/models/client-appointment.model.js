@@ -28,14 +28,8 @@ const Client_Appointment = sequelize.define(
       allowNull: false,
       defaultValue: false,
     },
-    teamId: {
-      type: DataTypes.INTEGER,
-    },
-    memberName: {
-      type: DataTypes.STRING(35),
-    },
-    memberRole: {
-      type: DataTypes.STRING(20),
+    appointed_members_ids: {
+      type: DataTypes.STRING(100),
     },
   },
   { paranoid: true },

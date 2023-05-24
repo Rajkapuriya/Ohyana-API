@@ -180,7 +180,7 @@ exports.getAllAttendancePerUser = async (req, res) => {
 
   attendancePerUser.rows = attendancePerUser.rows.map(attendance => {
     return {
-      ...attendance,
+      ...attendance.dataValues,
       totalHours: Math.floor(attendance.totalHours / 60),
     }
   })
