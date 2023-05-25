@@ -20,7 +20,7 @@ const {
 } = require('../utils/response.util')
 const moment = require('moment')
 const { ATTENDANCE, MESSAGE, EXPENSE, S3 } = require('../constants')
-const { sendMail, generateToken } = require('../utils/common.util')
+const { sendMail, generateToken, unlinkFile } = require('../utils/common.util')
 const { SERVER_CONFIG } = require('../config/server.config')
 const { resetPasswordHTML } = require('../utils/email-template.util')
 const { generateS3ConcatString } = require('../utils/s3.util')
@@ -664,10 +664,4 @@ exports.getTeamLeaderBoardDetails = async (req, res) => {
   })
 
   return successResponse(res, 'Expense Updated', response)
-}
-
-function unlinkFile(path) {
-  fs.unlink(path, err => {
-    console.log(err)
-  })
 }
