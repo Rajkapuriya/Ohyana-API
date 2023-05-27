@@ -4,9 +4,9 @@ const {
   Permission,
   Company,
   Role_Permissions,
+  EmailTemplate,
 } = require('../models')
 const bcrypt = require('bcryptjs')
-const { forgotPasswordHTML } = require('../utils/email-template.util')
 const sequelize = require('../database/mysql')
 const { ENCRYP_CONFIG } = require('../config/encryp.config')
 const { SERVER_CONFIG } = require('../config/server.config')
@@ -17,10 +17,16 @@ const {
   requestTimeOutError,
   notFoundError,
 } = require('../utils/response.util')
-const { MESSAGE, S3, CLIENT } = require('../constants')
+const { MESSAGE, S3, CLIENT, EMAIL } = require('../constants')
 const { badRequestError } = require('../utils/response.util')
-const { sendMail, generateToken, verifyToken } = require('../utils/common.util')
+const {
+  sendMail,
+  generateToken,
+  verifyToken,
+  emailSubjectAndContentFormatting,
+} = require('../utils/common.util')
 const { generateS3ConcatString } = require('../utils/s3.util')
+const { URL_CONFIG } = require('../config/url.config')
 
 let otpArray = []
 
@@ -80,7 +86,19 @@ exports.sendVerificationEmail = async (req, res) => {
 
   if (!otp) return internalServerError(res)
 
-  sendMail(email, 'Hello from Gmail', `Otp for Our Application : ${otp}`)
+  const emailTemplate = await EmailTemplate.findOne({
+    where: { id: EMAIL.TEMPLATES.OTP_VERIFICATION },
+  })
+
+  if (!emailTemplate) return internalServerError(res)
+
+  const { subject, content } = emailSubjectAndContentFormatting(
+    emailTemplate.subject,
+    emailTemplate.content,
+    { otp },
+  )
+
+  sendMail(email, subject, content)
 
   return successResponse(res, 'OTP Send Successfully To Mail')
 }
@@ -189,7 +207,19 @@ exports.forgotPassword = async (req, res) => {
     SERVER_CONFIG.JWT_RESET_SECRET,
   )
 
-  sendMail(email, 'Forgot Password', forgotPasswordHTML(token))
+  const emailTemplate = await EmailTemplate.findOne({
+    where: { id: EMAIL.TEMPLATES.FOGOT_PASSWORD },
+  })
+
+  if (!emailTemplate) return internalServerError(res)
+
+  const { subject, content } = emailSubjectAndContentFormatting(
+    emailTemplate.subject,
+    emailTemplate.content,
+    { password_url: `${URL_CONFIG.FRONTED_URL}?rstPwd=${token}` },
+  )
+
+  sendMail(email, subject, content)
 
   return successResponse(res, 'Link sent Successfully to your Email')
 }

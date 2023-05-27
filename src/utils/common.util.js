@@ -152,6 +152,15 @@ async function checkUserPermission(user, permissions) {
   return !user.role.parentId || userPermission ? true : false
 }
 
+function emailSubjectAndContentFormatting(subject, content, data) {
+  subject = subject.replace('[[EMAIL]]', data.email)
+
+  content = content.replace('[[OTP]]', data.otp)
+  content = content.replace(/\[\[PASSWORD_URL\]\]/g, data.password_url)
+
+  return { subject, content }
+}
+
 module.exports = {
   updateTeamMemberPoint,
   updateTeamMemberTarget,
@@ -164,4 +173,5 @@ module.exports = {
   getYearDateRageArray,
   getCustomDateRangeArray,
   checkUserPermission,
+  emailSubjectAndContentFormatting,
 }

@@ -7,6 +7,7 @@ const {
   Client_Status,
   Target,
   Team_Location_History,
+  EmailTemplate,
 } = require('../models')
 const sequelize = require('../database/mysql')
 const { uploadFileToS3, deleteFileFromS3 } = require('../helpers/s3.helper')
@@ -17,14 +18,20 @@ const {
   forbiddenRequestError,
   notFoundError,
   badRequestError,
+  internalServerError,
 } = require('../utils/response.util')
 const moment = require('moment')
-const { ATTENDANCE, MESSAGE, EXPENSE, S3 } = require('../constants')
-const { sendMail, generateToken, unlinkFile } = require('../utils/common.util')
+const { ATTENDANCE, MESSAGE, EXPENSE, S3, EMAIL } = require('../constants')
+const {
+  sendMail,
+  generateToken,
+  unlinkFile,
+  emailSubjectAndContentFormatting,
+} = require('../utils/common.util')
 const { SERVER_CONFIG } = require('../config/server.config')
-const { resetPasswordHTML } = require('../utils/email-template.util')
 const { generateS3ConcatString } = require('../utils/s3.util')
 const { YYYY_MM_DD } = require('../utils/moment.util')
+const { URL_CONFIG } = require('../config/url.config')
 
 exports.addTeamMember = async (req, res) => {
   const { email } = req.body
@@ -57,11 +64,20 @@ exports.addTeamMember = async (req, res) => {
       { id: createdTeamMember.id, email: createdTeamMember.email },
       SERVER_CONFIG.JWT_RESET_SECRET,
     )
-    sendMail(
-      createdTeamMember.email,
-      'Create New Password',
-      resetPasswordHTML(token),
+
+    const emailTemplate = await EmailTemplate.findOne({
+      where: { id: EMAIL.TEMPLATES.FOGOT_PASSWORD },
+    })
+
+    if (!emailTemplate) return internalServerError(res)
+
+    const { content } = emailSubjectAndContentFormatting(
+      emailTemplate.subject,
+      emailTemplate.content,
+      { password_url: `${URL_CONFIG.FRONTED_URL}?rstPwd=${token}` },
     )
+
+    sendMail(createdTeamMember.email, 'Create New Password', content)
   }
 
   return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
