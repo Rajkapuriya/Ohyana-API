@@ -66,9 +66,10 @@ exports.register = async (req, res) => {
 exports.sendVerificationEmail = async (req, res) => {
   const { email } = req.body
 
-  // const teamMember = await Team.findOne({ email })
+  const teamMember = await Team.findOne({ email })
 
-  // if (!teamMember) return badRequestError(res, MESSAGE.AUTH.INVALID_EMAIL)
+  if (teamMember)
+    return badRequestError(res, MESSAGE.AUTH.ACCOUNT_ALREADY_EXISTS)
 
   // if (teamMember.isEmailVerified)
   //   return badRequestError(res, MESSAGE.AUTH.EMAIL_ALREADY_VERIFIED)
@@ -108,9 +109,10 @@ exports.verifyEmail = async (req, res) => {
   const currentDate = new Date()
   const numberWithOtp = otpArray.find(e => e.email === email)
 
-  // const teamMember = await Team.findOne({ email })
+  const teamMember = await Team.findOne({ email })
 
-  // if (!teamMember) return badRequestError(res, MESSAGE.AUTH.INVALID_EMAIL)
+  if (teamMember)
+    return badRequestError(res, MESSAGE.AUTH.ACCOUNT_ALREADY_EXISTS)
 
   if (numberWithOtp == undefined) return requestTimeOutError(res, 'OTP EXPIRED')
 
