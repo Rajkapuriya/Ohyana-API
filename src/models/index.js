@@ -32,6 +32,7 @@ db.Role_Expense_Permissions =
 db.Team_Location_History =
   require('./team-location-history.model').Team_Location_History
 db.Role_Permissions = require('./role-permission.model').Role_Permissions
+db.EmailTemplate = require('./email-template.model').EmailTemplate
 
 // -------- DB Relationships --------
 
