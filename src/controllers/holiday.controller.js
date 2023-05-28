@@ -30,14 +30,18 @@ exports.createHoliday = async (req, res) => {
       return unProcessableEntityRequestError(res, 'Please Select Duration')
   }
 
-  const [, created] = await Holiday.findOrCreate({
+  const [holiday, created] = await Holiday.findOrCreate({
     where: { occasion, companyId: req.user.companyId },
     defaults: body,
   })
   if (!created)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY,
+    holiday,
+  )
 }
 
 exports.getAllHolidays = async (req, res) => {
@@ -92,8 +96,12 @@ exports.updateHoliday = async (req, res) => {
   if (existedHoliday)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  await Holiday.update(body, { where: { id: req.params.id } })
-  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
+  const holiday = await Holiday.update(body, { where: { id: req.params.id } })
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
+    holiday,
+  )
 }
 
 exports.deleteHoliday = async (req, res) => {
