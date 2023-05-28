@@ -17,8 +17,12 @@ exports.createLeaveType = async (req, res) => {
   if (existetLeaveType)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
 
-  await Leave.create({ type, duration, companyId: req.user.companyId })
-  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY)
+  const leave = await Leave.create({
+    type,
+    duration,
+    companyId: req.user.companyId,
+  })
+  return successResponse(res, MESSAGE.COMMON.RECORD_CREATED_SUCCESSFULLY, leave)
 }
 
 exports.getAllLeaveTypes = async (req, res) => {
@@ -69,7 +73,11 @@ exports.updateLeaveType = async (req, res) => {
     )
   }
 
-  return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY,
+    updatedLeaveData,
+  )
 }
 
 exports.deleteLeaveType = async (req, res) => {
