@@ -202,7 +202,7 @@ exports.applyLeave = async (req, res) => {
   const { duration, leavetypeId } = req.body
 
   const existedLeaveWithCurrentType = await Team_Leave.findOne({
-    where: { date: duration, leaveId: leavetypeId },
+    where: { date: duration },
   })
 
   if (existedLeaveWithCurrentType)
@@ -253,8 +253,8 @@ exports.grantLeave = async (req, res) => {
       message = 'Leave Approved'
     }
 
-    await teamLeave.update(updateObject)
-    return successResponse(res, message)
+    const leave = await teamLeave.update(updateObject)
+    return successResponse(res, message, leave)
   } else {
     return forbiddenRequestError(res)
   }
