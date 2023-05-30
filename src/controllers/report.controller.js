@@ -190,6 +190,10 @@ exports.getTeamReport = async (req, res) => {
   }
 
   if (comparison && comparison == 'expense') {
+    if (roleId) {
+      expenseWhereCondition += ` AND t.roleId = ${roleId}`
+    }
+
     teams = await sequelize.query(
       `
       SELECT 
@@ -239,30 +243,25 @@ exports.getTeamReport = async (req, res) => {
         })
       }
     })
-
-    // whereCondition.include = {
-    //   model: Team_Expense,
-    //   where: whereSubCondition.where,
-    //   required: false,
-    // }
-  }
-
-  if (roleId) {
-    const getRoleDetail = await Role.findOne({
-      attributes: ['id', 'parentId'],
-      where: { id: roleId },
-    })
-
-    if (!getRoleDetail.parentId) return forbiddenRequestError(res)
-
-    filterCondition.roleId = roleId
-  }
-
-  if (teamIds && teamIds.length > 0) {
-    filterCondition.id = teamIds
   }
 
   if (comparison == 'points') {
+    if (roleId) {
+      const getRoleDetail = await Role.findOne({
+        attributes: ['id', 'parentId'],
+        where: { id: roleId },
+      })
+
+      if (getRoleDetail && !getRoleDetail.parentId)
+        return forbiddenRequestError(res)
+
+      if (getRoleDetail) filterCondition.roleId = roleId
+    }
+
+    if (teamIds && teamIds.length > 0) {
+      filterCondition.id = teamIds
+    }
+
     teams = await Team.findAll({
       attributes: ['id', 'name'],
       where: { companyId: req.user.companyId, ...filterCondition },
