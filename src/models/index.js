@@ -153,7 +153,7 @@ db.Role.hasOne(db.Role_Permissions)
 db.Team.hasMany(db.Team_Location_History)
 
 // To Manage Role Hierarchy
-db.Role.hasMany(db.Role, { foreignKey: 'parentId' })
+db.Role.hasOne(db.Role, { foreignKey: 'parentId' })
 
 // Saperated By Company
 db.Company.hasMany(db.Client)
