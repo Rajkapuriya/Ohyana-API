@@ -194,6 +194,10 @@ exports.getTeamReport = async (req, res) => {
       expenseWhereCondition += ` AND t.roleId = ${roleId}`
     }
 
+    if (teamIds && teamIds.length) {
+      expenseWhereCondition += ` AND t.id IN (${teamIds.toString()})`
+    }
+
     teams = await sequelize.query(
       `
       SELECT 
@@ -220,12 +224,20 @@ exports.getTeamReport = async (req, res) => {
     )
 
     teams = teams.filter(e => e.parentId != null)
+    let whereCondition = {
+      [Op.notIn]: teams.map(e => e.id),
+    }
+
+    if (teamIds && teamIds.length) {
+      whereCondition = {
+        [Op.in]: teamIds,
+      }
+    }
+
     const allTeamMembers = await Team.findAll({
       attributes: ['id', 'name'],
       where: {
-        id: {
-          [Op.notIn]: teams.map(e => e.id),
-        },
+        id: whereCondition,
       },
       include: {
         attributes: ['id'],
