@@ -31,7 +31,7 @@ exports.updateCompanyProfile = async (req, res) => {
 exports.getCompanyProfile = async (req, res) => {
   const company = await Company.findOne({
     attributes: {
-      exclude: ['createdAt', 'updatedAt', 'country_id', 'crmkey'],
+      exclude: ['createdAt', 'updatedAt'],
       include: [generateS3ConcatString('logoUrl', S3.COMPANY_LOGO)],
     },
     where: { id: req.user.companyId },
