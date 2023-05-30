@@ -43,7 +43,7 @@ exports.createRole = async (req, res) => {
 exports.getAllRoles = async (req, res) => {
   const { selection } = req.query
 
-  const attributes = ['id', 'name', 'description']
+  const attributes = ['id', 'name', 'description', 'parentId']
   const filterCondition = { parentId: { [Op.ne]: null } }
 
   if (selection === 'true') {
@@ -56,6 +56,17 @@ exports.getAllRoles = async (req, res) => {
     where: { companyId: req.user.companyId, ...filterCondition },
   })
 
+  for (const role of roles) {
+    if (role.parentId) {
+      const parentRole = await Role.findOne({
+        attributes: ['name'],
+        where: { id: role.parentId },
+      })
+      role.setDataValue('senior', parentRole)
+
+      delete role.dataValues.parentId
+    }
+  }
   if (roles.length === 0) return notFoundError(res)
 
   return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, roles)
@@ -84,10 +95,13 @@ exports.getSingleRoles = async (req, res) => {
 }
 
 exports.updateRole = async (req, res) => {
-  const { name, description, clockIn } = req.body
+  const { name, description, parentId } = req.body
 
   if (name.toLowerCase() === 'CEO'.toLowerCase())
     return forbiddenRequestError(res, 'Name is Prohibited')
+
+  if (parentId == req.params.id)
+    return badRequestError(res, 'Senior Role is Invalid')
 
   const existedRole = await Role.findOne({
     where: {
@@ -99,7 +113,7 @@ exports.updateRole = async (req, res) => {
   if (existedRole)
     return forbiddenRequestError(res, MESSAGE.COMMON.RECORD_ALREADY_EXISTS)
   await Role.update(
-    { name, description, clockIn },
+    { name, description, parentId },
     { where: { id: req.params.id } },
   )
   return successResponse(res, MESSAGE.COMMON.RECORD_UPDATED_SUCCESSFULLY)
