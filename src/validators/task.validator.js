@@ -41,6 +41,8 @@ exports.taskSchema = {
       searchQuery: Joi.string(),
       due_date: Joi.string(),
       teamId: Joi.number(),
+      page: Joi.number(),
+      size: Joi.number(),
     }).required(),
   }).unknown(),
 }

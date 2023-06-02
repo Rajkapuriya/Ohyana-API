@@ -97,9 +97,6 @@ exports.getSingleRoles = async (req, res) => {
 exports.updateRole = async (req, res) => {
   const { name, description, parentId } = req.body
 
-  if (name.toLowerCase() === 'CEO'.toLowerCase())
-    return forbiddenRequestError(res, 'Name is Prohibited')
-
   if (parentId == req.params.id)
     return badRequestError(res, 'Senior Role is Invalid')
 

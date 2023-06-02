@@ -30,6 +30,8 @@ exports.assignMember = async (req, res) => {
 
 exports.getAllTask = async (req, res) => {
   const { searchQuery, due_date, teamId } = req.query
+  const currentPage = parseInt(req.query.page) || 1
+  const size = parseInt(req.query.size) || 20
 
   const filterCondition = {}
 
@@ -39,7 +41,7 @@ exports.getAllTask = async (req, res) => {
 
   if (teamId) filterCondition.teamId = teamId
 
-  const tasks = await Task.findAll({
+  const { count: totalPage, rows: tasks } = await Task.findAndCountAll({
     attributes: ['id', 'title', 'description', 'createdAt'],
     where: { companyId: req.user.companyId, ...filterCondition },
     include: [
@@ -48,11 +50,16 @@ exports.getAllTask = async (req, res) => {
         attributes: ['email'],
       },
     ],
+    offset: (currentPage - 1) * size,
+    limit: size,
   })
 
   if (tasks.length === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, tasks)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
+    totalPage,
+    tasks,
+  })
 }
 
 exports.getSingleTaskWithChecklist = async (req, res) => {

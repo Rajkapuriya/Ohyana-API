@@ -14,6 +14,8 @@ exports.targetSchema = {
     body: Joi.object({
       month: Joi.number().greater(0),
       year: Joi.number().greater(0),
+      page: Joi.number(),
+      size: Joi.number(),
     }).required(),
   }).unknown(),
 }
