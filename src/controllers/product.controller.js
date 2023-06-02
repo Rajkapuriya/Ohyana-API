@@ -37,44 +37,60 @@ exports.createProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
+  let responseData = {}
 
-  const { count: totalPage, rows: proudcts } = await Product.findAndCountAll({
-    attributes: [
-      'id',
-      'name',
-      'price',
-      generateS3ConcatString('imageUrl', S3.PRODUCTS),
-    ],
-    where: { companyId: req.user.companyId },
-    order: [['id', 'DESC']],
-    offset: (currentPage - 1) * size,
-    limit: size,
-  })
-
-  if (req.query.cart === 'true' && req.query.clientId) {
-    const cartIdList = await Cart.findAll({
-      attributes: ['productId', 'id'],
-      where: { clientId: req.query.clientId },
+  if (req.query.selection === 'true') {
+    const products = await Product.findAll({
+      attributes: ['id', 'name'],
+      where: { companyId: req.user.companyId },
+      order: [['name', 'ASC']],
+    })
+    responseData = { products }
+  } else {
+    const { count: totalPage, rows: proudcts } = await Product.findAndCountAll({
+      attributes: [
+        'id',
+        'name',
+        'price',
+        generateS3ConcatString('imageUrl', S3.PRODUCTS),
+      ],
+      where: { companyId: req.user.companyId },
+      order: [['id', 'DESC']],
+      offset: (currentPage - 1) * size,
+      limit: size,
     })
 
-    for (let i = 0; i < proudcts.length; i++) {
-      const isProductExists = cartIdList.find(
-        c => c.productId === proudcts[i].id,
-      )
-      proudcts[i].dataValues.inCart = isProductExists ? true : false
-      console.log()
-      proudcts[i].dataValues.cartId = isProductExists
-        ? isProductExists.id
-        : null
+    if (req.query.cart === 'true' && req.query.clientId) {
+      const cartIdList = await Cart.findAll({
+        attributes: ['productId', 'id'],
+        where: { clientId: req.query.clientId },
+      })
+
+      for (let i = 0; i < proudcts.length; i++) {
+        const isProductExists = cartIdList.find(
+          c => c.productId === proudcts[i].id,
+        )
+        proudcts[i].dataValues.inCart = isProductExists ? true : false
+        console.log()
+        proudcts[i].dataValues.cartId = isProductExists
+          ? isProductExists.id
+          : null
+      }
+    }
+
+    if (totalPage === 0) return notFoundError(res)
+
+    responseData = {
+      totalPage,
+      proudcts,
     }
   }
 
-  if (totalPage === 0) return notFoundError(res)
-
-  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
-    totalPage,
-    proudcts,
-  })
+  return successResponse(
+    res,
+    MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY,
+    responseData,
+  )
 }
 
 exports.getProductDetail = async (req, res) => {

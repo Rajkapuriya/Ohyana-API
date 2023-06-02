@@ -19,6 +19,7 @@ exports.productSchema = {
       size: Joi.number(),
       cart: Joi.boolean(),
       clientId: Joi.number(),
+      selection: Joi.bool(),
     }).required(),
   }).unknown(),
 
