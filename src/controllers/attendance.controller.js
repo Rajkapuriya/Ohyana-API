@@ -149,6 +149,9 @@ exports.getAllAttendancePerUser = async (req, res) => {
   const teamId = req.query.teamId ?? req.user.id
   const filterCondition = {}
 
+  const currentPage = parseInt(req.query.page) || 1
+  const size = parseInt(req.query.size) || 20
+
   if (month && year) {
     filterCondition[Op.and] = [
       // { date: date },
@@ -172,6 +175,8 @@ exports.getAllAttendancePerUser = async (req, res) => {
       attributes: { exclude: ['createdAt', 'updatedAt', 'teamId'] },
       where: { teamId, ...filterCondition },
       order: [['date', 'DESC']],
+      offset: (currentPage - 1) * size,
+      limit: size,
       // include: [
       //     { model: Leave, attributes: ['type'] }
       // ]

@@ -97,6 +97,8 @@ exports.teamSchema = {
       month: Joi.number(),
       year: Joi.number(),
       teamId: Joi.number(),
+      page: Joi.number(),
+      size: Joi.number(),
     }).required(),
   }).unknown(),
 

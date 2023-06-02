@@ -7,6 +7,8 @@ exports.attendanceSchema = {
       month: Joi.number().greater(0),
       year: Joi.number().greater(0),
       attendanceType: Joi.string(),
+      page: Joi.number(),
+      size: Joi.number(),
     }).required(),
   }).unknown(),
 

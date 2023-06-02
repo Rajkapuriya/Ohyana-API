@@ -38,7 +38,7 @@ exports.getAllProducts = async (req, res) => {
   const currentPage = parseInt(req.query.page) || 1
   const size = parseInt(req.query.size) || 20
 
-  const products = await Product.findAndCountAll({
+  const { count: totalPage, rows: proudcts } = await Product.findAndCountAll({
     attributes: [
       'id',
       'name',
@@ -57,23 +57,24 @@ exports.getAllProducts = async (req, res) => {
       where: { clientId: req.query.clientId },
     })
 
-    for (let i = 0; i < products.rows.length; i++) {
+    for (let i = 0; i < proudcts.length; i++) {
       const isProductExists = cartIdList.find(
-        c => c.productId === products.rows[i].id,
+        c => c.productId === proudcts[i].id,
       )
-      products.rows[i].dataValues.inCart = isProductExists ? true : false
+      proudcts[i].dataValues.inCart = isProductExists ? true : false
       console.log()
-      products.rows[i].dataValues.cartId = isProductExists
+      proudcts[i].dataValues.cartId = isProductExists
         ? isProductExists.id
         : null
     }
   }
 
-  const data = { totalPage: products.count, products: products.rows }
+  if (totalPage === 0) return notFoundError(res)
 
-  if (data.totalPage === 0) return notFoundError(res)
-
-  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, data)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
+    totalPage,
+    proudcts,
+  })
 }
 
 exports.getProductDetail = async (req, res) => {

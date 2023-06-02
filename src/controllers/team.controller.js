@@ -355,14 +355,16 @@ exports.addExpense = async (req, res) => {
 
 exports.getExpenseList = async (req, res) => {
   const { month, year, teamId } = req.query
+  const currentPage = parseInt(req.query.page) || 1
+  const size = parseInt(req.query.size) || 20
 
-  let whereCondition = 'te.teamId = :teamId'
+  let whereCondition = ''
 
   if (month && month != 0 && year && year != 0) {
     whereCondition += ' AND MONTH(te.date) = :month AND YEAR(te.date) = :year'
   }
 
-  const [expenses, expenseCount] = await Promise.all([
+  const [expenses, [{ count: totalPage }], expenseCount] = await Promise.all([
     sequelize.query(
       `
         SELECT 
@@ -381,6 +383,34 @@ exports.getExpenseList = async (req, res) => {
         ON
             te.expenseId = e.id
         WHERE
+            te.teamId = :teamId
+            ${whereCondition}
+        LIMIT :limit
+        OFFSET :offset
+        `,
+      {
+        replacements: {
+          teamId: teamId ?? req.user.id,
+          month: month,
+          year: year,
+          offset: (currentPage - 1) * size,
+          limit: size,
+        },
+        type: QueryTypes.SELECT,
+      },
+    ),
+    sequelize.query(
+      `
+        SELECT 
+           COUNT(te.id) as count
+        FROM
+            team_expenses AS te
+        INNER JOIN 
+            expenses AS e
+        ON
+            te.expenseId = e.id
+        WHERE
+            te.teamId = :teamId
             ${whereCondition}
         `,
       {
@@ -416,13 +446,14 @@ exports.getExpenseList = async (req, res) => {
     ),
   ])
 
-  if (expenses.length == 0) return notFoundError(res)
+  if (totalPage == 0) return notFoundError(res)
 
   const response = {
     approved: 0,
     rejected: 0,
     pending: 0,
     paymentDone: 0,
+    totalPage,
     expenses,
   }
   expenseCount.map(e => {

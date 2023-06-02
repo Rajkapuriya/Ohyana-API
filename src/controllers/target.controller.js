@@ -63,6 +63,8 @@ exports.setTarget = async (req, res) => {
 
 exports.getTargets = async (req, res) => {
   const { month, year } = req.query
+  const currentPage = parseInt(req.query.page) || 1
+  const size = parseInt(req.query.size) || 20
 
   const filterCondition = {}
 
@@ -74,15 +76,20 @@ exports.getTargets = async (req, res) => {
     ]
   }
 
-  const target = await Target.findAll({
+  const { count: totalPage, rows: targets } = await Target.findAndCountAll({
     where: {
       teamId: req.params.id,
       // state: { [Op.not]: TARGET.STATE.UPCOMING },
       ...filterCondition,
     },
+    offset: (currentPage - 1) * size,
+    limit: size,
   })
 
-  if (target.length === 0) return notFoundError(res)
+  if (totalPage === 0) return notFoundError(res)
 
-  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, target)
+  return successResponse(res, MESSAGE.COMMON.RECORD_FOUND_SUCCESSFULLY, {
+    totalPage,
+    targets,
+  })
 }
