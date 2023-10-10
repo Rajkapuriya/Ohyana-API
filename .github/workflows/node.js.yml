@@ -45,7 +45,6 @@ jobs:
           echo SENDER_EMAIL=${{ secrets.SENDER_EMAIL }} >> .env
           echo SENDER_NAME=${{ secrets.SENDER_NAME }} >> .env
           echo HASH_SALT=${{ secrets.HASH_SALT }} >> .env
-          echo PASWORD_HASH_SALT=${{ secrets.PASWORD_HASH_SALT }} >> .env
           echo INDIAMART_CRM_KEY=${{ secrets.INDIAMART_CRM_KEY }} >> .env
           echo FRONTED_URL=${{ secrets.FRONTED_URL }} >> .env
           echo AWS_ID=${{ secrets.AWS_ID }} >> .env
